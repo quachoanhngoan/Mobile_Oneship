@@ -6,14 +6,14 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/theme_config.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MerchantApp extends StatefulWidget {
+  const MerchantApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MerchantApp> createState() => _MerchantAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MerchantAppState extends State<MerchantApp> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
