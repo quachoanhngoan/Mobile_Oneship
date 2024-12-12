@@ -9,7 +9,7 @@ class PrefManager {
 
   /// Light, Dark ,System
 
-  SharedPreferences preferences;
+  late SharedPreferences preferences;
 
   //for Bloc.Bloc.login
   set provinceId(String value) => preferences.setString(kProvinceId, value);

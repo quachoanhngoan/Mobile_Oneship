@@ -8,14 +8,14 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/theme_config.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MerchantApp extends StatefulWidget {
+  const MerchantApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MerchantApp> createState() => _MerchantAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MerchantAppState extends State<MerchantApp> {
   @override
   void initState() {
     initFirebaseMessaging();
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: Themings.lightTheme,
       title: 'Merchant',
-      initialRoute: AppRouter.onBoardingPage,
+      initialRoute: AppRoutes.onBoardingPage,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
           child: child!,
         );
       },
-      getPages: AppRouter.routes,
+      getPages: AppRoutes.routes,
     );
   }
 }

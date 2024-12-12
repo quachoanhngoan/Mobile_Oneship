@@ -38,7 +38,6 @@ dependencies:
   flutter_screenutil: ^5.9.3
   dio: ^5.7.0
   flutter_bloc: ^8.1.6
-  flutter_localization: ^0.2.3
   flutter_localizations:
     sdk: flutter
   shared_preferences: ^2.3.3
@@ -48,6 +47,9 @@ dependencies:
   firebase_messaging: ^15.1.6
   get_it: ^8.0.2
   google_fonts: ^6.2.1
+  fluttertoast: ^8.2.8
+  firebase_crashlytics: ^4.2.0
+  # gradient_like_css: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -135,6 +137,17 @@ flutter:
         - asset: assets/fonts/Mulish-SemiBoldItalic.ttf
           weight: 600
           style: italic
+    - family: MulishBold
+      fonts:
+        - asset: assets/fonts/mulish_bold.ttf
+
+    - family: MulishExtra
+      fonts:
+        - asset: assets/fonts/mulish_extralight.ttf
+
+    - family: MulishWgh
+      fonts:
+        - asset: assets/fonts/mulish_wght.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

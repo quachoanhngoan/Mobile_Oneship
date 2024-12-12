@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/slide_images.dart';
 
@@ -88,7 +89,9 @@ class OnBoardingPage extends StatelessWidget {
                       textColor: AppColors.primary,
                       text: "Đăng nhập",
                       isEnable: true,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.loginPage);
+                      },
                     ),
                   ),
                   SizedBox(
@@ -106,7 +109,9 @@ class OnBoardingPage extends StatelessWidget {
                       margin: const EdgeInsets.all(0),
                       text: "Đăng ký",
                       isEnable: true,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.registerpage);
+                      },
                     ),
                   ),
                 ],
