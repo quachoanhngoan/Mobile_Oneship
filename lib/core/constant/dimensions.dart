@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class VillDimensions {
-  static double padding = 14.sp;
+class AppDimensions {
+  static double padding = 16.sp;
   static double paddingSmall = 8.sp;
-  static double paddingMedium = 16.sp;
+  static double paddingMedium = 20.sp;
   static double paddingLarge = 32.sp;
   static double paddingExtraLarge = 64.sp;
 

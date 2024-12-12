@@ -15,13 +15,19 @@ class Themings {
 
   static final headlineSmall = TextStyle(
     fontSize: 16.sp,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w800,
     color: Colors.grey,
   );
 
   static final headlineMedium = TextStyle(
-    fontSize: 18.sp,
-    fontWeight: FontWeight.w400,
+    fontSize: 20.sp,
+    fontWeight: FontWeight.w800,
+    color: Colors.grey,
+  );
+
+  static final headlineLarge = TextStyle(
+    fontSize: 24.sp,
+    fontWeight: FontWeight.w800,
     color: Colors.grey,
   );
 
@@ -67,22 +73,28 @@ class Themings {
     ),
   );
   static final labelSmall = TextStyle(
-    fontSize: 15.sp,
+    fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     color: Colors.black,
     wordSpacing: 0.1,
     letterSpacing: 0.1,
   );
   static final labelMedium = TextStyle(
-    fontSize: 17.sp,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
   static final ThemeData lightTheme = ThemeData(
-    useMaterial3: false,
+    // useMaterial3: false,
     dividerColor: Colors.transparent,
-
-    fontFamily: "Nunito",
+    buttonTheme: ButtonThemeData(
+      buttonColor: AppColors.primary,
+      textTheme: ButtonTextTheme.primary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    fontFamily: "Mulish",
     listTileTheme: listTileTheme,
     // canvasColor: Colors.black,
     dividerTheme: DividerThemeData(
@@ -104,8 +116,8 @@ class Themings {
     ),
 
     appBarTheme: appbarTheme,
+    brightness: Brightness.light,
 
-    //color border
     scaffoldBackgroundColor: Colors.white,
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
@@ -121,11 +133,10 @@ class Themings {
       ),
       unselectedLabelStyle: TextStyle(
         fontSize: 14.0,
-        fontFamily: 'Nunito',
         fontWeight: FontWeight.w600,
         color: Colors.grey,
       ),
-      selectedItemColor: AppColors.bgPrimaryColor,
+      // selectedItemColor: AppColors.bgPrimaryColor,
       unselectedItemColor: Colors.grey,
     ),
     primaryColor: AppColors.primary,
@@ -137,9 +148,10 @@ class Themings {
     textTheme: TextTheme(
       headlineSmall: headlineSmall,
       headlineMedium: headlineMedium,
+      headlineLarge: headlineLarge,
       displaySmall: const TextStyle(
         fontSize: 16.0,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
       displayMedium: const TextStyle(
@@ -149,38 +161,38 @@ class Themings {
       ),
       displayLarge: const TextStyle(
         fontSize: 22.0,
-        fontWeight: FontWeight.w300,
+        fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
       titleMedium: TextStyle(
-        fontSize: 17.0.sp,
-        fontWeight: FontWeight.bold,
+        fontSize: 16.0.sp,
+        fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
       titleSmall: TextStyle(
-        fontSize: 15.0.sp,
-        fontWeight: FontWeight.bold,
+        fontSize: 14.0.sp,
+        fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
       titleLarge: TextStyle(
-        fontSize: 19.0.sp,
-        fontWeight: FontWeight.bold,
+        fontSize: 18.0.sp,
+        fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
       bodyMedium: TextStyle(
-        fontSize: 15.0.sp,
+        fontSize: 16.0.sp,
         color: Colors.black,
       ),
       bodyLarge: TextStyle(
-        fontSize: 17.0.sp,
+        fontSize: 18.0.sp,
         color: Colors.black,
       ),
       bodySmall: TextStyle(
-        fontSize: 13.sp,
+        fontSize: 14.sp,
         color: Colors.grey,
       ),
-      labelLarge: const TextStyle(
-        fontSize: 18,
+      labelLarge: TextStyle(
+        fontSize: 20.sp,
         fontWeight: FontWeight.w500,
         color: Colors.black,
       ),

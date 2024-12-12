@@ -1,3 +1,5 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +16,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    initFirebaseMessaging();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
+    super.initState();
+  }
+
+  Future<void> initFirebaseMessaging() async {
+    await FirebaseMessaging.instance.requestPermission();
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // final token = await FirebaseMessaging.instance.getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
@@ -32,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: Themings.lightTheme,
       title: 'Merchant',
-      initialRoute: AppRouter.homepage,
+      initialRoute: AppRouter.onBoardingPage,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(

@@ -5,15 +5,7 @@ class PrefManager {
   String kUserId = "userId";
   String kProvinceId = "province_id";
   String kUser = "user";
-  PrefManager._() {
-    SharedPreferences.getInstance().then((value) {
-      preferences = value;
-    });
-  }
-  factory PrefManager() => _instance;
-  static final PrefManager _instance = PrefManager._();
-
-  static get instance => _instance;
+  PrefManager(this.preferences);
 
   /// Light, Dark ,System
 
