@@ -81,12 +81,5 @@ class TextFieldBase extends StatelessWidget {
   InputBorder _border({bool? onBorder}) {
     return const UnderlineInputBorder(
         borderSide: BorderSide(color: AppColors.color5DD, width: 1.5));
-    // return OutlineInputBorder(
-    //     borderSide: BorderSide(
-    //         color: onBorder == true
-    //             ? AppColors.colorF1F.withOpacity(0.5)
-    //             : AppColors.white,
-    //         width: 1),
-    //     borderRadius: BorderRadius.circular(4));
   }
 }

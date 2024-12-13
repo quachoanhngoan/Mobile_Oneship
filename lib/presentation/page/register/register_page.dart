@@ -21,24 +21,26 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late final TextEditingController _phoneController;
+  late final TextEditingController _passController;
+  late final TextEditingController _rePassController;
   late final PageController _pageController;
-  late final FocusNode _focusNode;
 
   bool _isHighlight = false;
   int indexPage = 0;
   late String title;
+
+  bool isHintTextPass = true;
+  bool isHintTextRePass = true;
+  bool obscureTextPass = true;
+  bool obscureTextRePass = true;
 
   @override
   void initState() {
     title = "Nhập SĐT/Email";
     _pageController = PageController();
     _phoneController = TextEditingController();
-    _focusNode = FocusNode();
-    _phoneController.addListener(() {
-      setState(() {
-        _isHighlight = _phoneController.text.isNotEmpty;
-      });
-    });
+    _passController = TextEditingController();
+    _rePassController = TextEditingController();
     super.initState();
   }
 
@@ -77,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const VSpacing(spacing: 16),
             SizedBox(
-              height: 130.h,
+              height: indexPage != 2 ? 130.h : 230.h,
               child: PageView(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
@@ -100,14 +102,54 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
                 children: [
                   PhoneRegister(
-                      focusNode: _focusNode,
                       isForcus: _isHighlight,
+                      onChange: (value) {
+                        setState(() {
+                          _isHighlight = value?.isNotEmpty == true;
+                        });
+                      },
                       phoneController: _phoneController),
                   OtpRegister(
                     phone: _phoneController.text,
                     onDone: (value) {
                       setState(() {
                         _isHighlight = true;
+                      });
+                    },
+                  ),
+                  CreatePasswordRegister(
+                    passwordController: _passController,
+                    rePasswordController: _rePassController,
+                    isHintTextPass: isHintTextPass,
+                    isHintTextRePass: isHintTextRePass,
+                    obscureTextPass: obscureTextPass,
+                    obscureTextRePass: obscureTextRePass,
+                    suffixPassClick: () {
+                      setState(() {
+                        obscureTextPass = !obscureTextPass;
+                      });
+                    },
+                    suffixRePassClick: () {
+                      setState(() {
+                        obscureTextRePass = !obscureTextRePass;
+                      });
+                    },
+                    onRePassChange: (value) {
+                      setState(() {
+                        if (value?.isNotEmpty == true) {
+                          isHintTextRePass = false;
+                        } else {
+                          isHintTextRePass = true;
+                        }
+                      });
+                    },
+                    onPassChange: (value) {
+                      setState(() {
+                        if (value?.isNotEmpty == true) {
+                          isHintTextPass = false;
+                        } else {
+                          isHintTextPass = true;
+                        }
                       });
                     },
                   )
@@ -157,12 +199,12 @@ class _RegisterPageState extends State<RegisterPage> {
 class PhoneRegister extends StatelessWidget {
   final TextEditingController phoneController;
   final bool isForcus;
-  final FocusNode focusNode;
+  final Function(String?) onChange;
   const PhoneRegister(
       {super.key,
       required this.phoneController,
-      required this.focusNode,
-      required this.isForcus});
+      required this.isForcus,
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -175,9 +217,11 @@ class PhoneRegister extends StatelessWidget {
         ),
         const VSpacing(spacing: 20),
         TextFieldBase(
-          focusNode: focusNode,
           controller: phoneController,
           hintText: "Nhập SĐT hoặc email",
+          onChanged: (value) {
+            onChange(value);
+          },
           prefix: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14),
             child: ImageAssetWidget(
@@ -229,8 +273,29 @@ class OtpRegister extends StatelessWidget {
 }
 
 class CreatePasswordRegister extends StatelessWidget {
-  final TextEditingController 
-  const CreatePasswordRegister({super.key});
+  final TextEditingController passwordController;
+  final TextEditingController rePasswordController;
+  final bool isHintTextPass;
+  final bool isHintTextRePass;
+  final Function(String?) onPassChange;
+  final Function(String?) onRePassChange;
+  final bool obscureTextPass;
+  final bool obscureTextRePass;
+  final Function suffixPassClick;
+  final Function suffixRePassClick;
+
+  const CreatePasswordRegister(
+      {super.key,
+      required this.passwordController,
+      required this.rePasswordController,
+      required this.isHintTextPass,
+      required this.isHintTextRePass,
+      required this.onPassChange,
+      required this.onRePassChange,
+      required this.obscureTextPass,
+      required this.obscureTextRePass,
+      required this.suffixPassClick,
+      required this.suffixRePassClick});
 
   @override
   Widget build(BuildContext context) {
@@ -241,31 +306,92 @@ class CreatePasswordRegister extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.color723, fontWeight: FontWeight.w500),
         ),
-        TextFieldBase(
-          focusNode: focusNode,
-          controller: phoneController,
-          hintText: "Nhập SĐT hoặc email",
-          prefix: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: ImageAssetWidget(
-              image: AppAssets.imagesIcPerson,
-              width: 12,
-              height: 16,
-              fit: BoxFit.contain,
-              color: isForcus ? AppColors.black : AppColors.color2B3,
+        const VSpacing(spacing: 12),
+        TextFieldPassRegister(
+            suffixClick: () {
+              suffixPassClick();
+            },
+            obscureText: obscureTextPass,
+            onChange: (value) {
+              onPassChange(value);
+            },
+            controller: passwordController,
+            hintText: "Nhập mật khẩu",
+            iSHintTextVisible: isHintTextPass),
+        const VSpacing(spacing: 16),
+        TextFieldPassRegister(
+            suffixClick: () {
+              suffixRePassClick();
+            },
+            obscureText: obscureTextRePass,
+            onChange: (value) {
+              onRePassChange(value);
+            },
+            controller: rePasswordController,
+            hintText: "Nhập lại mật khẩu",
+            iSHintTextVisible: isHintTextRePass)
+      ],
+    );
+  }
+}
+
+class TextFieldPassRegister extends StatelessWidget {
+  final TextEditingController controller;
+  final bool iSHintTextVisible;
+  final String hintText;
+  final Function(String?) onChange;
+  final bool obscureText;
+  final Function suffixClick;
+  const TextFieldPassRegister(
+      {super.key,
+      required this.onChange,
+      required this.controller,
+      required this.hintText,
+      required this.iSHintTextVisible,
+      required this.obscureText,
+      required this.suffixClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: <Widget>[
+        Visibility(
+          visible: iSHintTextVisible,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text.rich(
+              TextSpan(
+                text: hintText,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.color2B3, fontWeight: FontWeight.w500),
+                children: const [
+                  TextSpan(
+                      text: '*',
+                      style: TextStyle(fontSize: 14, color: AppColors.red)),
+                ],
+              ),
             ),
           ),
-          suffix: isForcus
-              ? IconButton(
-                  onPressed: () {
-                    phoneController.clear();
-                  },
-                  icon: const Icon(
-                    Icons.cancel_outlined,
-                    color: AppColors.color2B3,
-                    size: 18,
-                  ))
-              : Container(width: 18),
+        ),
+        TextFieldBase(
+          controller: controller,
+          obscureText: obscureText,
+          hintText: "",
+          onChanged: (value) {
+            onChange(value);
+          },
+          suffix: IconButton(
+              onPressed: () {
+                suffixClick();
+              },
+              icon: Icon(
+                obscureText
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: AppColors.color2B3,
+                size: 18,
+              )),
         ),
       ],
     );
