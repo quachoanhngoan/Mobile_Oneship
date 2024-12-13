@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,6 +87,9 @@ class Themings {
   );
   static final ThemeData lightTheme = ThemeData(
     // useMaterial3: false,
+    cupertinoOverrideTheme: const CupertinoThemeData(
+      primaryColor: AppColors.primary,
+    ),
     dividerColor: Colors.transparent,
     buttonTheme: ButtonThemeData(
       buttonColor: AppColors.primary,
@@ -109,6 +113,7 @@ class Themings {
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
+
       //border bottom
       enabledBorder: const UnderlineInputBorder(
         borderSide: BorderSide(color: AppColors.borderColor),
@@ -124,6 +129,18 @@ class Themings {
           color: AppColors.borderColor,
         ),
       ),
+      errorStyle: TextStyle(
+        color: AppColors.error,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
+      ),
+      errorBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(
+          width: 1,
+          color: AppColors.borderError,
+        ),
+      ),
+
       hintStyle: TextStyle(
         color: AppColors.placeHolderColor,
         fontSize: 14.sp,

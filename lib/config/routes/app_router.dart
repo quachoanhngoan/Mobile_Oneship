@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
+import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
 import 'package:oneship_merchant_app/presentation/page/welcome/welcome_page.dart';
 
 import '../../presentation/page/register/register_page.dart';
@@ -18,6 +19,10 @@ class AppRoutes {
     GetPage(
       name: AppRoutes.welcome,
       page: () => const WelcomePage(),
+    ),
+    GetPage(
+      name: AppRoutes.splash,
+      page: () => const SplashPage(),
     ),
     GetPage(
       name: AppRoutes.onBoardingPage,

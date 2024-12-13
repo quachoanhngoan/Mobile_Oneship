@@ -8,7 +8,5 @@ class EnvManager {
   EnvManager._();
   static EnvManager get shared => _instance;
 
-  String get api => dotenv.env['api_socket_api']!;
-  String get apiKey => dotenv.env['API_KEY']!;
-  String get environmentName => dotenv.env['environment_name']!;
+  String get api => dotenv.env['BASE_URL']!;
 }

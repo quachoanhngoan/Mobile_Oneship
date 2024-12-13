@@ -1,4 +1,4 @@
-package com.example.oneship_merchant_app
+package com.oneship.merchant
 
 import io.flutter.embedding.android.FlutterActivity
 

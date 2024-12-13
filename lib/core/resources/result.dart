@@ -1,17 +1,17 @@
 abstract class Result<T> {
   final T? data;
-  final String? error;
-  const Result({this.data, this.error});
+  final String? failure;
+  const Result({this.data, this.failure});
 
   void when({
     required Function(T data) success,
-    Function(String e)? error,
+    Function(String e)? failure,
   }) {
     if (this is Success<T>) {
       success((this as Success<T>).data as T);
     } else if (this is Failure<T>) {
-      if (error != null) {
-        error((this as Failure<T>).error!);
+      if (failure != null) {
+        failure((this as Failure<T>).failure!);
       }
     }
   }
@@ -22,5 +22,5 @@ class Success<T> extends Result<T> {
 }
 
 class Failure<T> extends Result<T> {
-  const Failure(String e) : super(error: e);
+  const Failure(String e) : super(failure: e);
 }

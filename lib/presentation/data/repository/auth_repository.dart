@@ -1,4 +1,5 @@
 import 'package:oneship_merchant_app/presentation/data/dto/request_login.dart';
+import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
 mixin AuthUrl {
@@ -9,13 +10,10 @@ mixin AuthUrl {
   static const String changePassword = '/api/auth/change-password';
   static const String register = '/api/v1/registrations';
   static const String baseAuth = '/api/auth';
-  static const String getVehicleInUse = '/api/v1/vehicles/in-use';
-  static const String getVehicleType = '/api/v1/vehicles';
 }
 
-class AuthRepository {
-  Future<LoginResponse> login(
-      String provinceId, RequestLoginDto request) async {}
+abstract class AuthRepository {
+  Future<UserM?> login(RequestLoginDto request);
 }
 
 class AuthImpl implements AuthRepository {
@@ -25,15 +23,15 @@ class AuthImpl implements AuthRepository {
   );
 
   @override
-  Future<LoginResponse> login(
-      String provinceId, RequestLoginDto request) async {
+  Future<UserM?> login(RequestLoginDto request) async {
     final httpResponse = await _clientDio.post(
       AuthUrl.login,
       data: request.toJson(),
-      isShowError: false,
+      // isShowError: false,
+      isTranformData: true,
       isAuth: false,
     );
 
-    final data = LoginModel.fromJson(httpResponse.data ?? {});
+    return UserM.fromMap(httpResponse.data ?? {});
   }
 }

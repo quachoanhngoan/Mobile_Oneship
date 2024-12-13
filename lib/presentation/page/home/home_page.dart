@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
+import 'package:oneship_merchant_app/core/enum/state.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -13,12 +16,21 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         // child: Text('Home Page'),
-        child: ElevatedButton(
-            onPressed: () {
-              context.pushWithNamed(context,
-                  routerName: AppRoutes.registerpage);
-            },
-            child: const Text("Press")),
+        child: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  context.pushWithNamed(context,
+                      routerName: AppRoutes.registerpage);
+                },
+                child: const Text("Đăng ký")),
+            ElevatedButton(
+                onPressed: () {
+                  context.read<AuthCubit>().logout();
+                },
+                child: const Text("Đăng xuất")),
+          ],
+        ),
       ),
     );
   }

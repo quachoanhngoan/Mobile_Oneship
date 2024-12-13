@@ -7,6 +7,7 @@ class AuthState {
   final bool isErrorOnOff;
   final bool isLoginWithPhone;
   final EState loadingState;
+  final UserM? userData;
   AuthState({
     this.email = "",
     this.password = "",
@@ -14,6 +15,7 @@ class AuthState {
     this.isErrorOnOff = false,
     this.isLoginWithPhone = false,
     this.loadingState = EState.initial,
+    this.userData,
   });
 
   AuthState copyWith({
@@ -23,6 +25,7 @@ class AuthState {
     bool? isErrorOnOff,
     bool? isLoginWithPhone,
     EState? loadingState,
+    UserM? userData,
   }) {
     return AuthState(
       email: email ?? this.email,
@@ -31,6 +34,7 @@ class AuthState {
       isErrorOnOff: isErrorOnOff ?? this.isErrorOnOff,
       isLoginWithPhone: isLoginWithPhone ?? this.isLoginWithPhone,
       loadingState: loadingState ?? this.loadingState,
+      userData: userData ?? this.userData,
     );
   }
 }
