@@ -12,6 +12,7 @@ class AppRoutes {
   static const String onBoardingPage = '/onBoardingPage';
   static const String homepage = '/homepage';
   static const String loginPage = '/loginPage';
+  static const String loginWithSMS = '/loginWithSMS';
   static const String registerpage = '/registerpage';
   static final routes = [
     GetPage(

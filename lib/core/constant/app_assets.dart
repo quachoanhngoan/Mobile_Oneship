@@ -6,7 +6,7 @@ class AppAssets {
 
   static const String fontsMulishBlackItalic = "assets/fonts/Mulish-BlackItalic.ttf";
 
-  static const String fontsMulishBold = "assets/fonts/Mulish-Bold.ttf";
+  static const String fontsMulishBold = "assets/fonts/mulish_bold.ttf";
 
   static const String fontsMulishBoldItalic = "assets/fonts/Mulish-BoldItalic.ttf";
 
@@ -17,6 +17,8 @@ class AppAssets {
   static const String fontsMulishExtraLight = "assets/fonts/Mulish-ExtraLight.ttf";
 
   static const String fontsMulishExtraLightItalic = "assets/fonts/Mulish-ExtraLightItalic.ttf";
+
+  static const String fontsMulishExtralight = "assets/fonts/mulish_extralight.ttf";
 
   static const String fontsMulishItalic = "assets/fonts/Mulish-Italic.ttf";
 
@@ -34,6 +36,18 @@ class AppAssets {
 
   static const String fontsMulishSemiBoldItalic = "assets/fonts/Mulish-SemiBoldItalic.ttf";
 
+  static const String fontsMulishWght = "assets/fonts/mulish_wght.ttf";
+
   static const String imagesBgOnboarding = "assets/images/bg_onboarding.png";
+
+  static const String imagesIconsEye = "assets/images/icons/eye.png";
+
+  static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
+
+  static const String imagesIconsIcon = "assets/images/icons/Icon.png";
+
+  static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";
+
+  static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
 }
 

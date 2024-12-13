@@ -50,7 +50,7 @@ class DioUtil {
         }
         final data = BaseResponse.fromJson(response.data ?? {});
 
-        if (data.success == false) {
+        if (data.statusCode == 200) {
           throw DioException(
               requestOptions: response.requestOptions,
               response: response,
@@ -58,7 +58,7 @@ class DioUtil {
                   ? data.message
                   : 'Đã có lỗi xảy ra, vui lòng thử lại');
         }
-        if (data.success == true && data.data == null && isShowError) {
+        if (data.statusCode == 200 && data.data == null && isShowError) {
           throw DioException(
               requestOptions: response.requestOptions,
               response: response,
@@ -493,20 +493,20 @@ class DioUtil {
 }
 
 class BaseResponse {
-  BaseResponse({this.success, this.message, this.data});
+  BaseResponse({this.statusCode, this.message, this.data});
 
-  final bool? success;
+  final int? statusCode;
   final String? message;
   final dynamic data;
 
   factory BaseResponse.fromJson(Map<String, dynamic> json) => BaseResponse(
-        success: json['success'],
+        statusCode: json['statusCode'],
         message: json['message'],
         data: json['data'],
       );
 
   Map<String, dynamic> toJson() => {
-        'success': success,
+        'statusCode': statusCode,
         'message': message,
         'data': data,
       };

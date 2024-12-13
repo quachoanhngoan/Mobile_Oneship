@@ -6,6 +6,7 @@ import 'package:oneship_merchant_app/presentation/widget/images/slide_images.dar
 
 import '../../../config/config.dart';
 import '../../../core/core.dart';
+import '../../widget/common/logo_widget.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({super.key});
@@ -17,13 +18,7 @@ class OnBoardingPage extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 0.05.sh),
-            Text(
-              'GOO+ ĐỐI TÁC',
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontSize: 28.sp,
-                    color: AppColors.primary,
-                  ),
-            ),
+            const LogoWidget(),
             SizedBox(
               height: AppDimensions.paddingLarge,
             ),
