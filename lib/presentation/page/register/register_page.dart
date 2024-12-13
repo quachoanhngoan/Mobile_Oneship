@@ -20,15 +20,20 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _phoneController = TextEditingController();
-  final PageController _pageController = PageController();
-  final FocusNode _focusNode = FocusNode();
+  late final TextEditingController _phoneController;
+  late final PageController _pageController;
+  late final FocusNode _focusNode;
 
   bool _isHighlight = false;
   int indexPage = 0;
+  late String title;
 
   @override
   void initState() {
+    title = "Nhập SĐT/Email";
+    _pageController = PageController();
+    _phoneController = TextEditingController();
+    _focusNode = FocusNode();
     _phoneController.addListener(() {
       setState(() {
         _isHighlight = _phoneController.text.isNotEmpty;
@@ -41,8 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarAuth(
-        title: "Nhập SĐT/Email",
+      appBar: AppBarAuth(
+        title: title,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -80,6 +85,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   setState(() {
                     indexPage = value;
                     _isHighlight = false;
+                    switch (indexPage) {
+                      case 1:
+                        title = "Xác thực OTP";
+                        break;
+                      case 2:
+                        title = "Tạo mật khẩu mới";
+                        break;
+                      default:
+                        title = "Nhập SĐT/Email";
+                        break;
+                    }
                   });
                 },
                 children: [
@@ -207,6 +223,50 @@ class OtpRegister extends StatelessWidget {
         PinputWidget(
           onDone: onDone,
         )
+      ],
+    );
+  }
+}
+
+class CreatePasswordRegister extends StatelessWidget {
+  final TextEditingController 
+  const CreatePasswordRegister({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          "Mật khẩu phải có độ dài từ 8-16 ký tự, bao gồm ít nhất một chữ in hoa, một chữ in thường và chỉ chứa các chữ cái, số hoặc các ký tự thông thường.",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.color723, fontWeight: FontWeight.w500),
+        ),
+        TextFieldBase(
+          focusNode: focusNode,
+          controller: phoneController,
+          hintText: "Nhập SĐT hoặc email",
+          prefix: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: ImageAssetWidget(
+              image: AppAssets.imagesIcPerson,
+              width: 12,
+              height: 16,
+              fit: BoxFit.contain,
+              color: isForcus ? AppColors.black : AppColors.color2B3,
+            ),
+          ),
+          suffix: isForcus
+              ? IconButton(
+                  onPressed: () {
+                    phoneController.clear();
+                  },
+                  icon: const Icon(
+                    Icons.cancel_outlined,
+                    color: AppColors.color2B3,
+                    size: 18,
+                  ))
+              : Container(width: 18),
+        ),
       ],
     );
   }
