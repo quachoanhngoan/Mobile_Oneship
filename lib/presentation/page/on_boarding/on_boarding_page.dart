@@ -85,7 +85,7 @@ class OnBoardingPage extends StatelessWidget {
                       text: "Đăng nhập",
                       isEnable: true,
                       onPressed: () {
-                        Get.toNamed(AppRoutes.loginPage);
+                        Get.toNamed(AppRoutes.loginWithSMS);
                       },
                     ),
                   ),

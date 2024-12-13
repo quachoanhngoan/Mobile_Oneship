@@ -14,6 +14,7 @@ mixin AuthUrl {
 
 abstract class AuthRepository {
   Future<UserM?> login(RequestLoginDto request);
+  Future<UserM?> loginSms(RequestLoginSms request);
 }
 
 class AuthImpl implements AuthRepository {
@@ -26,6 +27,19 @@ class AuthImpl implements AuthRepository {
   Future<UserM?> login(RequestLoginDto request) async {
     final httpResponse = await _clientDio.post(
       AuthUrl.login,
+      data: request.toJson(),
+      // isShowError: false,
+      isTranformData: true,
+      isAuth: false,
+    );
+
+    return UserM.fromMap(httpResponse.data ?? {});
+  }
+
+  @override
+  Future<UserM?> loginSms(RequestLoginSms request) async {
+    final httpResponse = await _clientDio.post(
+      AuthUrl.loginBySms,
       data: request.toJson(),
       // isShowError: false,
       isTranformData: true,

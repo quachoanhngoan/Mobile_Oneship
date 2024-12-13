@@ -29,3 +29,28 @@ class RequestLoginDto {
         "deviceToken": deviceToken,
       };
 }
+
+class RequestLoginSms {
+  final String? idToken;
+  final String? deviceToken;
+  RequestLoginSms({
+    this.idToken,
+    this.deviceToken,
+  });
+
+  factory RequestLoginSms.fromRawJson(String str) =>
+      RequestLoginSms.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory RequestLoginSms.fromJson(Map<String, dynamic> json) =>
+      RequestLoginSms(
+        idToken: json["idToken"],
+        deviceToken: json["deviceToken"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "idToken": idToken,
+        "deviceToken": deviceToken,
+      };
+}
