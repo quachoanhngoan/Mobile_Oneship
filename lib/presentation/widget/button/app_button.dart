@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oneship_merchant_app/core/constant/dimensions.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../config/config.dart';
 import '../../../core/core.dart';
@@ -19,33 +21,34 @@ class AppButton extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final Color? backgroundColor;
   final BorderSide? borderSide;
+  final double? height;
 
   final Color? textColor;
-  const AppButton({
-    super.key,
-    this.onPressed,
-    required this.text,
-    this.isEnable = false,
-    this.isHaveColor = true,
-    this.isCheckLastPress = true,
-    this.radius = 8,
-    this.isSafeArea = true,
-    this.padding,
-    this.margin,
-    this.backgroundColor = AppColors.primary,
-    this.textColor,
-    this.borderSide,
-  });
+  const AppButton(
+      {super.key,
+      this.onPressed,
+      required this.text,
+      this.isEnable = false,
+      this.isHaveColor = true,
+      this.isCheckLastPress = true,
+      this.radius = 8,
+      this.isSafeArea = true,
+      this.padding,
+      this.margin,
+      this.backgroundColor = AppColors.primary,
+      this.textColor,
+      this.borderSide,
+      this.height});
   @override
   Widget build(BuildContext context) {
-    final colorEnable = isEnable ? (backgroundColor) : Colors.grey.shade300;
-    final colorEnableDarkMode =
-        isEnable ? backgroundColor : Colors.grey.shade600;
+    final colorEnable = isEnable ? (backgroundColor) : AppColors.color8E8;
+    final colorEnableDarkMode = isEnable ? backgroundColor : AppColors.color8E8;
     return Container(
       padding: margin ?? EdgeInsets.all(AppDimensions.padding),
       margin: isSafeArea ? const EdgeInsets.only(bottom: 16) : EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
+        height: height ?? 40.h,
         child: ElevatedButton(
           onPressed: () {
             if (isEnable == false) {

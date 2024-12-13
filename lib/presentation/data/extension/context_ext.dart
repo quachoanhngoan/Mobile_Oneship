@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import '../constains/export.dart';
+import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/core/core.dart';
 
 bool isShowingSnackBar = false;
 
@@ -55,18 +56,18 @@ extension ShowModalSheet on BuildContext {
     showDialogWidget(context,
         child: Dialog(
           elevation: 0,
-          backgroundColor: ColorApp.transparent,
+          backgroundColor: AppColors.transparent,
           child: Center(
             child: Container(
-              width: Dimens.spacing50,
-              height: Dimens.spacing50,
-              padding: const EdgeInsets.all(Dimens.spacing8),
+              width: 50,
+              height: 50,
+              padding: EdgeInsets.all(AppDimensions.paddingSmall),
               decoration: BoxDecoration(
-                color: ColorApp.black.withOpacity(0.3),
+                color: AppColors.black.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const CircularProgressIndicator(
-                color: ColorApp.white,
+                color: AppColors.white,
                 strokeWidth: 2,
               ),
             ),

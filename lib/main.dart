@@ -20,7 +20,6 @@ Future<void> main() async {
   await runZonedGuarded<Future<void>>(() async {
     runApp(
       MultiBlocProvider(providers: [
-        // BlocProvider(create: (context) => injector<AuthBloc>()),
         BlocProvider(create: (context) => injector<AuthCubit>()),
       ], child: const MerchantApp()),
     );
