@@ -1,6 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
+
+import '../../../core/constant/error_strings.dart';
+import '../../../injector.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit() : super(const RegisterState());
@@ -34,10 +38,40 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(state.copyWith(
         showHintTextPass: !pass.isNotNullOrEmpty,
         showHintTextRePass: !repass.isNotNullOrEmpty));
-    if (pass.isNotNullOrEmpty && repass.isNotNullOrEmpty && pass == repass) {
-      emit(state.copyWith(isEnableContinue: true));
+
+    final userValidate = injector.get<UserValidate>();
+    String? errorPass;
+    String? errorRePass;
+
+    if (pass.isNotNullOrEmpty) {
+      errorPass = userValidate.passValid(pass!);
     } else {
-      emit(state.copyWith(isEnableContinue: false));
+      errorPass = null;
+    }
+
+    if (repass.isNotNullOrEmpty) {
+      errorRePass = userValidate.passValid(repass!);
+    } else {
+      errorRePass = null;
+    }
+
+    if (pass.isNotNullOrEmpty &&
+        repass.isNotNullOrEmpty &&
+        errorPass == null &&
+        errorRePass == null) {
+      if (pass == repass) {
+        emit(state.copyWith(
+            isEnableContinue: true, errorPass: null, errorRepass: null));
+      } else {
+        emit(state.copyWith(
+            isEnableContinue: false,
+            errorRepass: AppErrorString.kRePassIsNotCorrect));
+      }
+    } else {
+      emit(state.copyWith(
+          isEnableContinue: false,
+          errorPass: errorPass,
+          errorRepass: errorRePass));
     }
   }
 }

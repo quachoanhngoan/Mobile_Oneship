@@ -25,4 +25,10 @@ class AppErrorString {
       "Lỗi lấy dữ liệu các tỉnh, vui lòng thử lại";
   static const String kChooseProvince = "Chọn khu vực";
   static const String kPleaseChooseProvince = "Vui lòng chọn khu vực của bạn";
+  static const String kPasswordTooShort = "Mật khẩu có độ dài từ 8-16 ký tự";
+  static const String kPasswordUpper =
+      "Mật khẩu phải chứa chữ in hoa và thường";
+  static const String kPasswordSymbol =
+      "Mật khẩu không được chứa ký tự đặc biệt";
+  static const String kRePassIsNotCorrect = "Nhập lại mật khẩu chưa chính xác";
 }

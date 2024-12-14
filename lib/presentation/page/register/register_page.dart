@@ -45,7 +45,6 @@ class _RegisterPageState extends State<RegisterPage> {
         listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
-            resizeToAvoidBottomInset: true,
             appBar: AppBarAuth(
               title: state.title ?? "",
             ),
@@ -110,18 +109,19 @@ class _RegisterPageState extends State<RegisterPage> {
                         CreatePasswordRegister(
                           passwordController: _passController,
                           rePasswordController: _rePassController,
-                          isHintTextPass: state.showHintTextPass,
-                          isHintTextRePass: state.showHintTextRePass,
-                          onRePassChange: (repassword) {
-                            context
-                                .read<RegisterCubit>()
-                                .validatePass(_passController.text, repassword);
-                          },
-                          onPassChange: (password) {
-                            context
-                                .read<RegisterCubit>()
-                                .validatePass(password, _rePassController.text);
-                          },
+                          state: state,
+                          // isHintTextPass: state.showHintTextPass,
+                          // isHintTextRePass: state.showHintTextRePass,
+                          // onRePassChange: (repassword) {
+                          //   context
+                          //       .read<RegisterCubit>()
+                          //       .validatePass(_passController.text, repassword);
+                          // },
+                          // onPassChange: (password) {
+                          //   context
+                          //       .read<RegisterCubit>()
+                          //       .validatePass(password, _rePassController.text);
+                          // },
                         )
                       ],
                     ),
@@ -135,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (state.isEnableContinue == true) {
                         _pageController.nextPage(
                             duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut);
+                            curve: Curves.linear);
                       }
                     },
                     margin: EdgeInsets.zero,
@@ -250,19 +250,21 @@ class OtpRegister extends StatelessWidget {
 class CreatePasswordRegister extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController rePasswordController;
-  final bool? isHintTextPass;
-  final bool? isHintTextRePass;
-  final Function(String?) onPassChange;
-  final Function(String?) onRePassChange;
+  final RegisterState state;
+  // final bool? isHintTextPass;
+  // final bool? isHintTextRePass;
+  // final Function(String?) onPassChange;
+  // final Function(String?) onRePassChange;
 
   const CreatePasswordRegister({
     super.key,
     required this.passwordController,
     required this.rePasswordController,
-    this.isHintTextPass,
-    this.isHintTextRePass,
-    required this.onPassChange,
-    required this.onRePassChange,
+    // this.isHintTextPass,
+    // this.isHintTextRePass,
+    required this.state,
+    // required this.onPassChange,
+    // required this.onRePassChange,
   });
 
   @override
@@ -290,27 +292,34 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
                   obscureTextPass = !obscureTextPass;
                 });
               },
+              errorText: widget.state.errorPass,
               obscureText: obscureTextPass,
               onChange: (value) {
-                widget.onPassChange(value);
+                context
+                    .read<RegisterCubit>()
+                    .validatePass(value, widget.rePasswordController.text);
               },
               controller: widget.passwordController,
               hintText: "Nhập mật khẩu",
-              iSHintTextVisible: widget.isHintTextPass == true),
-          const VSpacing(spacing: 30),
+              iSHintTextVisible: widget.state.showHintTextPass == true),
+          const VSpacing(spacing: 16),
           TextFieldPassRegister(
               suffixClick: () {
                 setState(() {
                   obscureTextRePass = !obscureTextRePass;
                 });
               },
+              errorText: widget.state.errorRepass,
               obscureText: obscureTextRePass,
               onChange: (value) {
-                widget.onRePassChange(value);
+                // widget.onRePassChange(value);
+                context
+                    .read<RegisterCubit>()
+                    .validatePass(widget.passwordController.text, value);
               },
               controller: widget.rePasswordController,
               hintText: "Nhập lại mật khẩu",
-              iSHintTextVisible: widget.isHintTextRePass == true)
+              iSHintTextVisible: widget.state.showHintTextRePass == true)
         ],
       ),
     );
@@ -324,6 +333,7 @@ class TextFieldPassRegister extends StatelessWidget {
   final Function(String?) onChange;
   final bool obscureText;
   final Function suffixClick;
+  final String? errorText;
   const TextFieldPassRegister(
       {super.key,
       required this.onChange,
@@ -331,7 +341,8 @@ class TextFieldPassRegister extends StatelessWidget {
       required this.hintText,
       required this.iSHintTextVisible,
       required this.obscureText,
-      required this.suffixClick});
+      required this.suffixClick,
+      this.errorText});
 
   @override
   Widget build(BuildContext context) {
@@ -360,6 +371,7 @@ class TextFieldPassRegister extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           hintText: "",
+          errorText: errorText,
           onChanged: (value) {
             onChange(value);
           },

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
@@ -39,7 +40,8 @@ class AppRoutes {
     GetPage(
         name: AppRoutes.registerpage,
         page: () => const RegisterPage(),
-        transitionDuration: Duration.zero,
-        transition: Transition.noTransition)
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo)
   ];
 }
