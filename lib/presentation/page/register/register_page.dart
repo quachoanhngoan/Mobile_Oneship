@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 import 'package:oneship_merchant_app/presentation/page/widget/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_base.dart';
@@ -25,18 +28,10 @@ class _RegisterPageState extends State<RegisterPage> {
   late final TextEditingController _rePassController;
   late final PageController _pageController;
 
-  bool _isHighlight = false;
   int indexPage = 0;
-  late String title;
-
-  bool isHintTextPass = true;
-  bool isHintTextRePass = true;
-  bool obscureTextPass = true;
-  bool obscureTextRePass = true;
 
   @override
   void initState() {
-    title = "Nhập SĐT/Email";
     _pageController = PageController();
     _phoneController = TextEditingController();
     _passController = TextEditingController();
@@ -46,153 +41,131 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBarAuth(
-        title: title,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: <Widget>[
-            const VSpacing(spacing: 4),
-            SizedBox(
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) {
-                  return Expanded(
-                    child: AnimatedContainer(
-                      margin: const EdgeInsets.only(right: 5),
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInCubic,
-                      height: 6,
-                      decoration: BoxDecoration(
-                          color: indexPage >= index
-                              ? AppColors.color988
-                              : AppColors.color8E8,
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                  );
-                }),
-              ),
+    return BlocConsumer<RegisterCubit, RegisterState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBarAuth(
+              title: state.title ?? "",
             ),
-            const VSpacing(spacing: 16),
-            SizedBox(
-              height: indexPage != 2 ? 130.h : 230.h,
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (value) {
-                  setState(() {
-                    indexPage = value;
-                    _isHighlight = false;
-                    switch (indexPage) {
-                      case 1:
-                        title = "Xác thực OTP";
-                        break;
-                      case 2:
-                        title = "Tạo mật khẩu mới";
-                        break;
-                      default:
-                        title = "Nhập SĐT/Email";
-                        break;
-                    }
-                  });
-                },
-                children: [
-                  PhoneRegister(
-                      isForcus: _isHighlight,
-                      onChange: (value) {
-                        setState(() {
-                          _isHighlight = value?.isNotEmpty == true;
-                        });
-                      },
-                      phoneController: _phoneController),
-                  OtpRegister(
-                    phone: _phoneController.text,
-                    onDone: (value) {
-                      setState(() {
-                        _isHighlight = true;
-                      });
-                    },
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: <Widget>[
+                  const VSpacing(spacing: 4),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (index) {
+                        return Expanded(
+                          child: AnimatedContainer(
+                            margin: const EdgeInsets.only(right: 5),
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInCubic,
+                            height: 6,
+                            decoration: BoxDecoration(
+                                color: indexPage >= index
+                                    ? AppColors.color988
+                                    : AppColors.color8E8,
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                        );
+                      }),
+                    ),
                   ),
-                  CreatePasswordRegister(
-                    passwordController: _passController,
-                    rePasswordController: _rePassController,
-                    isHintTextPass: isHintTextPass,
-                    isHintTextRePass: isHintTextRePass,
-                    obscureTextPass: obscureTextPass,
-                    obscureTextRePass: obscureTextRePass,
-                    suffixPassClick: () {
-                      setState(() {
-                        obscureTextPass = !obscureTextPass;
-                      });
+                  const VSpacing(spacing: 16),
+                  SizedBox(
+                    height: indexPage != 2 ? 130.h : 230.h,
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (value) {
+                        indexPage = value;
+                        FocusScope.of(context).unfocus();
+                        context.read<RegisterCubit>().changePage(value);
+                      },
+                      children: [
+                        PhoneRegister(
+                            isForcus: state.isEnableContinue ?? false,
+                            suffixClick: () {
+                              _phoneController.clear();
+                              context
+                                  .read<RegisterCubit>()
+                                  .validateUserName(null);
+                            },
+                            onChange: (value) {
+                              context
+                                  .read<RegisterCubit>()
+                                  .validateUserName(value);
+                            },
+                            phoneController: _phoneController),
+                        OtpRegister(
+                          phone: _phoneController.text,
+                          onDone: (value) {
+                            context.read<RegisterCubit>().validateOtp(value);
+                          },
+                        ),
+                        CreatePasswordRegister(
+                          passwordController: _passController,
+                          rePasswordController: _rePassController,
+                          isHintTextPass: state.showHintTextPass,
+                          isHintTextRePass: state.showHintTextRePass,
+                          onRePassChange: (repassword) {
+                            context
+                                .read<RegisterCubit>()
+                                .validatePass(_passController.text, repassword);
+                          },
+                          onPassChange: (password) {
+                            context
+                                .read<RegisterCubit>()
+                                .validatePass(password, _rePassController.text);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  AppButton(
+                    text: "Tiếp tục",
+                    textColor: state.isEnableContinue == true
+                        ? AppColors.white
+                        : AppColors.colorA4A,
+                    onPressed: () {
+                      if (state.isEnableContinue == true) {
+                        _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut);
+                      }
                     },
-                    suffixRePassClick: () {
-                      setState(() {
-                        obscureTextRePass = !obscureTextRePass;
-                      });
-                    },
-                    onRePassChange: (value) {
-                      setState(() {
-                        if (value?.isNotEmpty == true) {
-                          isHintTextRePass = false;
-                        } else {
-                          isHintTextRePass = true;
-                        }
-                      });
-                    },
-                    onPassChange: (value) {
-                      setState(() {
-                        if (value?.isNotEmpty == true) {
-                          isHintTextPass = false;
-                        } else {
-                          isHintTextPass = true;
-                        }
-                      });
-                    },
-                  )
+                    margin: EdgeInsets.zero,
+                    padding: EdgeInsets.zero,
+                    isSafeArea: false,
+                    isEnable: state.isEnableContinue == true,
+                    backgroundColor: AppColors.color988,
+                  ),
+                  const VSpacing(spacing: 20),
+                  RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                      text: "Chưa có tài khoản? ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.colorC5C),
+                    ),
+                    TextSpan(
+                        text: "Đăng ký",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppColors.color988,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppColors.color988))
+                  ]))
                 ],
               ),
             ),
-            AppButton(
-              text: "Tiếp tục",
-              textColor: _isHighlight ? AppColors.white : AppColors.colorA4A,
-              onPressed: () {
-                if (_isHighlight) {
-                  _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut);
-                }
-              },
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.zero,
-              isSafeArea: false,
-              isEnable: _isHighlight,
-              backgroundColor: AppColors.color988,
-            ),
-            const VSpacing(spacing: 20),
-            RichText(
-                text: TextSpan(children: [
-              TextSpan(
-                text: "Chưa có tài khoản? ",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.colorC5C),
-              ),
-              TextSpan(
-                  text: "Đăng ký",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.color988,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.color988))
-            ]))
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -200,11 +173,13 @@ class PhoneRegister extends StatelessWidget {
   final TextEditingController phoneController;
   final bool isForcus;
   final Function(String?) onChange;
+  final Function suffixClick;
   const PhoneRegister(
       {super.key,
       required this.phoneController,
       required this.isForcus,
-      required this.onChange});
+      required this.onChange,
+      required this.suffixClick});
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +210,7 @@ class PhoneRegister extends StatelessWidget {
           suffix: isForcus
               ? IconButton(
                   onPressed: () {
-                    phoneController.clear();
+                    suffixClick();
                   },
                   icon: const Icon(
                     Icons.cancel_outlined,
@@ -272,65 +247,72 @@ class OtpRegister extends StatelessWidget {
   }
 }
 
-class CreatePasswordRegister extends StatelessWidget {
+class CreatePasswordRegister extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController rePasswordController;
-  final bool isHintTextPass;
-  final bool isHintTextRePass;
+  final bool? isHintTextPass;
+  final bool? isHintTextRePass;
   final Function(String?) onPassChange;
   final Function(String?) onRePassChange;
-  final bool obscureTextPass;
-  final bool obscureTextRePass;
-  final Function suffixPassClick;
-  final Function suffixRePassClick;
 
-  const CreatePasswordRegister(
-      {super.key,
-      required this.passwordController,
-      required this.rePasswordController,
-      required this.isHintTextPass,
-      required this.isHintTextRePass,
-      required this.onPassChange,
-      required this.onRePassChange,
-      required this.obscureTextPass,
-      required this.obscureTextRePass,
-      required this.suffixPassClick,
-      required this.suffixRePassClick});
+  const CreatePasswordRegister({
+    super.key,
+    required this.passwordController,
+    required this.rePasswordController,
+    this.isHintTextPass,
+    this.isHintTextRePass,
+    required this.onPassChange,
+    required this.onRePassChange,
+  });
+
+  @override
+  State<CreatePasswordRegister> createState() => _CreatePasswordRegisterState();
+}
+
+class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
+  bool obscureTextPass = true;
+  bool obscureTextRePass = true;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(
-          "Mật khẩu phải có độ dài từ 8-16 ký tự, bao gồm ít nhất một chữ in hoa, một chữ in thường và chỉ chứa các chữ cái, số hoặc các ký tự thông thường.",
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.color723, fontWeight: FontWeight.w500),
-        ),
-        const VSpacing(spacing: 12),
-        TextFieldPassRegister(
-            suffixClick: () {
-              suffixPassClick();
-            },
-            obscureText: obscureTextPass,
-            onChange: (value) {
-              onPassChange(value);
-            },
-            controller: passwordController,
-            hintText: "Nhập mật khẩu",
-            iSHintTextVisible: isHintTextPass),
-        const VSpacing(spacing: 16),
-        TextFieldPassRegister(
-            suffixClick: () {
-              suffixRePassClick();
-            },
-            obscureText: obscureTextRePass,
-            onChange: (value) {
-              onRePassChange(value);
-            },
-            controller: rePasswordController,
-            hintText: "Nhập lại mật khẩu",
-            iSHintTextVisible: isHintTextRePass)
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Mật khẩu phải có độ dài từ 8-16 ký tự, bao gồm ít nhất một chữ in hoa, một chữ in thường và chỉ chứa các chữ cái, số hoặc các ký tự thông thường.",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.color723, fontWeight: FontWeight.w500),
+          ),
+          const VSpacing(spacing: 12),
+          TextFieldPassRegister(
+              suffixClick: () {
+                setState(() {
+                  obscureTextPass = !obscureTextPass;
+                });
+              },
+              obscureText: obscureTextPass,
+              onChange: (value) {
+                widget.onPassChange(value);
+              },
+              controller: widget.passwordController,
+              hintText: "Nhập mật khẩu",
+              iSHintTextVisible: widget.isHintTextPass == true),
+          const VSpacing(spacing: 30),
+          TextFieldPassRegister(
+              suffixClick: () {
+                setState(() {
+                  obscureTextRePass = !obscureTextRePass;
+                });
+              },
+              obscureText: obscureTextRePass,
+              onChange: (value) {
+                widget.onRePassChange(value);
+              },
+              controller: widget.rePasswordController,
+              hintText: "Nhập lại mật khẩu",
+              iSHintTextVisible: widget.isHintTextRePass == true)
+        ],
+      ),
     );
   }
 }
