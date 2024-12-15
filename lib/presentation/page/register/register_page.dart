@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oneship_merchant_app/core/repositories/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 import 'package:oneship_merchant_app/presentation/page/widget/appbar_common.dart';
@@ -110,18 +111,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           passwordController: _passController,
                           rePasswordController: _rePassController,
                           state: state,
-                          // isHintTextPass: state.showHintTextPass,
-                          // isHintTextRePass: state.showHintTextRePass,
-                          // onRePassChange: (repassword) {
-                          //   context
-                          //       .read<RegisterCubit>()
-                          //       .validatePass(_passController.text, repassword);
-                          // },
-                          // onPassChange: (password) {
-                          //   context
-                          //       .read<RegisterCubit>()
-                          //       .validatePass(password, _rePassController.text);
-                          // },
                         )
                       ],
                     ),
@@ -133,9 +122,18 @@ class _RegisterPageState extends State<RegisterPage> {
                         : AppColors.colorA4A,
                     onPressed: () {
                       if (state.isEnableContinue == true) {
-                        _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.linear);
+                        if (indexPage == 0) {
+                          context
+                              .read<RegisterCubit>()
+                              .sentPhone(_phoneController.text);
+                        }
+                        // if (indexPage != 2) {
+                        //   _pageController.nextPage(
+                        //       duration: const Duration(milliseconds: 300),
+                        //       curve: Curves.linear);
+                        // } else {
+                        //   // context.read()
+                        // }
                       }
                     },
                     margin: EdgeInsets.zero,
@@ -251,20 +249,12 @@ class CreatePasswordRegister extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController rePasswordController;
   final RegisterState state;
-  // final bool? isHintTextPass;
-  // final bool? isHintTextRePass;
-  // final Function(String?) onPassChange;
-  // final Function(String?) onRePassChange;
 
   const CreatePasswordRegister({
     super.key,
     required this.passwordController,
     required this.rePasswordController,
-    // this.isHintTextPass,
-    // this.isHintTextRePass,
     required this.state,
-    // required this.onPassChange,
-    // required this.onRePassChange,
   });
 
   @override
@@ -312,7 +302,6 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
               errorText: widget.state.errorRepass,
               obscureText: obscureTextRePass,
               onChange: (value) {
-                // widget.onRePassChange(value);
                 context
                     .read<RegisterCubit>()
                     .validatePass(widget.passwordController.text, value);

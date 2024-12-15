@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 
 import '../../../core/constant/error_strings.dart';
+import '../../../core/repositories/auth_repository.dart';
 import '../../../injector.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
@@ -73,5 +75,9 @@ class RegisterCubit extends Cubit<RegisterState> {
           errorPass: errorPass,
           errorRepass: errorRePass));
     }
+  }
+
+  sentPhone(String phone) async {
+    injector.get<AuthRepositoy>().loginWithPhone(phone);
   }
 }

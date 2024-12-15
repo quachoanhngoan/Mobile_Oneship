@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:oneship_merchant_app/core/repositories/auth_repository.dart';
 
 import 'presentation/data/validations/user_validation.dart';
 
@@ -15,4 +16,5 @@ Future<void> initializeDependencies() async {
   // getIt.registerSingleton<AuthService>(AuthService());
 
   injector.registerSingleton<UserValidate>(UserValidate());
+  injector.registerSingleton<AuthRepositoy>(AuthRepositoryImpl());
 }
