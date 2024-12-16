@@ -16,7 +16,7 @@ class UserValidate {
         return AppErrorString.kPasswordUpper;
       } else {
         RegExp symbol = RegExp(r'^(?=.*?[%@#$])');
-        if (symbol.hasMatch(password)) {
+        if (!symbol.hasMatch(password)) {
           return AppErrorString.kPasswordSymbol;
         }
       }

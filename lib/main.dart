@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:oneship_merchant_app/app.dart';
-import 'package:oneship_merchant_app/core/repositories/auth_repository.dart';
+import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';

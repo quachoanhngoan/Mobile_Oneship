@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:oneship_merchant_app/core/repositories/auth_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
-import 'package:oneship_merchant_app/presentation/page/widget/appbar_common.dart';
+import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_base.dart';
 import 'package:oneship_merchant_app/presentation/widget/widget.dart';
@@ -14,6 +12,8 @@ import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 import '../../../config/theme/color.dart';
 import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/dimensions.dart';
+import '../../../core/constant/error_strings.dart';
+import '../../widget/loading/loading.dart';
 import 'widget/pinput_widget.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -29,6 +29,8 @@ class _RegisterPageState extends State<RegisterPage> {
   late final TextEditingController _rePassController;
   late final PageController _pageController;
 
+  late final FocusNode _phoneNode;
+
   int indexPage = 0;
 
   @override
@@ -37,21 +39,31 @@ class _RegisterPageState extends State<RegisterPage> {
     _phoneController = TextEditingController();
     _passController = TextEditingController();
     _rePassController = TextEditingController();
+    _phoneNode = FocusNode();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBarAuth(
-              title: state.title ?? "",
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
+        listener: (context, state) {
+      if (state.isContinueStep == true) {
+        _pageController.nextPage(
+            duration: const Duration(milliseconds: 300), curve: Curves.linear);
+      }
+      if (state.isFailedPhone == true) {
+        showErrorDialog(AppErrorString.kPhoneInvalid);
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        appBar: AppBarAuth(
+          title: state.title ?? "",
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Stack(
+            children: <Widget>[
+              Column(
                 children: <Widget>[
                   const VSpacing(spacing: 4),
                   SizedBox(
@@ -88,6 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       children: [
                         PhoneRegister(
+                            focusNode: _phoneNode,
                             isForcus: state.isEnableContinue ?? false,
                             suffixClick: () {
                               _phoneController.clear();
@@ -122,18 +135,22 @@ class _RegisterPageState extends State<RegisterPage> {
                         : AppColors.colorA4A,
                     onPressed: () {
                       if (state.isEnableContinue == true) {
-                        if (indexPage == 0) {
-                          context
-                              .read<RegisterCubit>()
-                              .sentPhone(_phoneController.text);
+                        switch (indexPage) {
+                          case 0:
+                            _phoneNode.unfocus();
+                            context.read<RegisterCubit>().submitPhoneOrEmail(
+                                _phoneController.text.trim());
+                            break;
+                          case 1:
+                            context.read<RegisterCubit>().sentOtpToFirebase();
+                            break;
+                          case 2:
+                            context
+                                .read<RegisterCubit>()
+                                .createPasswordWithPhone(
+                                    _rePassController.text);
+                            break;
                         }
-                        // if (indexPage != 2) {
-                        //   _pageController.nextPage(
-                        //       duration: const Duration(milliseconds: 300),
-                        //       curve: Curves.linear);
-                        // } else {
-                        //   // context.read()
-                        // }
                       }
                     },
                     margin: EdgeInsets.zero,
@@ -161,15 +178,70 @@ class _RegisterPageState extends State<RegisterPage> {
                   ]))
                 ],
               ),
-            ),
-          );
-        });
+              Visibility(
+                  visible: state.isLoading == true,
+                  child: const LoadingWidget())
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  showErrorDialog(String title) {
+    context.showDialogWidget(context,
+        child: Dialog(
+            backgroundColor: AppColors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(14)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const VSpacing(spacing: 6),
+                  Text(
+                    "Vui lòng thử lại",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: 12.sp, fontWeight: FontWeight.w500),
+                  ),
+                  const VSpacing(spacing: 12),
+                  Divider(
+                    color: AppColors.color080.withOpacity(0.55),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                        onPressed: () {
+                          context.popScreen();
+                        },
+                        child: Text(
+                          "OK",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.color988),
+                        )),
+                  )
+                ],
+              ),
+            )));
   }
 }
 
 class PhoneRegister extends StatelessWidget {
   final TextEditingController phoneController;
   final bool isForcus;
+  final FocusNode focusNode;
   final Function(String?) onChange;
   final Function suffixClick;
   const PhoneRegister(
@@ -177,7 +249,8 @@ class PhoneRegister extends StatelessWidget {
       required this.phoneController,
       required this.isForcus,
       required this.onChange,
-      required this.suffixClick});
+      required this.suffixClick,
+      required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +263,7 @@ class PhoneRegister extends StatelessWidget {
         ),
         const VSpacing(spacing: 20),
         TextFieldBase(
+          focusNode: focusNode,
           controller: phoneController,
           hintText: "Nhập SĐT hoặc email",
           onChanged: (value) {

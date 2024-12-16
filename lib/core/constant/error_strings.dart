@@ -29,6 +29,7 @@ class AppErrorString {
   static const String kPasswordUpper =
       "Mật khẩu phải chứa chữ in hoa và thường";
   static const String kPasswordSymbol =
-      "Mật khẩu không được chứa ký tự đặc biệt";
+      "Mật khẩu phải chứa ký tự đặc biệt";
   static const String kRePassIsNotCorrect = "Nhập lại mật khẩu chưa chính xác";
+  static const String kPhoneInvalid = "Số điện thoại không hợp lệ";
 }
