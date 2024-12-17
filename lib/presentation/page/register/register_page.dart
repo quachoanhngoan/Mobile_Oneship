@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
@@ -30,6 +31,8 @@ class _RegisterPageState extends State<RegisterPage> {
   late final PageController _pageController;
 
   late final FocusNode _phoneNode;
+  late final FocusNode _passNode;
+  late final FocusNode _rePassNode;
 
   int indexPage = 0;
 
@@ -40,6 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
     _passController = TextEditingController();
     _rePassController = TextEditingController();
     _phoneNode = FocusNode();
+    _passNode = FocusNode();
+    _rePassNode = FocusNode();
     super.initState();
   }
 
@@ -48,11 +53,23 @@ class _RegisterPageState extends State<RegisterPage> {
     return BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
       if (state.isContinueStep == true) {
-        _pageController.nextPage(
-            duration: const Duration(milliseconds: 300), curve: Curves.linear);
+        if (indexPage < 2) {
+          _pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.linear);
+        } else {
+          context.popScreen();
+          Future.delayed(const Duration(seconds: 3), () {
+            Get.back();
+          });
+          createAccountSuccessDialog();
+        }
       }
       if (state.isFailedPhone == true) {
         showErrorDialog(AppErrorString.kPhoneInvalid);
+      }
+      if (state.registerFailed != null) {
+        showErrorDialog(state.registerFailed!);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -124,6 +141,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           passwordController: _passController,
                           rePasswordController: _rePassController,
                           state: state,
+                          rePassNode: _rePassNode,
+                          passNode: _passNode,
                         )
                       ],
                     ),
@@ -134,30 +153,32 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? AppColors.white
                         : AppColors.colorA4A,
                     onPressed: () {
-                      if (state.isEnableContinue == true) {
-                        switch (indexPage) {
-                          case 0:
-                            _phoneNode.unfocus();
-                            context.read<RegisterCubit>().submitPhoneOrEmail(
-                                _phoneController.text.trim());
-                            break;
-                          case 1:
-                            context.read<RegisterCubit>().sentOtpToFirebase();
-                            break;
-                          case 2:
-                            context
-                                .read<RegisterCubit>()
-                                .createPasswordWithPhone(
-                                    _rePassController.text);
-                            break;
-                        }
+                      switch (indexPage) {
+                        case 0:
+                          _phoneNode.unfocus();
+                          context
+                              .read<RegisterCubit>()
+                              .submitPhoneOrEmail(_phoneController.text.trim());
+                          break;
+                        case 1:
+                          context.read<RegisterCubit>().sentOtpToFirebase();
+                          break;
+                        case 2:
+                          _passNode.unfocus();
+                          _rePassNode.unfocus();
+                          context
+                              .read<RegisterCubit>()
+                              .createPasswordWithPhone(_rePassController.text);
+                          break;
                       }
                     },
                     margin: EdgeInsets.zero,
                     padding: EdgeInsets.zero,
                     isSafeArea: false,
-                    isEnable: state.isEnableContinue == true,
-                    backgroundColor: AppColors.color988,
+                    isEnable: true,
+                    backgroundColor: state.isEnableContinue == true
+                        ? AppColors.color988
+                        : AppColors.color8E8,
                   ),
                   const VSpacing(spacing: 20),
                   RichText(
@@ -186,6 +207,51 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       );
     });
+  }
+
+  createAccountSuccessDialog() {
+    context.showDialogWidget(context,
+        child: Dialog(
+          backgroundColor: AppColors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(14)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const ImageAssetWidget(
+                      image: AppAssets.imagesIcPartyHorn,
+                      width: 24,
+                      height: 24,
+                    ),
+                    const HSpacing(spacing: 6),
+                    Text(
+                      "Xin chúc mừng !",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    )
+                  ],
+                ),
+                const VSpacing(spacing: 8),
+                Text(
+                  "Bạn đã tạo mật khẩu thành công!",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 
   showErrorDialog(String title) {
@@ -322,10 +388,14 @@ class OtpRegister extends StatelessWidget {
 class CreatePasswordRegister extends StatefulWidget {
   final TextEditingController passwordController;
   final TextEditingController rePasswordController;
+  final FocusNode? passNode;
+  final FocusNode? rePassNode;
   final RegisterState state;
 
   const CreatePasswordRegister({
     super.key,
+    this.passNode,
+    this.rePassNode,
     required this.passwordController,
     required this.rePasswordController,
     required this.state,
@@ -351,6 +421,7 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
           ),
           const VSpacing(spacing: 12),
           TextFieldPassRegister(
+              focusNode: widget.passNode,
               suffixClick: () {
                 setState(() {
                   obscureTextPass = !obscureTextPass;
@@ -368,6 +439,7 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
               iSHintTextVisible: widget.state.showHintTextPass == true),
           const VSpacing(spacing: 16),
           TextFieldPassRegister(
+              focusNode: widget.rePassNode,
               suffixClick: () {
                 setState(() {
                   obscureTextRePass = !obscureTextRePass;
@@ -397,8 +469,10 @@ class TextFieldPassRegister extends StatelessWidget {
   final bool obscureText;
   final Function suffixClick;
   final String? errorText;
+  final FocusNode? focusNode;
   const TextFieldPassRegister(
       {super.key,
+      this.focusNode,
       required this.onChange,
       required this.controller,
       required this.hintText,
@@ -433,6 +507,7 @@ class TextFieldPassRegister extends StatelessWidget {
         TextFieldBase(
           controller: controller,
           obscureText: obscureText,
+          focusNode: focusNode,
           hintText: "",
           errorText: errorText,
           onChanged: (value) {

@@ -40,6 +40,8 @@ class AppAssets {
 
   static const String imagesBgOnboarding = "assets/images/bg_onboarding.png";
 
+  static const String imagesIcPartyHorn = "assets/images/ic_party_horn.png";
+
   static const String imagesIcPerson = "assets/images/ic_person.png";
 }
 

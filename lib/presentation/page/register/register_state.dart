@@ -11,6 +11,7 @@ class RegisterState extends Equatable {
   final bool? isLoading;
   final bool? isFailedPhone;
   final bool? isFailedOTP;
+  final String? registerFailed;
 
   const RegisterState(
       {this.title = 'Xác thực OTP',
@@ -22,7 +23,8 @@ class RegisterState extends Equatable {
       this.isContinueStep = false,
       this.isLoading,
       this.isFailedPhone = false,
-      this.isFailedOTP = false});
+      this.isFailedOTP = false,
+      this.registerFailed});
 
   RegisterState copyWith({
     String? title,
@@ -35,6 +37,7 @@ class RegisterState extends Equatable {
     bool? isLoading,
     bool? isFailedPhone,
     bool? isFailedOTP,
+    String? registerFailed,
   }) {
     return RegisterState(
       title: title ?? this.title,
@@ -47,6 +50,7 @@ class RegisterState extends Equatable {
       isLoading: isLoading,
       isFailedPhone: isFailedPhone,
       isFailedOTP: isFailedOTP,
+      registerFailed: registerFailed,
     );
   }
 
@@ -61,6 +65,7 @@ class RegisterState extends Equatable {
         isContinueStep,
         isLoading,
         isFailedPhone,
-        isFailedOTP
+        isFailedOTP,
+        registerFailed
       ];
 }

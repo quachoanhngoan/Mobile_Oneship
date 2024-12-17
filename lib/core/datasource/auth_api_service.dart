@@ -12,7 +12,7 @@ abstract class AuthApiService {
   factory AuthApiService(Dio dio, {String baseUrl}) = _AuthApiService;
 
   @Headers({
-    'accept': '*/*',
+    'Accept': '*/*',
     'Content-Type': 'application/json',
   })
   @POST("/auth/register/sms")

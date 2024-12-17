@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oneship_merchant_app/core/resources/data_state.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
@@ -12,6 +13,8 @@ import '../../../injector.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit() : super(const RegisterState());
+
+  final String _tag = "RegisterCubit";
 
   String? smsCode;
   bool? isTimeout;
@@ -135,11 +138,22 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   createPasswordWithPhone(String password) async {
+    emit(state.copyWith(isLoading: true));
     final request = RegisterPhoneRequest(
       password: password,
     );
     final response =
         await injector.get<AuthRepositoy>().createUserWithPhone(request);
-    log("check response: ${response.data}");
+    if (response is DataSuccess) {
+      log("create account success: $response", name: _tag);
+      emit(state.copyWith(isContinueStep: true));
+    } else {
+      log("create account failed: ${response.data?.message}", name: _tag);
+      if (response.error?.message == AppErrorString.kPhoneConflictType) {
+        emit(state.copyWith(registerFailed: AppErrorString.kPhoneConflict));
+      } else {
+        emit(state.copyWith(registerFailed: AppErrorString.kServerError));
+      }
+    }
   }
 }

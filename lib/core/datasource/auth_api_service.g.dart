@@ -14,7 +14,7 @@ class _AuthApiService implements AuthApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://admin-dev.oneship/com.vn/api/v1/merchant';
+    baseUrl ??= 'https://admin-dev.oneship.com.vn/api/v1/merchant';
   }
 
   final Dio _dio;
@@ -29,7 +29,7 @@ class _AuthApiService implements AuthApiService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{
-      r'accept': '*/*',
+      r'Accept': '*/*',
       r'Content-Type': 'application/json',
     };
     _headers.removeWhere((k, v) => v == null);
