@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:oneship_merchant_app/presentation/data/constains/dimens.dart';
-import 'package:oneship_merchant_app/presentation/data/constains/themes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 
-import '../../data/constains/colors.dart';
+import '../../../config/theme/color.dart';
+import '../../../core/constant/dimensions.dart';
 
 class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const AppBarAuth(
-      {super.key,
-      required this.title});
+  const AppBarAuth({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: ColorApp.white,
+      backgroundColor: AppColors.white,
       leading: IconButton(
           onPressed: () {
             context.popScreen();
@@ -24,12 +22,18 @@ class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
             size: 22,
           )),
       title: Text(title,
-          style: AppTextTheme.create(color: ColorApp.color723).button),
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontSize: 16.sp, color: AppColors.color723)),
       actions: [
         Center(
           child: Text(
             "Trợ giúp",
-            style: AppTextTheme.create(color: ColorApp.color988).small,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.color988, fontSize: 12.sp),
           ),
         ),
         const HSpacing(spacing: 16)

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppDimensions {
@@ -56,4 +57,30 @@ class AppDimensions {
   static double spacingMedium = 10.h;
   static double spacingLarge = 15.h;
   static double spacingExtraLarge = 40.h;
+}
+
+class VSpacing extends StatelessWidget {
+  const VSpacing({super.key, this.spacing});
+
+  final double? spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: spacing ?? AppDimensions.spacingSmall,
+    );
+  }
+}
+
+class HSpacing extends StatelessWidget {
+  const HSpacing({super.key, this.spacing});
+
+  final double? spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: spacing ?? AppDimensions.spacingSmall,
+    );
+  }
 }
