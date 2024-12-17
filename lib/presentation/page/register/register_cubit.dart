@@ -146,7 +146,10 @@ class RegisterCubit extends Cubit<RegisterState> {
         await injector.get<AuthRepositoy>().createUserWithPhone(request);
     if (response is DataSuccess) {
       log("create account success: $response", name: _tag);
-      emit(state.copyWith(isContinueStep: true));
+      emit(state.copyWith(
+          isContinueStep: true,
+          showHintTextPass: true,
+          showHintTextRePass: true));
     } else {
       log("create account failed: ${response.data?.message}", name: _tag);
       if (response.error?.message == AppErrorString.kPhoneConflictType) {

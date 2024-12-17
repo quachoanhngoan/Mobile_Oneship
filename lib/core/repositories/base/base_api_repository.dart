@@ -12,7 +12,7 @@ abstract class BaseApiRepository {
   }) async {
     try {
       final httpResponse = await request();
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
+      if (httpResponse.data.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
       } else {
         throw DioException(
