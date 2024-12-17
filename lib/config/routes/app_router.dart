@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
@@ -26,33 +27,39 @@ class AppRoutes {
       page: () => const SplashPage(),
     ),
     GetPage(
-      name: AppRoutes.onBoardingPage,
-      page: () => const OnBoardingPage(),
-    ),
+        name: AppRoutes.onBoardingPage,
+        page: () => const OnBoardingPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo),
     // GetPage with custom transitions and bindings
     GetPage(
       name: AppRoutes.homepage,
       page: () => const HomePage(),
       transitionDuration: Duration.zero,
-      transition: Transition.noTransition,
-    ),
-    GetPage(
-      name: AppRoutes.loginPage,
-      page: () => const LoginPage(),
-      transitionDuration: Duration.zero,
       // transition: Transition.noTransition,
     ),
     GetPage(
-      name: AppRoutes.loginWithSMS,
-      page: () => const LoginSmsPage(),
-      transitionDuration: Duration.zero,
-      // transition: Transition.noTransition,
-    ),
+        name: AppRoutes.loginPage,
+        page: () => const LoginPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo
+        // transitionDuration: Duration.zero,
+        // transition: Transition.noTransition,
+        ),
+    GetPage(
+        name: AppRoutes.loginWithSMS,
+        page: () => const LoginSmsPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo
+        // transitionDuration: Duration.zero,
+        // transition: Transition.noTransition,
+        ),
 
     GetPage(
         name: AppRoutes.registerpage,
         page: () => const RegisterPage(),
-        transitionDuration: Duration.zero,
-        transition: Transition.noTransition)
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo)
   ];
 }

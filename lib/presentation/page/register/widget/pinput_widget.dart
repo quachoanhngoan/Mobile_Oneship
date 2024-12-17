@@ -50,9 +50,7 @@ class _PinputWidgetState extends State<PinputWidget> {
               ),
             ),
             onChanged: (value) {
-              if (value.length == 6) {
-                widget.onDone(value);
-              }
+              widget.onDone(value);
             },
             showCursor: false,
           ),

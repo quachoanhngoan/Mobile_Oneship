@@ -6,12 +6,14 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/helper/validate.dart';
-import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/login/get_sms_page.dart';
-import 'package:oneship_merchant_app/presentation/page/login/loading_widget.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/bottom_go_to_register.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
 import 'package:oneship_merchant_app/presentation/page/login/widget/login_form_field.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/common/logo_widget.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 
 class LoginSmsPage extends StatefulWidget {
   const LoginSmsPage({super.key});
@@ -120,7 +122,7 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
                     hintText: 'Nhập số điện thoại',
                     focusNode: phoneFocusNode,
                     controller: phoneController,
-                    prefixIcon: AppAssets.imagesIconsUserAlt2,
+                    prefixIcon: AppAssets.imagesIconsPhone,
                     obscureText: false,
                   ),
                   SizedBox(height: 24.sp),
@@ -134,11 +136,20 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
                             horizontal: AppDimensions.padding,
                           ),
                           margin: EdgeInsets.zero,
-                          onPressed: () {
-                            if (phoneController!.text.isEmpty) {
+                          onPressed: () async {
+                            if (phoneController != null &&
+                                phoneController!.text.isEmpty) {
                               return;
                             }
-                            Get.to(() => const GetSmsPage());
+
+                            final phone = ValidateHelper.phoneFormat(
+                                phoneController!.text);
+                            if (!verifyPhone(phone)) {
+                              return;
+                            }
+                            Get.to(() => GetSmsPage(
+                                  phone: phone,
+                                ));
                           },
                           text: 'Tiếp tục',
                           textColor:
@@ -148,7 +159,7 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
                   SizedBox(height: 24.sp),
                   GestureDetector(
                     onTap: () {
-                      Get.toNamed(AppRoutes.loginPage);
+                      Get.offNamed(AppRoutes.loginPage);
                     },
                     child: Text(
                       'Đăng nhập bằng mật khẩu',
@@ -164,35 +175,8 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
 
                   const Spacer(),
                   //chưa có tài khoản(no underline) , đăng ký ngay( under line),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Chưa có tài khoản?',
-                        style: TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(width: AppDimensions.paddingSmall),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.toNamed(AppRoutes.register);
-                        },
-                        child: Text(
-                          'Đăng ký',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  const BottomGoToRegister(),
+
                   SizedBox(height: 24.sp),
                 ],
               ),
@@ -210,4 +194,21 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
       ),
     );
   }
+}
+
+bool verifyPhone(String phone) {
+  // Xác thực số điện thoại Việt Nam (10 hoặc 11 chữ số sau mã vùng)
+  final regex = RegExp(r'^\+84[35789]\d{8}$');
+  if (!regex.hasMatch(phone)) {
+    dialogService.showAlertDialog(
+        title: 'Lỗi',
+        context: Get.context!,
+        description: 'Số điện thoại không hợp lệ',
+        buttonTitle: 'OK',
+        onPressed: () {
+          Get.back();
+        });
+    return false;
+  }
+  return true;
 }

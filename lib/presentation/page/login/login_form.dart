@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/core/helper/validate.dart';
 import 'package:oneship_merchant_app/presentation/page/login/widget/login_form_field.dart';
 import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
@@ -38,12 +36,12 @@ class LoginForm extends StatelessWidget {
               if (p0 == null || p0.isEmpty) {
                 return 'Vui lòng nhập số điện thoại';
               }
-              if (ValidateHelper.validatePhone(p0) == false) {
-                return 'Số điện thoại không hợp lệ';
-              }
+              // if (ValidateHelper.validatePhone(p0) == false) {
+              //   return 'Số điện thoại không hợp lệ';
+              // }
               return null;
             },
-            hintText: 'Nhập số điện thoại',
+            hintText: 'Nhập số điện thoại hoặc email',
             focusNode: phoneFocusNode,
             controller: phoneController,
             prefixIcon: AppAssets.imagesIconsUserAlt2,
@@ -161,7 +159,7 @@ class LoginForm extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      Get.toNamed(AppRoutes.loginWithSMS);
+                      Get.offNamed(AppRoutes.loginWithSMS);
                     },
                     child: Text(
                       'Đăng nhập bằng SMS',

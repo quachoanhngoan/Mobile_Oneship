@@ -9,20 +9,22 @@ class DialogService {
     required String title,
     required String description,
     required String buttonTitle,
+    required Function() onPressed,
   }) async {
-    showCupertinoDialog(
+    if (Get.isDialogOpen!) {
+      return;
+    }
+    await showCupertinoDialog(
         context: context ?? Get.context!,
-        builder: (context) {
+        builder: (_) {
           return CupertinoAlertDialog(
             title: Text(title),
             content: Text(description),
             actions: <Widget>[
               CupertinoDialogAction(
                 isDefaultAction: true,
+                onPressed: onPressed,
                 child: Text(buttonTitle),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
               ),
             ],
           );

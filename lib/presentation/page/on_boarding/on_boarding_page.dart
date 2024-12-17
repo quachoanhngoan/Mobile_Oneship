@@ -63,9 +63,7 @@ class OnBoardingPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: AppDimensions.paddingLarge,
-            ),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppDimensions.padding),
               child: Row(
@@ -73,7 +71,7 @@ class OnBoardingPage extends StatelessWidget {
                   Flexible(
                     child: AppButton(
                       padding: EdgeInsets.symmetric(
-                        vertical: AppDimensions.paddingSmall + 1.sp,
+                        vertical: 12.sp,
                       ),
                       borderSide: const BorderSide(
                         color: AppColors.primary,
@@ -85,7 +83,7 @@ class OnBoardingPage extends StatelessWidget {
                       text: "Đăng nhập",
                       isEnable: true,
                       onPressed: () {
-                        Get.toNamed(AppRoutes.loginWithSMS);
+                        Get.toNamed(AppRoutes.loginPage);
                       },
                     ),
                   ),
@@ -99,7 +97,7 @@ class OnBoardingPage extends StatelessWidget {
                         width: 1,
                       ),
                       padding: EdgeInsets.symmetric(
-                        vertical: AppDimensions.paddingSmall + 1.sp,
+                        vertical: 12.sp,
                       ),
                       margin: const EdgeInsets.all(0),
                       text: "Đăng ký",
@@ -111,7 +109,10 @@ class OnBoardingPage extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
+            SizedBox(
+              height: AppDimensions.paddingLarge,
+            ),
           ],
         ),
       ),

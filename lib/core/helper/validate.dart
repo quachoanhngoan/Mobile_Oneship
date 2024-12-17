@@ -24,4 +24,25 @@ class ValidateHelper {
     }
     return true;
   }
+
+  static String phoneFormat(String phone) {
+    if (phone.isEmpty) {
+      return '';
+    }
+    if (phone.length < 10) {
+      return '';
+    }
+    if (phone.length > 10) {
+      return '';
+    }
+    if (phone.startsWith('0')) {
+      phone = '+84${phone.substring(1)}';
+    } else if (phone.startsWith('84')) {
+      phone = '+84${phone.substring(2)}';
+    } else if (!phone.startsWith('+84')) {
+      phone = '+84$phone';
+    }
+
+    return phone;
+  }
 }

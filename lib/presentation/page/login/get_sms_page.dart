@@ -5,14 +5,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
-import 'package:oneship_merchant_app/presentation/page/login/loading_widget.dart';
-import 'package:oneship_merchant_app/presentation/page/register/widget/pinput_widget.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/pinput_widget.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
-import 'package:oneship_merchant_app/presentation/widget/common/logo_widget.dart';
 
 class GetSmsPage extends StatefulWidget {
-  const GetSmsPage({super.key});
+  const GetSmsPage({
+    Key? key,
+    required this.phone,
+  }) : super(key: key);
+
+  final String phone;
 
   @override
   State<GetSmsPage> createState() => _GetSmsPageState();
@@ -20,6 +24,14 @@ class GetSmsPage extends StatefulWidget {
 
 class _GetSmsPageState extends State<GetSmsPage> {
   final ValueNotifier<String?> idToken = ValueNotifier<String?>(null);
+  final ValueNotifier<String?> valueSMS = ValueNotifier<String?>(null);
+  // String smsCode = '';
+  @override
+  void initState() {
+    context.read<AuthCubit>().verifyPhoneNumber(widget.phone);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,10 +44,16 @@ class _GetSmsPageState extends State<GetSmsPage> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(
-                'Đăng nhập',
+                'Nhập mã xác thực OTP',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              leading: const SizedBox.shrink(),
+              // leading: const SizedBox.shrink(),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: AppColors.textColor),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -79,29 +97,39 @@ class _GetSmsPageState extends State<GetSmsPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
-                  const LogoWidget(),
+                  Text(
+                    "Mã xác thực OTP đã được gửi đến số điện thoại ${widget.phone}",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
                   const SizedBox(height: 50),
-                  PinputWidget(onDone: (value) {
-                    idToken.value = value;
-                  }),
+                  PinputWidget(
+                    onDone: (value) {
+                      valueSMS.value = value;
+                    },
+                    onTapResend: () {
+                      context.read<AuthCubit>().verifyPhoneNumber(widget.phone);
+                    },
+                  ),
                   SizedBox(height: 24.sp),
                   ValueListenableBuilder(
-                      valueListenable: idToken,
+                      valueListenable: valueSMS,
                       builder: (context, snapshot, _) {
                         return AppButton(
-                          isEnable: snapshot != null,
+                          isEnable: snapshot != null && snapshot.length == 6,
                           padding: EdgeInsets.symmetric(
                             vertical: 12.sp,
                             horizontal: AppDimensions.padding,
                           ),
                           margin: EdgeInsets.zero,
                           onPressed: () {
-                            // context.read<AuthCubit>().loginSMS(
-                            //       phoneController!.text,
-                            //     );
-                            // Get.toNamed(AppRoutes.homepage);
+                            context.read<AuthCubit>().verifyOTP(
+                                  snapshot!,
+                                );
                           },
-                          text: 'Đăng nhập',
+                          text: 'Tiếp tục',
                           textColor: snapshot == null
                               ? AppColors.textButtonDisable
                               : null,
@@ -123,46 +151,13 @@ class _GetSmsPageState extends State<GetSmsPage> {
                       ),
                     ),
                   ),
-
-                  const Spacer(),
-                  //chưa có tài khoản(no underline) , đăng ký ngay( under line),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Chưa có tài khoản?',
-                        style: TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(width: AppDimensions.paddingSmall),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.toNamed(AppRoutes.register);
-                        },
-                        child: Text(
-                          'Đăng ký',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24.sp),
                 ],
               ),
             ),
           ),
           BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
-              if (state.loadingState.isLoading) {
+              if (state.loadingState.isLoading || state.getSmsState.isLoading) {
                 return const LoadingWidget();
               }
               return const SizedBox.shrink();

@@ -7,6 +7,8 @@ class PrefManager {
   String kUserId = "userId";
   String kProvinceId = "province_id";
   String kUser = "user";
+  String kUserName = "username";
+  String kPassword = "password";
   PrefManager(this.preferences);
 
   /// Light, Dark ,System
@@ -41,8 +43,17 @@ class PrefManager {
   ///
 
   ///
+  String get userName => preferences.getString(kUserName) ?? "";
+  set userName(String value) => preferences.setString(kUserName, value);
+  String get password => preferences.getString(kPassword) ?? "";
+  set password(String value) => preferences.setString(kPassword, value);
 
   void logout() {
+    final user = userName;
+    final pass = password;
+
     preferences.clear();
+    userName = user;
+    password = pass;
   }
 }

@@ -7,6 +7,7 @@ import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 class LoginFormField extends StatelessWidget {
   final String hintText;
   final String prefixIcon;
+  final String initialValue;
   final Widget? suffixIcon;
   final TextEditingController? controller;
   final FocusNode? focusNode;
@@ -23,11 +24,13 @@ class LoginFormField extends StatelessWidget {
     this.focusNode,
     this.validator,
     this.autovalidateMode = AutovalidateMode.onUnfocus,
+    this.initialValue = "",
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      // initialValue:   initialValue,
       validator: validator,
       autovalidateMode: autovalidateMode,
       focusNode: focusNode,

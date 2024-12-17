@@ -11,12 +11,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/app.dart';
+import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/my_http.dart';
-import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
   await runZonedGuarded<Future<void>>(() async {
     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     await ScreenUtil.ensureScreenSize();
@@ -31,9 +39,15 @@ Future<void> main() async {
     await setCrashlyticsCollection();
 
     await initializeDependencies();
+    await injector.get<AuthRepositoy>().init();
+
     runApp(
       MultiBlocProvider(providers: [
         BlocProvider(create: (context) => injector<AuthCubit>()),
+        BlocProvider(
+          create: (context) => RegisterCubit(),
+          child: const RegisterPage(),
+        )
       ], child: const MerchantApp()),
     );
   }, (error, stackTrace) {

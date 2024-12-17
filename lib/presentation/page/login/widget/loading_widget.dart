@@ -10,8 +10,8 @@ class LoadingWidget extends StatelessWidget {
     return Container(
       color: Colors.black.withOpacity(0.5),
       child: const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+        child: CupertinoActivityIndicator(
+          color: AppColors.primary,
         ),
       ),
     );

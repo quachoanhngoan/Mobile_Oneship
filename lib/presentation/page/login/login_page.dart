@@ -5,14 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/core/helper/validate.dart';
-import 'package:oneship_merchant_app/presentation/page/login/auth/cubit/auth_cubit.dart';
-import 'package:oneship_merchant_app/presentation/page/login/loading_widget.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/bottom_go_to_register.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_form.dart';
-import 'package:oneship_merchant_app/presentation/page/login/widget/login_form_field.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/common/logo_widget.dart';
-import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,9 +35,13 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     phoneFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
-
-    phoneController = TextEditingController();
-    passwordController = TextEditingController();
+    phoneController = TextEditingController(text: prefManager.userName);
+    passwordController = TextEditingController(text: prefManager.password);
+    if (phoneController!.text.isNotEmpty &&
+        passwordController!.text.isNotEmpty) {
+      isCanLogin.value = true;
+    }
+    isSavePassword.value = true;
     listener();
     super.initState();
   }
@@ -148,9 +151,11 @@ class _LoginPageState extends State<LoginPage> {
                             if (!formKey.currentState!.validate()) {
                               return;
                             }
+
                             context.read<AuthCubit>().loginSubmit(
                                   phoneController!.text,
                                   passwordController!.text,
+                                  isSavePassword.value,
                                 );
                             // Get.toNamed(AppRoutes.homepage);
                           },
@@ -161,35 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                       }),
                   const Spacer(),
                   //chưa có tài khoản(no underline) , đăng ký ngay( under line),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Chưa có tài khoản?',
-                        style: TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(width: AppDimensions.paddingSmall),
-                      GestureDetector(
-                        onTap: () {
-                          // Get.toNamed(AppRoutes.register);
-                        },
-                        child: Text(
-                          'Đăng ký',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  const BottomGoToRegister(),
                   SizedBox(height: 24.sp),
                 ],
               ),

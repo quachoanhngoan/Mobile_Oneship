@@ -99,7 +99,7 @@ class UserM {
       // updatedAt: map['updatedAt'] != null
       //     ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'])
       //     : null,
-      stores: List<dynamic>.from(map['stores']),
+      // stores: List<dynamic>.from(map['stores']),
       accessToken: map['accessToken'],
       refreshToken: map['refreshToken'],
     );
