@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class VillDimensions {
-  static double padding = 14.sp;
+class AppDimensions {
+  static double padding = 16.sp;
   static double paddingSmall = 8.sp;
-  static double paddingMedium = 16.sp;
+  static double paddingMedium = 20.sp;
   static double paddingLarge = 32.sp;
   static double paddingExtraLarge = 64.sp;
 
@@ -56,4 +57,30 @@ class VillDimensions {
   static double spacingMedium = 10.h;
   static double spacingLarge = 15.h;
   static double spacingExtraLarge = 40.h;
+}
+
+class VSpacing extends StatelessWidget {
+  const VSpacing({super.key, this.spacing});
+
+  final double? spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: spacing ?? AppDimensions.spacingSmall,
+    );
+  }
+}
+
+class HSpacing extends StatelessWidget {
+  const HSpacing({super.key, this.spacing});
+
+  final double? spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: spacing ?? AppDimensions.spacingSmall,
+    );
+  }
 }

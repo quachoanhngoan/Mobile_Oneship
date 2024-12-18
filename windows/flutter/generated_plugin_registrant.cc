@@ -6,9 +6,12 @@
 
 #include "generated_plugin_registrant.h"
 
-#include <flutter_localization/flutter_localization_plugin_c_api.h>
+#include <firebase_auth/firebase_auth_plugin_c_api.h>
+#include <firebase_core/firebase_core_plugin_c_api.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
-  FlutterLocalizationPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterLocalizationPluginCApi"));
+  FirebaseAuthPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FirebaseAuthPluginCApi"));
+  FirebaseCorePluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FirebaseCorePluginCApi"));
 }

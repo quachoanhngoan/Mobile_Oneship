@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "816159280151",
+    "project_id": "oneship-dfbab",
+    "storage_bucket": "oneship-dfbab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816159280151:android:86e133bf58c6b15fe86052",
+        "android_client_info": {
+          "package_name": "com.oneship.merchant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA2G-VZi5h8_GDBr0ZmyErcTTvh0lnvSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
