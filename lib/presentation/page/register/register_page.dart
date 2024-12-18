@@ -13,7 +13,6 @@ import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 import '../../../config/theme/color.dart';
 import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/dimensions.dart';
-import '../../../core/constant/error_strings.dart';
 import '../../widget/loading/loading.dart';
 import 'widget/pinput_widget.dart';
 
@@ -65,11 +64,11 @@ class _RegisterPageState extends State<RegisterPage> {
           createAccountSuccessDialog();
         }
       }
-      if (state.isFailedPhone == true) {
-        showErrorDialog(AppErrorString.kPhoneInvalid);
-      }
-      if (state.registerFailed != null) {
-        showErrorDialog(state.registerFailed!);
+      // if (state.isFailedPhone == true) {
+      //   showErrorDialog(AppErrorString.kPhoneInvalid);
+      // }
+      if (state.titleFailedDialog != null) {
+        showErrorDialog(state.titleFailedDialog!);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -161,14 +160,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               .submitPhoneOrEmail(_phoneController.text.trim());
                           break;
                         case 1:
-                          context.read<RegisterCubit>().sentOtpToFirebase();
+                          context
+                              .read<RegisterCubit>()
+                              .sentOtp(email: _phoneController.text);
                           break;
                         case 2:
                           _passNode.unfocus();
                           _rePassNode.unfocus();
                           context
                               .read<RegisterCubit>()
-                              .createPasswordWithPhone(_rePassController.text);
+                              .createPasswordWithPhone(_rePassController.text, email: _phoneController.text);
                           break;
                       }
                     },

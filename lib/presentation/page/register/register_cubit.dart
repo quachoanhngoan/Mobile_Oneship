@@ -2,12 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/resources/data_state.dart';
+import 'package:oneship_merchant_app/domain/requests/register_email/email_password_request.dart';
+import 'package:oneship_merchant_app/domain/requests/register_email/email_register_request.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 
 import '../../../core/constant/error_strings.dart';
 import '../../../core/repositories/auth/auth_repository.dart';
+import '../../../domain/requests/register_email/otp_request.dart';
 import '../../../domain/requests/register_phone/phone_register_request.dart';
 import '../../../injector.dart';
 
@@ -19,7 +22,7 @@ class RegisterCubit extends Cubit<RegisterState> {
   String? smsCode;
   bool? isTimeout;
 
-  changePage(int index) {
+  void changePage(int index) {
     var title = "";
     switch (index) {
       case 1:
@@ -36,11 +39,11 @@ class RegisterCubit extends Cubit<RegisterState> {
         title: title, isEnableContinue: false, isContinueStep: false));
   }
 
-  validateUserName(String? value) {
+  void validateUserName(String? value) {
     emit(state.copyWith(isEnableContinue: value.isNotNullOrEmpty));
   }
 
-  validateOtp(String? otp) {
+  void validateOtp(String? otp) {
     emit(state.copyWith(
         isEnableContinue: otp.isNotNullOrEmpty && otp!.length >= 6));
     if (otp != null && otp.length >= 6) {
@@ -48,7 +51,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  validatePass(String? pass, String? repass) {
+  void validatePass(String? pass, String? repass) {
     emit(state.copyWith(
         showHintTextPass: !pass.isNotNullOrEmpty,
         showHintTextRePass: !repass.isNotNullOrEmpty));
@@ -89,42 +92,69 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  submitPhoneOrEmail(String value) {
-    emit(state.copyWith(isLoading: true, isFailedPhone: false));
+  void submitPhoneOrEmail(String value) {
+    emit(state.copyWith(isLoading: true));
     final isPhone = injector.get<UserValidate>().phoneValid(value);
     if (isPhone) {
       _sentPhoneToFirebase(value);
     } else {
       final isEmail = injector.get<UserValidate>().emailValid(value);
       if (isEmail) {
-        log("check email");
+        _registerEmail(value);
       } else {
-        emit(state.copyWith(isFailedPhone: true));
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kPhoneInvalid));
       }
     }
   }
 
-  _sentPhoneToFirebase(String phone) async {
+  void _registerEmail(String email) async {
+    final request = RegisterEmailRequest(email: email);
+    final response = await injector.get<AuthRepositoy>().registerEmail(request);
+    if (response is DataSuccess) {
+      emit(state.copyWith(isContinueStep: true, isPhone: false));
+    } else {
+      if (response.data?.message == AppErrorString.kEmailConflictType) {
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kEmailConflict));
+      } else {
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+      }
+    }
+  }
+
+  Future _sentPhoneToFirebase(String phone) async {
     isTimeout = false;
     final phoneConvert = _phoneToInternational(phone);
     await injector.get<AuthRepositoy>().loginFirebaseWithPhone(phoneConvert,
         success: (verificationId, resendToken) {
-      emit(state.copyWith(isContinueStep: true));
+      emit(state.copyWith(isContinueStep: true, isPhone: true));
     }, failed: (e) {
-      emit(state.copyWith(isFailedPhone: true));
+      emit(state.copyWith(titleFailedDialog: AppErrorString.kPhoneInvalid));
     }, timeout: (verificationId) {
       isTimeout = true;
     });
   }
 
-  sentOtpToFirebase() async {
+  Future sentOtp({String? email}) async {
     emit(state.copyWith(isLoading: true));
-    final idToken =
-        await injector.get<AuthRepositoy>().loginFirebaseWithOTP(smsCode);
-    if (idToken != null && isTimeout != true) {
-      emit(state.copyWith(isContinueStep: true));
+    if (state.isPhone == true) {
+      final idToken =
+          await injector.get<AuthRepositoy>().sentOtpToFirebase(smsCode);
+      if (idToken != null && isTimeout != true) {
+        emit(state.copyWith(isContinueStep: true));
+      } else {
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kOTPInvalid));
+      }
     } else {
-      emit(state.copyWith(isFailedOTP: true));
+      if (email != null) {
+        final request = OtpRequest(otp: smsCode, email: email);
+        final otpResponse =
+            await injector.get<AuthRepositoy>().sentOtpWithAPI(request);
+        if (otpResponse is DataSuccess) {
+          emit(state.copyWith(isContinueStep: true));
+        } else {
+          emit(state.copyWith(titleFailedDialog: AppErrorString.kOTPInvalid));
+        }
+      }
     }
   }
 
@@ -137,25 +167,45 @@ class RegisterCubit extends Cubit<RegisterState> {
     return phone;
   }
 
-  createPasswordWithPhone(String password) async {
+  Future createPasswordWithPhone(String password, {String? email}) async {
     emit(state.copyWith(isLoading: true));
-    final request = RegisterPhoneRequest(
-      password: password,
-    );
-    final response =
-        await injector.get<AuthRepositoy>().createUserWithPhone(request);
-    if (response is DataSuccess) {
-      log("create account success: $response", name: _tag);
-      emit(state.copyWith(
-          isContinueStep: true,
-          showHintTextPass: true,
-          showHintTextRePass: true));
-    } else {
-      log("create account failed: ${response.data?.message}", name: _tag);
-      if (response.error?.message == AppErrorString.kPhoneConflictType) {
-        emit(state.copyWith(registerFailed: AppErrorString.kPhoneConflict));
+    if (state.isPhone == true) {
+      final request = RegisterPhoneRequest(
+        password: password,
+      );
+      final response =
+          await injector.get<AuthRepositoy>().createUserWithPhone(request);
+      if (response is DataSuccess) {
+        log("create account success: $response", name: _tag);
+        emit(state.copyWith(
+            isContinueStep: true,
+            showHintTextPass: true,
+            showHintTextRePass: true));
       } else {
-        emit(state.copyWith(registerFailed: AppErrorString.kServerError));
+        log("create account failed: ${response.data?.message}", name: _tag);
+        if (response.data?.message == AppErrorString.kPhoneConflictType) {
+          emit(
+              state.copyWith(titleFailedDialog: AppErrorString.kPhoneConflict));
+        } else {
+          emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+        }
+      }
+    } else {
+      if (email != null) {
+        final request = PasswordEmailRequest(
+            email: email, password: password, otp: smsCode);
+        final response =
+            await injector.get<AuthRepositoy>().createUserWithEmail(request);
+        if (response is DataSuccess) {
+          log("create account success: $response", name: _tag);
+          emit(state.copyWith(
+              isContinueStep: true,
+              showHintTextPass: true,
+              showHintTextRePass: true));
+        } else {
+          log("create account failed: ${response.data?.message}", name: _tag);
+          emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+        }
       }
     }
   }

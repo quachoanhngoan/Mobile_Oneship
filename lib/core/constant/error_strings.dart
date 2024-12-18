@@ -30,9 +30,11 @@ class AppErrorString {
       "Mật khẩu phải chứa chữ in hoa và thường";
   static const String kPasswordSymbol = "Mật khẩu phải chứa ký tự đặc biệt";
   static const String kRePassIsNotCorrect = "Nhập lại mật khẩu chưa chính xác";
-  static const String kPhoneInvalid = "Số điện thoại không hợp lệ";
-
+  static const String kPhoneInvalid = "Số điện thoại hoặc email không hợp lệ";
+  static const String kOTPInvalid = "Mã xác thực sai.";
   static const String kPhoneConflictType = "PHONE_CONFLICT";
+  static const String kEmailConflictType = "EMAIL_CONFLICT";
   static const String kPhoneConflict = "Số điện thoại đã được đăng ký !";
+  static const String kEmailConflict = "Email đã được đăng ký !";
   static const String kServerError = "Lỗi server !";
 }
