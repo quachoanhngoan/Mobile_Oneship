@@ -6,6 +6,7 @@ import 'package:oneship_merchant_app/presentation/widget/images/slide_images.dar
 
 import '../../../config/config.dart';
 import '../../../core/core.dart';
+import '../../widget/common/logo_widget.dart';
 
 class OnBoardingPage extends StatelessWidget {
   const OnBoardingPage({super.key});
@@ -17,13 +18,7 @@ class OnBoardingPage extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 0.05.sh),
-            Text(
-              'GOO+ ĐỐI TÁC',
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontSize: 28.sp,
-                    color: AppColors.primary,
-                  ),
-            ),
+            const LogoWidget(),
             SizedBox(
               height: AppDimensions.paddingLarge,
             ),
@@ -68,9 +63,7 @@ class OnBoardingPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: AppDimensions.paddingLarge,
-            ),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AppDimensions.padding),
               child: Row(
@@ -78,7 +71,7 @@ class OnBoardingPage extends StatelessWidget {
                   Flexible(
                     child: AppButton(
                       padding: EdgeInsets.symmetric(
-                        vertical: AppDimensions.paddingSmall + 1.sp,
+                        vertical: 12.sp,
                       ),
                       borderSide: const BorderSide(
                         color: AppColors.primary,
@@ -104,7 +97,7 @@ class OnBoardingPage extends StatelessWidget {
                         width: 1,
                       ),
                       padding: EdgeInsets.symmetric(
-                        vertical: AppDimensions.paddingSmall + 1.sp,
+                        vertical: 12.sp,
                       ),
                       margin: const EdgeInsets.all(0),
                       text: "Đăng ký",
@@ -116,7 +109,10 @@ class OnBoardingPage extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
+            SizedBox(
+              height: AppDimensions.paddingLarge,
+            ),
           ],
         ),
       ),

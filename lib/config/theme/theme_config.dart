@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,6 +87,9 @@ class Themings {
   );
   static final ThemeData lightTheme = ThemeData(
     // useMaterial3: false,
+    cupertinoOverrideTheme: const CupertinoThemeData(
+      primaryColor: AppColors.primary,
+    ),
     dividerColor: Colors.transparent,
     buttonTheme: ButtonThemeData(
       buttonColor: AppColors.primary,
@@ -102,14 +106,43 @@ class Themings {
       thickness: 1,
       color: Colors.grey.shade200,
     ),
+
     inputDecorationTheme: InputDecorationTheme(
       labelStyle: const TextStyle(
-        color: Colors.black,
+        color: AppColors.textColor,
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
+
+      //border bottom
+      enabledBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderColor),
+      ),
+      focusedBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderColor),
+      ),
+      prefixIconColor: AppColors.placeHolderColor,
+
+      border: const UnderlineInputBorder(
+        borderSide: BorderSide(
+          width: 1,
+          color: AppColors.borderColor,
+        ),
+      ),
+      errorStyle: TextStyle(
+        color: AppColors.error,
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
+      ),
+      errorBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(
+          width: 1,
+          color: AppColors.borderError,
+        ),
+      ),
+
       hintStyle: TextStyle(
-        color: Colors.grey,
+        color: AppColors.placeHolderColor,
         fontSize: 14.sp,
         fontWeight: FontWeight.w500,
       ),
@@ -152,49 +185,49 @@ class Themings {
       displaySmall: const TextStyle(
         fontSize: 16.0,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       displayMedium: const TextStyle(
         fontSize: 20.0,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       displayLarge: const TextStyle(
         fontSize: 22.0,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       titleMedium: TextStyle(
         fontSize: 16.0.sp,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       titleSmall: TextStyle(
         fontSize: 14.0.sp,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       titleLarge: TextStyle(
         fontSize: 18.0.sp,
         fontWeight: FontWeight.w700,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       bodyMedium: TextStyle(
         fontSize: 16.0.sp,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       bodyLarge: TextStyle(
         fontSize: 18.0.sp,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       bodySmall: TextStyle(
         fontSize: 14.sp,
-        color: Colors.grey,
+        color: AppColors.textColor,
       ),
       labelLarge: TextStyle(
         fontSize: 20.sp,
         fontWeight: FontWeight.w500,
-        color: Colors.black,
+        color: AppColors.textColor,
       ),
       labelMedium: labelMedium,
       labelSmall: labelSmall,

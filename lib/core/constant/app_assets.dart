@@ -43,5 +43,19 @@ class AppAssets {
   static const String imagesIcPartyHorn = "assets/images/ic_party_horn.png";
 
   static const String imagesIcPerson = "assets/images/ic_person.png";
+
+  static const String imagesIconsEye = "assets/images/icons/eye.png";
+
+  static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
+
+  static const String imagesIconsIcon = "assets/images/icons/Icon.png";
+
+  static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";
+
+  static const String imagesIconsPhone = "assets/images/icons/phone.png";
+
+  static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
+
+  static const String imagesOneshipLogo = "assets/images/oneship_logo.png";
 }
 

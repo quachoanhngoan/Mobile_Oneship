@@ -23,10 +23,10 @@ class RegisterCubit extends Cubit<RegisterState> {
     var title = "";
     switch (index) {
       case 1:
-        title = "Xác thực OTP";
+        title = "Nhập mã xác thực OTP";
         break;
       case 2:
-        title = "Tạo mật khẩu mới";
+        title = "Cài đặt mật khẩu";
         break;
       default:
         title = "Nhập SĐT/Email";

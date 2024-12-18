@@ -14,7 +14,7 @@ class RegisterState extends Equatable {
   final String? registerFailed;
 
   const RegisterState(
-      {this.title = 'Xác thực OTP',
+      {this.title = 'Tên tài khoản',
       this.isEnableContinue,
       this.showHintTextPass = true,
       this.showHintTextRePass = true,

@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
@@ -113,9 +114,8 @@ class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
       RegisterPhoneRequest request) async {
     final parseRequest =
         request.copyWith(idToken: idToken, deviceToken: firebaseFCMToken);
-    final result = await getStateOf<ResponseDomain>(request: () async {
-      return _authApiService.registerPhone(parseRequest);
+    return getStateOf<ResponseDomain>(request: () async {
+      return await _authApiService.registerPhone(parseRequest);
     });
-    return result;
   }
 }

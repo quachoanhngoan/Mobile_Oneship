@@ -175,10 +175,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     margin: EdgeInsets.zero,
                     padding: EdgeInsets.zero,
                     isSafeArea: false,
-                    isEnable: true,
                     backgroundColor: state.isEnableContinue == true
                         ? AppColors.color988
                         : AppColors.color8E8,
+                    isEnable: state.isEnableContinue == true,
                   ),
                   const VSpacing(spacing: 20),
                   RichText(

@@ -8,6 +8,8 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/theme_config.dart';
 
+String? firebaseToken;
+
 class MerchantApp extends StatefulWidget {
   const MerchantApp({super.key});
 
@@ -33,7 +35,22 @@ class _MerchantAppState extends State<MerchantApp> {
       sound: true,
     );
 
-    // final token = await FirebaseMessaging.instance.getToken();
+    await getDeviceToken();
+  }
+
+  Future<void> getDeviceToken() async {
+    try {
+      final firebaseMessaging = FirebaseMessaging.instance;
+      final NotificationSettings checkPermission =
+          await firebaseMessaging.requestPermission();
+
+      if (checkPermission.authorizationStatus ==
+          AuthorizationStatus.authorized) {
+        firebaseToken = await firebaseMessaging.getToken();
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -54,7 +71,7 @@ class _MerchantAppState extends State<MerchantApp> {
       debugShowCheckedModeBanner: false,
       theme: Themings.lightTheme,
       title: 'Merchant',
-      initialRoute: AppRoutes.onBoardingPage,
+      initialRoute: AppRoutes.splash,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(

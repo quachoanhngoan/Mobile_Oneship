@@ -48,7 +48,7 @@ class AppButton extends StatelessWidget {
       margin: isSafeArea ? const EdgeInsets.only(bottom: 16) : EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        height: height ?? 40.h,
+        height: height,
         child: ElevatedButton(
           onPressed: () {
             if (isEnable == false) {
