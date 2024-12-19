@@ -209,22 +209,22 @@ class AuthCubit extends Cubit<AuthState> {
       if (result.user?.getIdToken() != null) {
         final idToken = await result.user!.getIdToken();
 
-        if (firebaseToken == null) {
-          await getDeviceToken();
-          if (firebaseToken == null) {
-            setLoginState(EState.failure);
+        // if (firebaseToken == null) {
+        //   await getDeviceToken();
+        //   if (firebaseToken == null) {
+        //     setLoginState(EState.failure);
 
-            dialogService.showAlertDialog(
-              title: "Thông báo",
-              description: "Bạn chưa cấp quyền cho ứng dụng, vui lòng thử lại",
-              buttonTitle: 'OK',
-              onPressed: () {
-                Get.back();
-              },
-            );
-            return;
-          }
-        }
+        //     dialogService.showAlertDialog(
+        //       title: "Thông báo",
+        //       description: "Bạn chưa cấp quyền cho ứng dụng, vui lòng thử lại",
+        //       buttonTitle: 'OK',
+        //       onPressed: () {
+        //         Get.back();
+        //       },
+        //     );
+        //     return;
+        //   }
+        // }
         final response =
             await execute(() => repository.loginSms(RequestLoginSms(
                   idToken: idToken,
@@ -248,6 +248,9 @@ class AuthCubit extends Cubit<AuthState> {
           prefManager.token = data.accessToken!;
           prefManager.refreshToken = data.refreshToken!;
           prefManager.user = data;
+          prefManager.userName = "";
+          prefManager.password = "";
+
           Get.offAllNamed(AppRoutes.homepage);
         }, failure: (error) {
           emit(state.copyWith(

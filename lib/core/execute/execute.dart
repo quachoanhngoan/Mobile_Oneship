@@ -24,7 +24,7 @@ Future<Result<T>> execute<T>(
         if (Get.currentRoute == AppRoutes.loginPage) {
           dialogService.showAlertDialog(
             title: "Lỗi",
-            description: "Sai tài khoản hoặc mật khẩu",
+            description: "Tài khoản hoặc mật khẩu không chính xác!",
             buttonTitle: "OK",
             onPressed: () => Get.back(),
           );

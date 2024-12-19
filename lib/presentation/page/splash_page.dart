@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
-import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 

@@ -1,3 +1,5 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 mixin EStoreApprovalStatus {
   static const String draft = 'draft';
   static const String pending = 'pending';
@@ -120,6 +122,16 @@ class StoreModel {
     } else {
       return 'Tiếp tục';
     }
+  }
+
+  double getSizeImage() {
+    if (((status == EStoreStatus.inactive || status == EStoreStatus.active) &&
+            approvalStatus == EStoreApprovalStatus.approved) ||
+        approvalStatus == EStoreApprovalStatus.pending) {
+      return 68.sp;
+    }
+
+    return 88.sp;
   }
 
   String getAddress() {

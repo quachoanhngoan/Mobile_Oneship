@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/theme_config.dart';
+import 'package:oneship_merchant_app/core/helper/device.helper.dart';
 
 String? firebaseToken;
 
@@ -38,20 +38,25 @@ class _MerchantAppState extends State<MerchantApp> {
     await getDeviceToken();
   }
 
-  Future<void> getDeviceToken() async {
-    try {
-      final firebaseMessaging = FirebaseMessaging.instance;
-      final NotificationSettings checkPermission =
-          await firebaseMessaging.requestPermission();
+  // Future<void> getDeviceToken() async {
+  //   try {
+  //     final firebaseMessaging = FirebaseMessaging.instance;
+  //     final NotificationSettings checkPermission =
+  //         await firebaseMessaging.requestPermission();
 
-      if (checkPermission.authorizationStatus ==
-          AuthorizationStatus.authorized) {
-        firebaseToken = await firebaseMessaging.getToken();
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  //     if (checkPermission.authorizationStatus ==
+  //         AuthorizationStatus.authorized) {
+  //       if (Platform.isIOS) {
+  //         firebaseToken = await firebaseMessaging.getAPNSToken();
+  //         firebaseToken ??= await firebaseMessaging.getToken();
+  //       } else {
+  //         firebaseToken = await firebaseMessaging.getToken();
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

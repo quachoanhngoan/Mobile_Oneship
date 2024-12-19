@@ -1,4 +1,4 @@
-import 'package:dotted_line/dotted_line.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,12 +6,10 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
-import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/store/widget/store_item.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
-import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 class StorePage extends StatefulWidget {
@@ -112,7 +110,7 @@ class _StorePageState extends State<StorePage> {
                   );
                 },
               ),
-              Expanded(
+              Flexible(
                 child: TabBarView(children: [
                   Container(
                       padding: const EdgeInsets.symmetric(
@@ -120,6 +118,21 @@ class _StorePageState extends State<StorePage> {
                       ),
                       child: BlocBuilder<StoreCubit, StoreState>(
                         builder: (context, state) {
+                          if (state.status.isLoading) {
+                            return const CupertinoActivityIndicator();
+                          }
+                          if (state.getStoresApproveCount == 0) {
+                            return Container(
+                              alignment: Alignment.center, // use aligment
+                              child: Image.asset(
+                                AppAssets.imagesStoresEmpty,
+                                height: 180,
+                                width: 180,
+                                filterQuality: FilterQuality.medium,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }
                           return ListView.separated(
                             separatorBuilder: (context, index) =>
                                 const SizedBox(
@@ -147,6 +160,21 @@ class _StorePageState extends State<StorePage> {
                       ),
                       child: BlocBuilder<StoreCubit, StoreState>(
                         builder: (context, state) {
+                          if (state.status.isLoading) {
+                            return const CupertinoActivityIndicator();
+                          }
+                          if (state.getStoresDontApproveCount == 0) {
+                            return Container(
+                              alignment: Alignment.center, // use aligment
+                              child: Image.asset(
+                                AppAssets.imagesStoresEmpty,
+                                filterQuality: FilterQuality.medium,
+                                height: 180,
+                                width: 180,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }
                           return ListView.separated(
                             separatorBuilder: (context, index) =>
                                 const SizedBox(
@@ -173,115 +201,6 @@ class _StorePageState extends State<StorePage> {
             ],
           ),
         ));
-  }
-}
-
-class StoreItem extends StatelessWidget {
-  final StoreModel data;
-  const StoreItem({
-    super.key,
-    required this.data,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 12,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.borderColor2, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: data.storeAvatarId != null
-                    ? Image.network(
-                        "${EnvManager.shared.api}/api/v1/uploads/${data.storeAvatarId}",
-                        width: 68.sp,
-                        height: 68.sp,
-                        fit: BoxFit.cover,
-                      )
-                    : ImageAssetWidget(
-                        image: AppAssets.imagesStoreImageEmpty,
-                        width: 68.sp,
-                        height: 68.sp,
-                      ),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Flexible(
-                child: SizedBox(
-                  height: 68.sp,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.name ?? '',
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                      StoreStatusWidget(
-                        status: data.status ?? '',
-                        approvalStatus: data.approvalStatus ?? '',
-                        reason: data.rejectReason,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height:
-                data.getButtonType() != EStoreButtonType.none ? 14.sp : 8.sp,
-          ),
-          const DottedLine(
-            dashColor: AppColors.borderColor2,
-            dashGapLength: 4,
-            dashLength: 4,
-            lineThickness: 1,
-          ),
-          SizedBox(
-            height: 8.sp,
-          ),
-          Visibility(
-            visible: data.getButtonType() == EStoreButtonType.none,
-            replacement: SizedBox(
-              width: Get.width,
-              child: Text(
-                data.getButtonText(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 12.sp,
-                      color: AppColors.primary,
-                    ),
-              ),
-            ),
-            child: Text(
-              data.getAddress(),
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontSize: 12.sp,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
