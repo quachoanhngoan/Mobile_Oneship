@@ -5,11 +5,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
 import 'package:oneship_merchant_app/core/repositories/base/base_api_repository.dart';
 import 'package:oneship_merchant_app/core/resources/data_state.dart';
+import 'package:oneship_merchant_app/domain/requests/register_email/email_password_request.dart';
+import 'package:oneship_merchant_app/domain/requests/register_email/otp_request.dart';
 import 'package:oneship_merchant_app/domain/requests/register_phone/phone_register_request.dart';
 import 'package:oneship_merchant_app/domain/responses/response_domain.dart';
 
+import '../../../domain/requests/register_email/email_register_request.dart';
+
 abstract class AuthRepositoy {
   init();
+
+  Future<DataState<ResponseDomain>> registerEmail(RegisterEmailRequest email);
 
   Future loginFirebaseWithPhone(
     String phone, {
@@ -18,10 +24,15 @@ abstract class AuthRepositoy {
     Function(String)? timeout,
   });
 
-  Future<String?> loginFirebaseWithOTP(String? smsCode);
+  Future<DataState<ResponseDomain>> sentOtpWithAPI(OtpRequest request);
+
+  Future<String?> sentOtpToFirebase(String? smsCode);
 
   Future<DataState<ResponseDomain>> createUserWithPhone(
       RegisterPhoneRequest request);
+
+  Future<DataState<ResponseDomain>> createUserWithEmail(
+      PasswordEmailRequest request);
 }
 
 class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
@@ -90,7 +101,7 @@ class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
   }
 
   @override
-  Future<String?> loginFirebaseWithOTP(String? smsCode) async {
+  Future<String?> sentOtpToFirebase(String? smsCode) async {
     try {
       if (verificationId != null && smsCode != null) {
         PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -116,6 +127,29 @@ class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
         request.copyWith(idToken: idToken, deviceToken: firebaseFCMToken);
     return getStateOf<ResponseDomain>(request: () async {
       return await _authApiService.registerPhone(parseRequest);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> registerEmail(
+      RegisterEmailRequest email) async {
+    return getStateOf<ResponseDomain>(request: () async {
+      return await _authApiService.registerEmail(email);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> sentOtpWithAPI(OtpRequest request) {
+    return getStateOf<ResponseDomain>(request: () async {
+      return await _authApiService.checkOtp(request);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> createUserWithEmail(
+      PasswordEmailRequest request) {
+    return getStateOf<ResponseDomain>(request: () async {
+      return await _authApiService.createUserWithEmail(request);
     });
   }
 }
