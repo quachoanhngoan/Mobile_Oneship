@@ -8,12 +8,18 @@ import 'package:oneship_merchant_app/app.dart';
 Future<void> getDeviceToken() async {
   try {
     final firebaseMessaging = FirebaseMessaging.instance;
+
     final NotificationSettings checkPermission =
         await firebaseMessaging.requestPermission();
 
     if (checkPermission.authorizationStatus == AuthorizationStatus.authorized) {
-      final token = await firebaseMessaging.getToken();
-      firebaseToken = token;
+      if (Platform.isIOS) {
+        firebaseToken = await firebaseMessaging.getAPNSToken();
+
+        firebaseToken ??= await firebaseMessaging.getToken();
+      } else {
+        firebaseToken = await firebaseMessaging.getToken();
+      }
     }
   } catch (e) {
     print(e);
