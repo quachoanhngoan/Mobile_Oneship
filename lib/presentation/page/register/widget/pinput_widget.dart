@@ -8,7 +8,13 @@ import '../../../../config/config.dart';
 
 class PinputWidget extends StatefulWidget {
   final Function(String) onDone;
-  const PinputWidget({super.key, required this.onDone});
+  final Function() timeOutPressed;
+  final Function() timeOutListener;
+  const PinputWidget(
+      {super.key,
+      required this.onDone,
+      required this.timeOutPressed,
+      required this.timeOutListener});
 
   @override
   State<PinputWidget> createState() => _PinputWidgetState();
@@ -17,6 +23,7 @@ class PinputWidget extends StatefulWidget {
 class _PinputWidgetState extends State<PinputWidget> {
   int _timeCount = 60;
   late Timer _timer;
+  bool changePinTimeOut = false;
 
   @override
   void dispose() {
@@ -33,7 +40,6 @@ class _PinputWidgetState extends State<PinputWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: const EdgeInsets.only(top: 30, bottom: 20),
       width: double.infinity,
       alignment: Alignment.center,
       child: Column(
@@ -46,11 +52,20 @@ class _PinputWidgetState extends State<PinputWidget> {
               decoration: BoxDecoration(
                 color: AppColors.transparent,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.colorA8A, width: 1),
+                border: Border.all(
+                    color:
+                        changePinTimeOut ? AppColors.error : AppColors.colorA8A,
+                    width: 1),
               ),
             ),
             onChanged: (value) {
-              widget.onDone(value);
+              if (_timeCount != 0) {
+                widget.onDone(value);
+              } else {
+                setState(() {
+                  changePinTimeOut = true;
+                });
+              }
             },
             showCursor: false,
           ),
@@ -58,6 +73,7 @@ class _PinputWidgetState extends State<PinputWidget> {
             onPressed: () {
               if (_timeCount == 0) {
                 _timeCount = 60;
+                widget.timeOutPressed();
                 countDownTime();
               }
             },
@@ -100,11 +116,13 @@ class _PinputWidgetState extends State<PinputWidget> {
   countDownTime() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeCount == 0) {
+        widget.timeOutListener();
         setState(() {
           timer.cancel();
         });
       } else {
         setState(() {
+          changePinTimeOut = false;
           _timeCount--;
         });
       }

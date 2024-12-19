@@ -11,12 +11,9 @@ class RegisterState extends Equatable {
   final bool? isLoading;
   final String? titleFailedDialog;
   final bool? isPhone;
-  // final bool? isFailedPhone;
-  // final bool? isFailedOTP;
-  // final String? registerFailed;
 
   const RegisterState(
-      {this.title = 'Tên tài khoản',
+      {this.title = 'Nhập SĐT/Email',
       this.isEnableContinue,
       this.showHintTextPass = true,
       this.showHintTextRePass = true,
@@ -26,9 +23,6 @@ class RegisterState extends Equatable {
       this.isLoading,
       this.titleFailedDialog,
       this.isPhone
-      // this.isFailedPhone = false,
-      // this.isFailedOTP = false,
-      // this.registerFailed,
       });
 
   RegisterState copyWith({
@@ -42,9 +36,6 @@ class RegisterState extends Equatable {
     bool? isLoading,
     String? titleFailedDialog,
     bool? isPhone,
-    // bool? isFailedPhone,
-    // bool? isFailedOTP,
-    // String? registerFailed,
   }) {
     return RegisterState(
         title: title ?? this.title,
@@ -57,9 +48,6 @@ class RegisterState extends Equatable {
         isLoading: isLoading,
         titleFailedDialog: titleFailedDialog,
         isPhone: isPhone ?? this.isPhone
-        // isFailedPhone: isFailedPhone,
-        // isFailedOTP: isFailedOTP,
-        // registerFailed: registerFailed,
         );
   }
 
@@ -75,8 +63,5 @@ class RegisterState extends Equatable {
         isLoading,
         titleFailedDialog,
         isPhone
-        // isFailedPhone,
-        // isFailedOTP,
-        // registerFailed
       ];
 }

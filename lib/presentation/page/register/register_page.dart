@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
@@ -60,13 +63,11 @@ class _RegisterPageState extends State<RegisterPage> {
           context.popScreen();
           Future.delayed(const Duration(seconds: 3), () {
             Get.back();
+            Get.toNamed(AppRoutes.loginPage);
           });
           createAccountSuccessDialog();
         }
       }
-      // if (state.isFailedPhone == true) {
-      //   showErrorDialog(AppErrorString.kPhoneInvalid);
-      // }
       if (state.titleFailedDialog != null) {
         showErrorDialog(state.titleFailedDialog!);
       }
@@ -132,6 +133,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             phoneController: _phoneController),
                         OtpRegister(
                           phone: _phoneController.text,
+                          timeOutListener: () {
+                            context.read<RegisterCubit>().timeOutOtp();
+                          },
+                          timeoutPressed: () {
+                            context.read<RegisterCubit>().submitPhoneOrEmail(
+                                _phoneController.text.trim(),
+                                isReSent: true);
+                          },
                           onDone: (value) {
                             context.read<RegisterCubit>().validateOtp(value);
                           },
@@ -155,9 +164,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       switch (indexPage) {
                         case 0:
                           _phoneNode.unfocus();
-                          context
-                              .read<RegisterCubit>()
-                              .submitPhoneOrEmail(_phoneController.text.trim());
+                          context.read<RegisterCubit>().submitPhoneOrEmail(
+                              _phoneController.text.trim(),
+                              isReSent: false);
                           break;
                         case 1:
                           context
@@ -185,14 +194,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   RichText(
                       text: TextSpan(children: [
                     TextSpan(
-                      text: "Chưa có tài khoản? ",
+                      text: "Đã có tài khoản? ",
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
                           ?.copyWith(color: AppColors.colorC5C),
                     ),
                     TextSpan(
-                        text: "Đăng ký",
+                        text: "Đăng nhập",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.color988,
                             decoration: TextDecoration.underline,
@@ -264,8 +273,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(14)),
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   const VSpacing(spacing: 12),
@@ -369,8 +376,15 @@ class PhoneRegister extends StatelessWidget {
 
 class OtpRegister extends StatelessWidget {
   final Function(String) onDone;
+  final Function() timeoutPressed;
+  final Function() timeOutListener;
   final String phone;
-  const OtpRegister({super.key, required this.phone, required this.onDone});
+  const OtpRegister(
+      {super.key,
+      required this.phone,
+      required this.onDone,
+      required this.timeoutPressed,
+      required this.timeOutListener});
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +397,9 @@ class OtpRegister extends StatelessWidget {
         ),
         const VSpacing(spacing: 20),
         PinputWidget(
+          timeOutPressed: timeoutPressed,
           onDone: onDone,
+          timeOutListener: timeOutListener,
         )
       ],
     );

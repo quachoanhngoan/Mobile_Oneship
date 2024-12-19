@@ -16,8 +16,19 @@ class UserValidate {
         return AppErrorString.kPasswordUpper;
       } else {
         RegExp symbol = RegExp(r'^(?=.*?[%@#$])');
-        if (!symbol.hasMatch(password)) {
+        if (symbol.hasMatch(password)) {
           return AppErrorString.kPasswordSymbol;
+        } else {
+          RegExp spacing = RegExp(r'\s');
+          if (spacing.hasMatch(password)) {
+            return AppErrorString.kPasswordSpacing;
+          } else {
+            RegExp regexVietnamese = RegExp(
+                r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđÀÁẢÃẠÂẦẤẨẪẬĂẰẮẲẴẶÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐ]');
+            if (regexVietnamese.hasMatch(password)) {
+              return AppErrorString.kPasswordVietnameses;
+            }
+          }
         }
       }
     }
