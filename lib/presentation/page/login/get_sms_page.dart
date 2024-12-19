@@ -12,9 +12,9 @@ import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart'
 
 class GetSmsPage extends StatefulWidget {
   const GetSmsPage({
-    Key? key,
+    super.key,
     required this.phone,
-  }) : super(key: key);
+  });
 
   final String phone;
 
@@ -98,7 +98,7 @@ class _GetSmsPageState extends State<GetSmsPage> {
                 children: [
                   const SizedBox(height: 50),
                   Text(
-                    "Mã xác thực OTP đã được gửi đến số điện thoại ${widget.phone}",
+                    "Mã xác thực OTP đã được gửi đến số điện thoại ${formatPhone(widget.phone)}",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           fontWeight: FontWeight.w500,
@@ -166,5 +166,13 @@ class _GetSmsPageState extends State<GetSmsPage> {
         ],
       ),
     );
+  }
+
+  //+84916308704 => (+84) 916 308 704
+  String formatPhone(String phone) {
+    // if (phone.length < 10) {
+    //   return phone;
+    // }
+    return '(${phone.substring(0, 3)}) ${phone.substring(3, 6)} ${phone.substring(6, 9)} ${phone.substring(9)}';
   }
 }

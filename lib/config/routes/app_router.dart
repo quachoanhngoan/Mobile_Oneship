@@ -4,6 +4,7 @@ import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_sms_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/welcome/welcome_page.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const String loginPage = '/loginPage';
   static const String loginWithSMS = '/loginWithSMS';
   static const String registerpage = '/registerpage';
+  static const String registerStorePage = '/registerStorePage';
   static const String store = '/store';
   static final routes = [
     GetPage(
@@ -66,6 +68,12 @@ class AppRoutes {
         page: () => const RegisterPage(),
         transitionDuration: const Duration(milliseconds: 300),
         transition: Transition.rightToLeft,
-        curve: Curves.easeOutExpo)
+        curve: Curves.easeOutExpo),
+    GetPage(
+        name: AppRoutes.registerStorePage,
+        page: () => const RegisterStorePage(),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo),
   ];
 }

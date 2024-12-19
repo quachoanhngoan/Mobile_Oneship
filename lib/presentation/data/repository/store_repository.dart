@@ -2,7 +2,7 @@ import 'package:oneship_merchant_app/presentation/data/model/store/store_model.d
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
 mixin AuthUrl {
-  static const String base = '/api/v1/stores';
+  static const String base = '/api/v1/merchant/stores';
 }
 
 abstract class StoreRepository {

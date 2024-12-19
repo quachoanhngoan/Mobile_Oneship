@@ -17,7 +17,10 @@ class StoreCubit extends Cubit<StoreState> {
   getAll() async {
     setStatusState(EState.loading);
     try {
-      final response = await execute(() => repository.getAll());
+      final response = await execute(
+        () => repository.getAll(),
+        isShowFailDialog: true,
+      );
       response.when(success: (data) {
         setStatusState(EState.success);
         emit(state.copyWith(stores: data.items ?? []));

@@ -18,4 +18,16 @@ class StoreState {
       stores: stores ?? this.stores,
     );
   }
+
+  List<StoreModel> get getStoresDontApprove => stores
+      .where(
+          (element) => element.approvalStatus != EStoreApprovalStatus.approved)
+      .toList();
+  int get getStoresDontApproveCount => getStoresDontApprove.length;
+
+  List<StoreModel> get getStoresApprove => stores
+      .where(
+          (element) => element.approvalStatus == EStoreApprovalStatus.approved)
+      .toList();
+  int get getStoresApproveCount => getStoresApprove.length;
 }

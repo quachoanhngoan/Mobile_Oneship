@@ -1,3 +1,14 @@
+mixin EStoreApprovalStatus {
+  static const String draft = 'draft';
+  static const String pending = 'pending';
+  static const String approved = 'approved';
+  static const String rejected = 'rejected';
+}
+mixin EStoreStatus {
+  static const String active = 'active';
+  static const String inactive = 'inactive';
+}
+
 class StoresResponse {
   List<StoreModel>? items;
   int? total;
@@ -8,7 +19,7 @@ class StoresResponse {
     if (json['items'] != null) {
       items = <StoreModel>[];
       json['items'].forEach((v) {
-        items!.add(new StoreModel.fromJson(v));
+        items!.add(StoreModel.fromJson(v));
       });
     }
     total = json['total'];
@@ -27,121 +38,138 @@ class StoresResponse {
 class StoreModel {
   int? id;
   String? createdAt;
-  String? updatedAt;
-  int? merchantId;
-  String? storeCode;
   String? name;
-  // Null? specialDish;
-  String? streetName;
-  String? phoneNumber;
-  int? serviceTypeId;
-  bool? isAlcohol;
-  int? serviceGroupId;
-  int? businessAreaId;
-  int? provinceId;
-  int? districtId;
-  bool? isPause;
-  bool? isSpecialWorkingTime;
-  int? wardId;
   String? address;
   String? status;
   String? approvalStatus;
-  String? approvedAt;
   String? storeAvatarId;
-  String? storeCoverId;
-  String? storeFrontId;
-  String? storeMenuId;
-  num? parkingFee;
   String? rejectReason;
+  Province? province;
+  District? district;
+  District? ward;
 
   StoreModel(
       {this.id,
       this.createdAt,
-      this.updatedAt,
-      this.merchantId,
-      this.storeCode,
       this.name,
-      this.streetName,
-      this.phoneNumber,
-      this.serviceTypeId,
-      this.isAlcohol,
-      this.serviceGroupId,
-      this.businessAreaId,
-      this.provinceId,
-      this.districtId,
-      this.isPause,
-      this.isSpecialWorkingTime,
-      this.wardId,
       this.address,
       this.status,
       this.approvalStatus,
-      this.approvedAt,
       this.storeAvatarId,
-      this.storeCoverId,
-      this.storeFrontId,
-      this.storeMenuId,
-      this.parkingFee,
-      this.rejectReason});
+      this.province,
+      this.district,
+      this.rejectReason,
+      this.ward});
 
   StoreModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    merchantId = json['merchantId'];
-    storeCode = json['storeCode'];
     name = json['name'];
-    streetName = json['streetName'];
-    phoneNumber = json['phoneNumber'];
-    serviceTypeId = json['serviceTypeId'];
-    isAlcohol = json['isAlcohol'];
-    serviceGroupId = json['serviceGroupId'];
-    businessAreaId = json['businessAreaId'];
-    provinceId = json['provinceId'];
-    districtId = json['districtId'];
-    isPause = json['isPause'];
-    isSpecialWorkingTime = json['isSpecialWorkingTime'];
-    wardId = json['wardId'];
     address = json['address'];
     status = json['status'];
     approvalStatus = json['approvalStatus'];
-    approvedAt = json['approvedAt'];
     storeAvatarId = json['storeAvatarId'];
-    storeCoverId = json['storeCoverId'];
-    storeFrontId = json['storeFrontId'];
-    storeMenuId = json['storeMenuId'];
-    parkingFee = json['parkingFee'];
     rejectReason = json['rejectReason'];
+    province =
+        json['province'] != null ? Province.fromJson(json['province']) : null;
+    district =
+        json['district'] != null ? District.fromJson(json['district']) : null;
+    ward = json['ward'] != null ? District.fromJson(json['ward']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['merchantId'] = merchantId;
-    data['storeCode'] = storeCode;
     data['name'] = name;
-    data['streetName'] = streetName;
-    data['phoneNumber'] = phoneNumber;
-    data['serviceTypeId'] = serviceTypeId;
-    data['isAlcohol'] = isAlcohol;
-    data['serviceGroupId'] = serviceGroupId;
-    data['businessAreaId'] = businessAreaId;
-    data['provinceId'] = provinceId;
-    data['districtId'] = districtId;
-    data['isPause'] = isPause;
-    data['isSpecialWorkingTime'] = isSpecialWorkingTime;
-    data['wardId'] = wardId;
     data['address'] = address;
     data['status'] = status;
-    data['approvalStatus'] = approvalStatus;
-    data['approvedAt'] = approvedAt;
-    data['storeAvatarId'] = storeAvatarId;
-    data['storeCoverId'] = storeCoverId;
-    data['storeFrontId'] = storeFrontId;
-    data['storeMenuId'] = storeMenuId;
-    data['parkingFee'] = parkingFee;
     data['rejectReason'] = rejectReason;
+    data['approvalStatus'] = approvalStatus;
+    data['storeAvatarId'] = storeAvatarId;
+    if (province != null) {
+      data['province'] = province!.toJson();
+    }
+    if (district != null) {
+      data['district'] = district!.toJson();
+    }
+    if (ward != null) {
+      data['ward'] = ward!.toJson();
+    }
     return data;
   }
+
+  String getButtonType() {
+    if (approvalStatus == EStoreApprovalStatus.pending) {
+      return EStoreButtonType.pendingAndViewButton;
+    } else if (approvalStatus == EStoreApprovalStatus.rejected) {
+      return EStoreButtonType.rejectAndContinueButton;
+    } else {
+      return EStoreButtonType.continueButton;
+    }
+  }
+
+  String getButtonText() {
+    if (approvalStatus == EStoreApprovalStatus.pending) {
+      return 'Xem chi tiết';
+    } else if (approvalStatus == EStoreApprovalStatus.rejected) {
+      return 'Chỉnh sửa đăng ký';
+    } else if (approvalStatus == EStoreApprovalStatus.draft) {
+      return 'Tiếp tục đăng ký';
+    } else {
+      return 'Tiếp tục';
+    }
+  }
+
+  String getAddress() {
+    return '${address ?? ''}, ${ward?.name ?? ''}, ${district?.name ?? ''}, ${province?.name ?? ''}';
+  }
+}
+
+class Province {
+  int? id;
+  String? name;
+  String? shortName;
+
+  Province({this.id, this.name, this.shortName});
+
+  Province.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    shortName = json['shortName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['shortName'] = shortName;
+    return data;
+  }
+}
+
+class District {
+  int? id;
+  String? name;
+
+  District({this.id, this.name});
+
+  District.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    return data;
+  }
+}
+
+mixin EStoreButtonType {
+  static const String pendingAndViewButton = 'pendingAndViewButton';
+  static const String continueButton = 'continueButton';
+  static const String rejectAndContinueButton = 'rejectAndContinueButton';
+  static const String none = 'none';
 }

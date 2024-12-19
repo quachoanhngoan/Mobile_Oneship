@@ -3,11 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
+import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
+import 'package:oneship_merchant_app/presentation/widget/widget.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
@@ -34,7 +39,7 @@ class _StorePageState extends State<StorePage> {
                 color: Colors.grey.withOpacity(0.1),
                 spreadRadius: 0,
                 blurRadius: 5,
-                offset: const Offset(0, -4), // changes position of shadow
+                offset: const Offset(0, -4),
               ),
             ],
           ),
@@ -45,7 +50,7 @@ class _StorePageState extends State<StorePage> {
               horizontal: 16.sp,
             ),
             onPressed: () {
-              Get.toNamed('/registerpage');
+              Get.toNamed(AppRoutes.registerStorePage);
             },
             text: 'Đăng ký quán',
           ),
@@ -61,54 +66,58 @@ class _StorePageState extends State<StorePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              TabBar(
-                padding: EdgeInsets.zero,
-                labelPadding: EdgeInsets.zero,
-                labelColor: AppColors.primary,
-                labelStyle: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-                unselectedLabelColor: AppColors.textGray,
-                unselectedLabelStyle: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                indicatorColor: AppColors.primary,
-                indicator: const UnderlineTabIndicator(
-                    borderRadius: BorderRadius.zero,
-                    borderSide: BorderSide(
-                      width: 3.0,
-                      color: AppColors.primary,
+              BlocBuilder<StoreCubit, StoreState>(
+                builder: (context, state) {
+                  return TabBar(
+                    padding: EdgeInsets.zero,
+                    labelPadding: EdgeInsets.zero,
+                    labelColor: AppColors.primary,
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
                     ),
-                    insets: EdgeInsets.zero),
-                tabs: <Widget>[
-                  Container(
-                    width: Get.width,
-                    padding: const EdgeInsets.all(12),
-                    child: const Text(
-                      "Quản lí quán",
-                      textAlign: TextAlign.center,
+                    unselectedLabelColor: AppColors.textGray,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
-                  ),
-                  Container(
-                    width: Get.width,
-                    padding: const EdgeInsets.all(12),
-                    child: const Text(
-                      "Đăng ký quán",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+                    indicatorColor: AppColors.primary,
+                    indicator: const UnderlineTabIndicator(
+                        borderRadius: BorderRadius.zero,
+                        borderSide: BorderSide(
+                          width: 3.0,
+                          color: AppColors.primary,
+                        ),
+                        insets: EdgeInsets.zero),
+                    tabs: <Widget>[
+                      Container(
+                        width: Get.width,
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          "Quản lí quán "
+                          "(${state.getStoresApproveCount})",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: Get.width,
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          "Đăng ký quán"
+                          " (${state.getStoresDontApproveCount})",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               Expanded(
                 child: TabBarView(children: [
                   Container(
                       padding: const EdgeInsets.symmetric(
-                        // vertical: 12,
                         horizontal: 16,
                       ),
-                      // ignore: prefer_const_constructors
                       child: BlocBuilder<StoreCubit, StoreState>(
                         builder: (context, state) {
                           return ListView.separated(
@@ -122,9 +131,9 @@ class _StorePageState extends State<StorePage> {
                               top: 12,
                             ),
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: state.stores.length,
+                            itemCount: state.getStoresApproveCount,
                             itemBuilder: (context, index) {
-                              final item = state.stores[index];
+                              final item = state.getStoresApprove[index];
                               return StoreItem(
                                 data: item,
                               );
@@ -133,10 +142,32 @@ class _StorePageState extends State<StorePage> {
                         },
                       )),
                   Container(
-                    child: const Center(
-                      child: Text('Store Page'),
-                    ),
-                  ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: BlocBuilder<StoreCubit, StoreState>(
+                        builder: (context, state) {
+                          return ListView.separated(
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              height: 12,
+                            ),
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(
+                              bottom: 100,
+                              top: 12,
+                            ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: state.getStoresDontApproveCount,
+                            itemBuilder: (context, index) {
+                              final item = state.getStoresDontApprove[index];
+                              return StoreItem(
+                                data: item,
+                              );
+                            },
+                          );
+                        },
+                      )),
                 ]),
               ),
             ],
@@ -171,18 +202,20 @@ class StoreItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                height: 68.sp,
-                width: 68.sp,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      'https://admin-dev.oneship.com.vn/api/v1/uploads/${data.storeFrontId}',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: data.storeAvatarId != null
+                    ? Image.network(
+                        "${EnvManager.shared.api}/api/v1/uploads/${data.storeAvatarId}",
+                        width: 68.sp,
+                        height: 68.sp,
+                        fit: BoxFit.cover,
+                      )
+                    : ImageAssetWidget(
+                        image: AppAssets.imagesStoreImageEmpty,
+                        width: 68.sp,
+                        height: 68.sp,
+                      ),
               ),
               const SizedBox(
                 width: 12,
@@ -204,8 +237,9 @@ class StoreItem extends StatelessWidget {
                       ),
                       StoreStatusWidget(
                         status: data.status ?? '',
+                        approvalStatus: data.approvalStatus ?? '',
+                        reason: data.rejectReason,
                       ),
-                      //dash border
                     ],
                   ),
                 ),
@@ -238,7 +272,7 @@ class StoreItem extends StatelessWidget {
               ),
             ),
             child: Text(
-              data.address ?? '',
+              data.getAddress(),
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontSize: 12.sp,
                   ),
@@ -252,39 +286,47 @@ class StoreItem extends StatelessWidget {
 
 class StoreStatusWidget extends StatelessWidget {
   final String status;
+  final String approvalStatus;
+  final String? reason;
   const StoreStatusWidget({
     super.key,
     required this.status,
+    required this.approvalStatus,
+    this.reason,
   });
 
-  String getTextFromStatus() {
-    switch (status) {
-      case 'active':
-        return 'Đang hoạt động';
-      case 'inactive':
-        return 'Ngừng hoạt động';
+  String getTextFromStatusAndApprovalStatus() {
+    if (status == 'active' && approvalStatus == 'approved') {
+      return 'Đang hoạt động';
+    }
+    if (status == 'inactive' && approvalStatus == 'approved') {
+      return 'Ngừng hoạt động';
+    }
+    switch (approvalStatus) {
       case 'pending':
         return 'Chờ duyệt';
       case 'rejected':
-        return 'Từ chối';
-      case "updating":
+        return 'Đã từ chối';
+      case 'draft':
         return 'Đang cập nhật';
       default:
-        return 'Không xác định';
+        return 'Đang cập nhật';
     }
   }
 
   Color getColorFromStatus() {
-    switch (status) {
-      case 'active':
-        return AppColors.primary;
-      case 'inactive':
-        return AppColors.textGrayBold;
+    if (status == 'active' && approvalStatus == 'approved') {
+      return AppColors.primary;
+    }
+    if (status == 'inactive' && approvalStatus == 'approved') {
+      return AppColors.textGrayBold;
+    }
+    switch (approvalStatus) {
       case 'pending':
         return const Color(0xffF449CF);
       case 'rejected':
         return const Color(0xffDB6844);
-      case "updating":
+      case 'draft':
         return const Color(0xff1C5FC3);
       default:
         return AppColors.textColor;
@@ -292,16 +334,19 @@ class StoreStatusWidget extends StatelessWidget {
   }
 
   Color getColorBgFromStatus() {
-    switch (status) {
-      case 'active':
-        return const Color(0xffEDFCF2);
-      case 'inactive':
-        return const Color(0xffE8E8E8);
+    if (status == 'active' && approvalStatus == 'approved') {
+      return const Color(0xffEDFCF2);
+    }
+    if (status == 'inactive' && approvalStatus == 'approved') {
+      return const Color(0xffE8E8E8);
+    }
+
+    switch (approvalStatus) {
       case 'pending':
         return const Color(0xffF8E4FF);
       case 'rejected':
         return const Color(0xffFDEAE4);
-      case "updating":
+      case 'draft':
         return const Color(0xffDDF4FF);
       default:
         return AppColors.textColor;
@@ -310,41 +355,98 @@ class StoreStatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-        horizontal: 14,
-      ),
-      decoration: BoxDecoration(
-        color: getColorBgFromStatus(),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 6.sp,
-            width: 6.sp,
-            decoration: BoxDecoration(
-              color: getColorFromStatus(),
-              shape: BoxShape.circle,
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 14,
+          ),
+          decoration: BoxDecoration(
+            color: getColorBgFromStatus(),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 6.sp,
+                width: 6.sp,
+                decoration: BoxDecoration(
+                  color: getColorFromStatus(),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(
+                getTextFromStatusAndApprovalStatus(),
+                style: TextStyle(
+                  color: getColorFromStatus(),
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (approvalStatus == 'rejected' &&
+            reason != null &&
+            reason!.isNotEmpty)
+          InkWell(
+            onTap: () {
+              dialogService.showAlertDialog(
+                title: "Lý do từ chối",
+                description: reason!,
+                buttonTitle: 'Chỉnh sửa',
+                buttonCancelTitle: 'Quay lại',
+                onPressed: () {
+                  Get.back();
+                },
+                onCancel: () {
+                  Get.back();
+                },
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 14,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: Colors.white,
+                    size: 12.sp,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    'Lý do từ chối',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            getTextFromStatus(),
-            style: TextStyle(
-              color: getColorFromStatus(),
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

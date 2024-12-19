@@ -36,7 +36,7 @@ class OnBoardingPage extends StatelessWidget {
                     height: AppDimensions.paddingSmall,
                   ),
                   Text(
-                      "Cùng bứt phá doanh thu và chinh phục mọi cơ hội kinh doanh ngay hôm nay",
+                      "Cùng bứt phá doanh thu và chinh phục mọi cơ hội kinh doanh ngay hôm nay!",
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: AppColors.description,
                             fontWeight: FontWeight.w600,
