@@ -192,22 +192,32 @@ class _RegisterPageState extends State<RegisterPage> {
                     isEnable: state.isEnableContinue == true,
                   ),
                   const VSpacing(spacing: 20),
-                  RichText(
-                      text: TextSpan(children: [
-                    TextSpan(
-                      text: "Đã có tài khoản? ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(color: AppColors.colorC5C),
-                    ),
-                    TextSpan(
-                        text: "Đăng nhập",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.color988,
-                            decoration: TextDecoration.underline,
-                            decorationColor: AppColors.color988))
-                  ]))
+                  GestureDetector(
+                    onTap: () {
+                      context.popScreen();
+                      context.pushWithNamed(context,
+                          routerName: AppRoutes.loginPage);
+                    },
+                    child: RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                        text: "Đã có tài khoản? ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: AppColors.colorC5C),
+                      ),
+                      TextSpan(
+                          text: "Đăng nhập",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  color: AppColors.color988,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: AppColors.color988))
+                    ])),
+                  )
                 ],
               ),
               Visibility(
