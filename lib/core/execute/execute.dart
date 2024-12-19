@@ -30,15 +30,15 @@ Future<Result<T>> execute<T>(
           );
           return Failure(e.message ?? "Đã có lỗi xảy ra");
         }
-        if (isShowFailDialog) {
-          dialogService.showAlertDialog(
-            title: "Lỗi",
-            description: "Phiên đăng nhập hết hạn",
-            buttonTitle: "OK",
-            onPressed: () => Get.offAllNamed(AppRoutes.onBoardingPage),
-          );
-          return Failure(e.message ?? "Đã có lỗi xảy ra");
-        }
+        // if (isShowFailDialog) {
+        dialogService.showAlertDialog(
+          title: "Lỗi",
+          description: "Phiên đăng nhập hết hạn",
+          buttonTitle: "OK",
+          onPressed: () => Get.offAllNamed(AppRoutes.onBoardingPage),
+        );
+        return Failure(e.message ?? "Đã có lỗi xảy ra");
+        // }
       }
       if (isShowFailDialog) {
         dialogService.showAlertDialog(

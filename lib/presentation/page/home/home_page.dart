@@ -19,6 +19,11 @@ class HomePage extends StatelessWidget {
           children: [
             ElevatedButton(
                 onPressed: () {
+                  context.pushWithNamed(context, routerName: AppRoutes.store);
+                },
+                child: const Text("Quản lý cửa hàng")),
+            ElevatedButton(
+                onPressed: () {
                   context.pushWithNamed(context,
                       routerName: AppRoutes.registerpage);
                 },

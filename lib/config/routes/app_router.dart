@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_sms_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
 import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
+import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/welcome/welcome_page.dart';
 
 import '../../presentation/page/register/register_page.dart';
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String loginPage = '/loginPage';
   static const String loginWithSMS = '/loginWithSMS';
   static const String registerpage = '/registerpage';
+  static const String store = '/store';
   static final routes = [
     GetPage(
       name: AppRoutes.welcome,
@@ -25,6 +27,10 @@ class AppRoutes {
     GetPage(
       name: AppRoutes.splash,
       page: () => const SplashPage(),
+    ),
+    GetPage(
+      name: AppRoutes.store,
+      page: () => const StorePage(),
     ),
     GetPage(
         name: AppRoutes.onBoardingPage,

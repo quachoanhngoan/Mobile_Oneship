@@ -175,6 +175,10 @@ class DioUtil {
       queryParameters = {
         ...?queryParameters,
       };
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
     }
 
     return _retryableRequest(

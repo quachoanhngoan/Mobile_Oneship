@@ -6,6 +6,7 @@ mixin AuthUrl {
   static const String login = '/api/v1/merchant/auth/login';
   static const String loginBySms = '/api/v1/merchant/auth/login/sms';
   static const String logout = '/api/v1/auth/logout';
+  static const String refreshToken = '/api/v1/auth/refesh-token';
   static const String profile = '/api/v1/auth/profile';
   static const String changePassword = '/api/auth/change-password';
   static const String register = '/api/v1/registrations';

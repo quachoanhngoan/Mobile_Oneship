@@ -12,9 +12,14 @@ class AppColors {
   static const Color description = Color(0xff748785);
 
   static const Color textColor = Color(0xff042723);
+  static const Color textGray = Color(0xffA2A2A2);
+  static const Color textGrayBold = Color(0xff444444);
   static const Color placeHolderColor = Color(0xff98A2B3);
   static const Color borderColor = Color(0xffD0D5DD);
-
+  //#E8E8E8
+  static const Color borderColor2 = Color(0xffE8E8E8);
+  // static const Color success = Color(0xff00B988);
+  static const Color background = Color(0xffEDFCF2);
   static const Color textButtonDisable = Color(0xffA4A4A4);
   static const Color color723 = Color(0xff042723);
   static const Color color988 = Color(0xff00B988);
@@ -26,5 +31,4 @@ class AppColors {
   static const Color colorA4A = Color(0xffA4A4A4);
   static const Color colorA8A = Color(0xff8A8A8A);
   static const Color color080 = Color(0xff808080);
-
 }

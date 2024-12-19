@@ -7,35 +7,46 @@ import '../../../core/constant/dimensions.dart';
 
 class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const AppBarAuth({super.key, required this.title});
+  final bool isShowBackButton;
+  final bool isShowHelpButton;
+  const AppBarAuth(
+      {super.key,
+      required this.title,
+      this.isShowBackButton = true,
+      this.isShowHelpButton = true});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.white,
-      leading: IconButton(
-          onPressed: () {
-            context.popScreen();
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            size: 22,
-          )),
+      leading: isShowBackButton
+          ? IconButton(
+              onPressed: () {
+                context.popScreen();
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                size: 22,
+                color: AppColors.textColor,
+              ))
+          : null,
       title: Text(title,
           style: Theme.of(context)
               .textTheme
               .titleMedium
-              ?.copyWith(fontSize: 16.sp, color: AppColors.color723)),
+              ?.copyWith(fontSize: 16.sp, color: AppColors.textColor)),
       actions: [
-        Center(
-          child: Text(
-            "Trợ giúp",
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: AppColors.color988, fontSize: 12.sp),
-          ),
-        ),
+        isShowHelpButton
+            ? Center(
+                child: Text(
+                  "Trợ giúp",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColors.color988, fontSize: 12.sp),
+                ),
+              )
+            : const SizedBox.shrink(),
         const HSpacing(spacing: 16)
       ],
     );
