@@ -63,12 +63,17 @@ class _AuthApiService implements AuthApiService {
       RegisterEmailRequest email) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{
+      r'Accept': '*/*',
+      r'Content-Type': 'application/json',
+    };
+    _headers.removeWhere((k, v) => v == null);
     final _data = email;
     final _options = _setStreamType<HttpResponse<ResponseDomain>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'application/json',
     )
         .compose(
           _dio.options,

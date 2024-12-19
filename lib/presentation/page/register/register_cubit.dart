@@ -113,7 +113,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (response is DataSuccess) {
       emit(state.copyWith(isContinueStep: true, isPhone: false));
     } else {
-      if (response.data?.message == AppErrorString.kEmailConflictType) {
+      if (response.error?.response?.data['message'] ==
+          AppErrorString.kEmailConflictType) {
         emit(state.copyWith(titleFailedDialog: AppErrorString.kEmailConflict));
       } else {
         emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
@@ -183,7 +184,7 @@ class RegisterCubit extends Cubit<RegisterState> {
             showHintTextRePass: true));
       } else {
         log("create account failed: ${response.data?.message}", name: _tag);
-        if (response.data?.message == AppErrorString.kPhoneConflictType) {
+        if (response.error?.message == AppErrorString.kPhoneConflictType) {
           emit(
               state.copyWith(titleFailedDialog: AppErrorString.kPhoneConflict));
         } else {

@@ -167,9 +167,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         case 2:
                           _passNode.unfocus();
                           _rePassNode.unfocus();
-                          context
-                              .read<RegisterCubit>()
-                              .createPasswordWithPhone(_rePassController.text, email: _phoneController.text);
+                          context.read<RegisterCubit>().createPasswordWithPhone(
+                              _rePassController.text,
+                              email: _phoneController.text);
                           break;
                       }
                     },
@@ -264,14 +264,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(14)),
               child: Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  const VSpacing(spacing: 12),
                   Text(
                     title,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
                         ?.copyWith(fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
                   ),
                   const VSpacing(spacing: 6),
                   Text(
