@@ -4,7 +4,6 @@ import 'package:oneship_merchant_app/core/resources/data_state.dart';
 import 'package:retrofit/retrofit.dart';
 import 'dart:io' show HttpStatus;
 
-
 abstract class BaseApiRepository {
   @protected
   Future<DataState<T>> getStateOf<T>({
@@ -15,12 +14,13 @@ abstract class BaseApiRepository {
       if (httpResponse.data.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
       } else {
-        throw DioException(
-            requestOptions: httpResponse.response.requestOptions,
-            response: httpResponse.response);
+        return DataFailed(httpResponse.data);
+        // throw DioException(
+        //     requestOptions: httpResponse.response.requestOptions,
+        //     response: httpResponse.response);
       }
     } on DioException catch (error) {
-      return DataFailed(error);
+      return DataException(error);
     }
   }
 }
