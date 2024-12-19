@@ -162,7 +162,7 @@ class _LoginSmsPageState extends State<LoginSmsPage> {
                       Get.offNamed(AppRoutes.loginPage);
                     },
                     child: Text(
-                      'Đăng nhập bằng mật khẩu',
+                      'Đăng nhập bằng Mật khẩu',
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 14.sp,

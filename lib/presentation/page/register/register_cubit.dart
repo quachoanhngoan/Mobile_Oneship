@@ -43,6 +43,10 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(state.copyWith(isEnableContinue: value.isNotNullOrEmpty));
   }
 
+  void timeOutOtp() {
+    emit(state.copyWith(isEnableContinue: false));
+  }
+
   void validateOtp(String? otp) {
     emit(state.copyWith(
         isEnableContinue: otp.isNotNullOrEmpty && otp!.length >= 6));
@@ -66,16 +70,13 @@ class RegisterCubit extends Cubit<RegisterState> {
       errorPass = null;
     }
 
-    if (repass.isNotNullOrEmpty) {
-      errorRePass = userValidate.passValid(repass!);
-    } else {
-      errorRePass = null;
-    }
+    // if (repass.isNotNullOrEmpty) {
+    //   errorRePass = userValidate.passValid(repass!);
+    // } else {
+    //   errorRePass = null;
+    // }
 
-    if (pass.isNotNullOrEmpty &&
-        repass.isNotNullOrEmpty &&
-        errorPass == null &&
-        errorRePass == null) {
+    if (pass.isNotNullOrEmpty && repass.isNotNullOrEmpty && errorPass == null) {
       if (pass == repass) {
         emit(state.copyWith(
             isEnableContinue: true, errorPass: null, errorRepass: null));
@@ -92,26 +93,30 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  void submitPhoneOrEmail(String value) {
-    emit(state.copyWith(isLoading: true));
+  void submitPhoneOrEmail(String value, {required bool isReSent}) {
+    if (!isReSent) {
+      emit(state.copyWith(isLoading: true));
+    }
     final isPhone = injector.get<UserValidate>().phoneValid(value);
     if (isPhone) {
-      _sentPhoneToFirebase(value);
+      _sentPhoneToFirebase(value, isResent: isReSent);
     } else {
       final isEmail = injector.get<UserValidate>().emailValid(value);
       if (isEmail) {
-        _registerEmail(value);
+        _registerEmail(value, isResent: isReSent);
       } else {
         emit(state.copyWith(titleFailedDialog: AppErrorString.kPhoneInvalid));
       }
     }
   }
 
-  void _registerEmail(String email) async {
+  void _registerEmail(String email, {required bool isResent}) async {
     final request = RegisterEmailRequest(email: email);
     final response = await injector.get<AuthRepositoy>().registerEmail(request);
     if (response is DataSuccess) {
-      emit(state.copyWith(isContinueStep: true, isPhone: false));
+      if (!isResent) {
+        emit(state.copyWith(isContinueStep: true, isPhone: false));
+      }
     } else {
       if (response.error?.response?.data['message'] ==
           AppErrorString.kEmailConflictType) {
@@ -122,12 +127,14 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  Future _sentPhoneToFirebase(String phone) async {
+  Future _sentPhoneToFirebase(String phone, {required bool isResent}) async {
     isTimeout = false;
     final phoneConvert = _phoneToInternational(phone);
     await injector.get<AuthRepositoy>().loginFirebaseWithPhone(phoneConvert,
         success: (verificationId, resendToken) {
-      emit(state.copyWith(isContinueStep: true, isPhone: true));
+      if (!isResent) {
+        emit(state.copyWith(isContinueStep: true, isPhone: true));
+      }
     }, failed: (e) {
       emit(state.copyWith(titleFailedDialog: AppErrorString.kPhoneInvalid));
     }, timeout: (verificationId) {

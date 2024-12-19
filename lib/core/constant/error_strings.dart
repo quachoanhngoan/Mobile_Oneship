@@ -28,7 +28,9 @@ class AppErrorString {
   static const String kPasswordTooShort = "Mật khẩu có độ dài từ 8-16 ký tự";
   static const String kPasswordUpper =
       "Mật khẩu phải chứa chữ in hoa và thường";
-  static const String kPasswordSymbol = "Mật khẩu phải chứa ký tự đặc biệt";
+  static const String kPasswordSymbol = "Mật khẩu không chứa ký tự đặc biệt";
+  static const String kPasswordSpacing = "Mật khẩu không chứa khoảng trắng";
+  static const String kPasswordVietnameses = "Mật khẩu không chứa chữ có dấu";
   static const String kRePassIsNotCorrect = "Nhập lại mật khẩu chưa chính xác";
   static const String kPhoneInvalid = "Số điện thoại hoặc email\nkhông hợp lệ";
   static const String kOTPInvalid = "Mã xác thực sai.";
