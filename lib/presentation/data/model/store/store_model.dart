@@ -104,9 +104,10 @@ class StoreModel {
       return EStoreButtonType.pendingAndViewButton;
     } else if (approvalStatus == EStoreApprovalStatus.rejected) {
       return EStoreButtonType.rejectAndContinueButton;
-    } else {
+    } else if (approvalStatus == EStoreApprovalStatus.draft) {
       return EStoreButtonType.continueButton;
     }
+    return EStoreButtonType.none;
   }
 
   String getButtonText() {

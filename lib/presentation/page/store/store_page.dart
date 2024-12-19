@@ -247,7 +247,8 @@ class StoreItem extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 8.sp,
+            height:
+                data.getButtonType() != EStoreButtonType.none ? 14.sp : 8.sp,
           ),
           const DottedLine(
             dashColor: AppColors.borderColor2,
@@ -259,11 +260,11 @@ class StoreItem extends StatelessWidget {
             height: 8.sp,
           ),
           Visibility(
-            visible: !false,
+            visible: data.getButtonType() == EStoreButtonType.none,
             replacement: SizedBox(
               width: Get.width,
               child: Text(
-                'Xem chi tiết',
+                data.getButtonText(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontSize: 12.sp,
