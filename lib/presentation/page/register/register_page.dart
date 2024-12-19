@@ -47,6 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _phoneNode = FocusNode();
     _passNode = FocusNode();
     _rePassNode = FocusNode();
+    context.read<RegisterCubit>().changePage(0);
     super.initState();
   }
 
