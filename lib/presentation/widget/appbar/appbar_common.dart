@@ -8,12 +8,15 @@ import '../../../core/constant/dimensions.dart';
 class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isShowBackButton;
+  final void Function()? onPressed;
   final bool isShowHelpButton;
-  const AppBarAuth(
-      {super.key,
-      required this.title,
-      this.isShowBackButton = true,
-      this.isShowHelpButton = true});
+  const AppBarAuth({
+    super.key,
+    required this.title,
+    this.isShowBackButton = true,
+    this.isShowHelpButton = true,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,11 @@ class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
       leading: isShowBackButton
           ? IconButton(
               onPressed: () {
-                context.popScreen();
+                if (onPressed != null) {
+                  onPressed!();
+                } else {
+                  context.popScreen();
+                }
               },
               icon: const Icon(
                 Icons.arrow_back,

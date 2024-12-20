@@ -65,22 +65,56 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
             ),
           ),
           appBar: AppBarAuth(
+            onPressed: () {
+              // Navigator.pop(context);
+              bloc.setPreviousPage();
+            },
             title: state.currentPage.title,
             isShowHelpButton: false,
           ),
-          body: PageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: bloc.pageController,
+          body: Column(
             children: [
-              TermsAndConditionsPage(
-                initialAcceptTermsAndConditions:
-                    state.isAcceptTermsAndConditions,
-                onAcceptTermsAndConditions: (value) {
-                  bloc.setAcceptTermsAndConditions(value);
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(7, (index) {
+                      return Expanded(
+                        child: AnimatedContainer(
+                          margin: const EdgeInsets.only(right: 5),
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInCubic,
+                          height: 6,
+                          decoration: BoxDecoration(
+                              color: index <= state.currentPage.index
+                                  ? AppColors.primary
+                                  : AppColors.textGray,
+                              borderRadius: BorderRadius.circular(8)),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
               ),
-              const StepTypeOfService(),
-              const StepLocationOfService(),
+              Flexible(
+                child: PageView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: bloc.pageController,
+                  children: [
+                    TermsAndConditionsPage(
+                      initialAcceptTermsAndConditions:
+                          state.isAcceptTermsAndConditions,
+                      onAcceptTermsAndConditions: (value) {
+                        bloc.setAcceptTermsAndConditions(value);
+                      },
+                    ),
+                    const StepTypeOfService(),
+                    const StepLocationOfService(),
+                  ],
+                ),
+              ),
             ],
           ),
         );
