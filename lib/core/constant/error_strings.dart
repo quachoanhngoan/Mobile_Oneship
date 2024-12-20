@@ -36,7 +36,11 @@ class AppErrorString {
   static const String kOTPInvalid = "Mã xác thực sai.";
   static const String kPhoneConflictType = "PHONE_CONFLICT";
   static const String kEmailConflictType = "EMAIL_CONFLICT";
+  static const String kNotFound = "Not Found";
   static const String kPhoneConflict = "Số điện thoại đã được đăng ký !";
+  static const String kPhoneNotRegister = "Số điện thoại chưa được đăng ký !";
   static const String kEmailConflict = "Email đã được đăng ký !";
+  static const String kEmailNotFound = "Không tìm thấy email !";
   static const String kServerError = "Lỗi server !";
+  static const String kUnauthorized = "Unauthorized";
 }
