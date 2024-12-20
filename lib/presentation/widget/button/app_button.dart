@@ -69,6 +69,7 @@ class AppButton extends StatelessWidget {
             }
           },
           style: ElevatedButton.styleFrom(
+            overlayColor: AppColors.color8E8,
             elevation: 0,
             backgroundColor: Get.isDarkMode ? colorEnableDarkMode : colorEnable,
             padding: padding ?? EdgeInsets.all(AppDimensions.padding),

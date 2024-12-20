@@ -195,17 +195,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final result =
           await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
-      if (result.user == null) {
-        dialogService.showAlertDialog(
-            title: "Thông báo",
-            description: "Đăng nhập thất bại",
-            buttonTitle: 'OK',
-            onPressed: () {
-              otpController.clear();
-              Get.back();
-            });
-        return;
-      }
+
       if (result.user?.getIdToken() != null) {
         final idToken = await result.user!.getIdToken();
 
@@ -263,8 +253,8 @@ class AuthCubit extends Cubit<AuthState> {
         ));
 
         dialogService.showAlertDialog(
-            title: "Thông báo",
-            description: "Đăng nhập thất bại",
+            title: "Mã xác thực sai",
+            description: "Vui lòng thử lại",
             buttonTitle: 'OK',
             onPressed: () {
               otpController.clear();
@@ -277,8 +267,8 @@ class AuthCubit extends Cubit<AuthState> {
       ));
 
       dialogService.showAlertDialog(
-          title: "Thông báo",
-          description: "Đăng nhập thất bại",
+          title: "Mã xác thực sai",
+          description: "Vui lòng thử lại",
           buttonTitle: 'OK',
           onPressed: () {
             otpController.clear();

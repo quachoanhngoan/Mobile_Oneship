@@ -17,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'firebase_options.dart';
 
@@ -41,6 +42,7 @@ Future<void> main() async {
       MultiBlocProvider(providers: [
         BlocProvider(create: (context) => injector<AuthCubit>()),
         BlocProvider(create: (context) => injector<StoreCubit>()),
+        // BlocProvider(create: (context) => injector<RegisterStoreCubit>()),
         BlocProvider(
           create: (context) => RegisterCubit(),
           child: const RegisterPage(),

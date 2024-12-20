@@ -25,7 +25,7 @@ class BottomGoToRegister extends StatelessWidget {
         SizedBox(width: AppDimensions.paddingSmall),
         GestureDetector(
           onTap: () {
-            Get.toNamed(AppRoutes.registerpage);
+            Get.toNamed(AppRoutes.registerpage, arguments: true);
           },
           child: Text(
             'Đăng ký',
