@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/widget/login_form_field.dart';
 import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
@@ -90,12 +91,17 @@ class LoginForm extends StatelessWidget {
                       color: AppColors.placeHolderColor,
                     ),
                     SizedBox(width: AppDimensions.paddingSmall),
-                    Text(
-                      'Quên?',
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(AppRoutes.registerpage, arguments: false);
+                      },
+                      child: Text(
+                        'Quên?',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ],
