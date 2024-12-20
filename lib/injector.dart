@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,6 +71,9 @@ void blocModule() {
   );
   injector.registerFactory<StoreCubit>(
     () => StoreCubit(injector()),
+  );
+  injector.registerFactory<RegisterStoreCubit>(
+    () => RegisterStoreCubit(injector()),
   );
 }
 
