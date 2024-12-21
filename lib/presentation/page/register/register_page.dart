@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
             Get.back();
             Get.toNamed(AppRoutes.loginPage);
           });
-          createAccountSuccessDialog();
+          createAccountSuccessDialog(isRegister);
         }
       }
       if (state.titleFailedDialog != null) {
@@ -242,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  createAccountSuccessDialog() {
+  createAccountSuccessDialog(bool isRegister) {
     context.showDialogWidget(context,
         child: Dialog(
           backgroundColor: AppColors.transparent,
@@ -275,11 +275,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const VSpacing(spacing: 8),
                 Text(
-                  "Bạn đã tạo mật khẩu thành công!",
+                  isRegister == true
+                      ? "Bạn đã đăng ký tài khoản\nthành công!"
+                      : "Bạn đã tạo mật khẩu thành công!",
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
                       ?.copyWith(fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
                 )
               ],
             ),
