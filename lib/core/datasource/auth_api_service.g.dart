@@ -247,7 +247,7 @@ class _AuthApiService implements AuthApiService {
     )
         .compose(
           _dio.options,
-          '/auth/change-password',
+          '/auth/reset-password-by-sms',
           queryParameters: queryParameters,
           data: _data,
         )

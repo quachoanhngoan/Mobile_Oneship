@@ -37,7 +37,7 @@ abstract class AuthApiService {
   Future<HttpResponse<ResponseDomain>> forgotPassWithEmail(
       @Body() PasswordEmailRequest request);
 
-  @POST("/auth/change-password")
+  @POST("/auth/reset-password-by-sms")
   Future<HttpResponse<ResponseDomain>> forgotPassWithPhone(
       @Body() Map<String, String> body);
 }
