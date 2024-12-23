@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 
 class AppTextFormField extends StatelessWidget {
   final bool isRequired;
@@ -24,7 +26,7 @@ class AppTextFormField extends StatelessWidget {
       controller: controller,
       cursorHeight: 20,
       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontSize: 14,
+            fontSize: 14.sp,
             color: filled == true ? Colors.grey : AppColors.textColor,
           ),
       onTap: onTap,
@@ -49,11 +51,15 @@ class AppTextFormField extends StatelessWidget {
             color: AppColors.borderColor,
           ),
         ),
+        floatingLabelStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+              fontSize: 14.sp,
+              color: filled == true ? Colors.grey : AppColors.placeHolderColor,
+            ),
         label: RichText(
           text: TextSpan(
             text: hintText,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color:
                       filled == true ? Colors.grey : AppColors.placeHolderColor,
                 ),

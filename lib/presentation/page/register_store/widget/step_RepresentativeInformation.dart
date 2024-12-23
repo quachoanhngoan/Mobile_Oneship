@@ -1,42 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/form_upload_image.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
-
-enum ERepresentativeInformation {
-  individual,
-  businessHousehold,
-  business,
-  ;
-
-  String get name {
-    switch (this) {
-      case ERepresentativeInformation.individual:
-        return 'Cá nhân';
-      case ERepresentativeInformation.business:
-        return 'Doanh nghiệp';
-      case ERepresentativeInformation.businessHousehold:
-        return 'Hộ kinh doanh';
-      default:
-        return '';
-    }
-  }
-
-  String get value {
-    switch (this) {
-      case ERepresentativeInformation.individual:
-        return 'individual';
-      case ERepresentativeInformation.business:
-        return 'business';
-      case ERepresentativeInformation.businessHousehold:
-        return 'business_household';
-      default:
-        return '';
-    }
-  }
-}
 
 class StepRepresentativeInformation extends StatefulWidget {
   const StepRepresentativeInformation({super.key});
@@ -49,23 +15,10 @@ class StepRepresentativeInformation extends StatefulWidget {
 class _StepRepresentativeInformationState
     extends State<StepRepresentativeInformation> {
   final ValueNotifier<int> indexStack = ValueNotifier(0);
-  late TextEditingController nameController;
-  late TextEditingController phoneController;
-  late TextEditingController phoneOtherController;
-  late TextEditingController emailController;
-  late TextEditingController taxCodeController;
-  late TextEditingController businessAddressController;
-  late TextEditingController businessNameController;
 
   @override
   void initState() {
     // TODO: implement initState
-
-    nameController = TextEditingController();
-    phoneController = TextEditingController();
-    phoneOtherController = TextEditingController();
-    emailController = TextEditingController();
-    taxCodeController = TextEditingController();
 
     super.initState();
   }
@@ -178,7 +131,7 @@ class Individual extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const AppTextFormField(
-              isRequired: false,
+              isRequired: true,
               hintText: 'Nhập mã số thuế cá nhân',
             ),
             const SizedBox(height: 12),

@@ -9,6 +9,7 @@ import 'package:oneship_merchant_app/presentation/data/repository/store_reposito
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 import '../../../data/model/store/provinces_model.dart';
+import 'register_request.dart';
 
 part 'register_store_state.dart';
 

@@ -29,7 +29,7 @@ Future<void> initializeDependencies() async {
     // 'Content-Type': 'application/json',
   }));
 
-  dio.interceptors.add(AwesomeDioInterceptor());
+  // dio.interceptors.add(AwesomeDioInterceptor());
   injector.registerSingleton<Dio>(dio);
 
   //register your dependencies here

@@ -3,13 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/injector.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_LocationOfService.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_StoreInformation.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/register_location_service.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_terms_conditions.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/register_type_service.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_terms_conditions.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 
@@ -155,7 +152,7 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                       bloc: bloc,
                       state: state,
                     ),
-                    StepRepresentativeInformation(),
+                    const StepRepresentativeInformation(),
                   ],
                 ),
               ),

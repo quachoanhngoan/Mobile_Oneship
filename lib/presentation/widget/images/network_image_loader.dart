@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:oneship_merchant_app/core/resources/env_manager.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/widget/skleton/skelton.dart';
 
 class NetworkImageWithLoader extends StatelessWidget {
   final BoxFit fit;
   final bool isAuth;
+  final bool isBaseUrl;
   final Widget? widgetErrorImage;
   const NetworkImageWithLoader(
     this.src, {
@@ -15,6 +17,7 @@ class NetworkImageWithLoader extends StatelessWidget {
     this.radius = AppDimensions.borderRadius,
     this.isAuth = true,
     this.widgetErrorImage,
+    this.isBaseUrl = false,
   });
 
   final String src;
@@ -22,6 +25,8 @@ class NetworkImageWithLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final url =
+        isBaseUrl ? "${EnvManager.shared.api}/api/v1/uploads/$src" : src;
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(radius)),
       child: CachedNetworkImage(
@@ -29,7 +34,7 @@ class NetworkImageWithLoader extends StatelessWidget {
           'Authorization': 'Bearer ${prefManager.token}',
         },
         fit: fit,
-        imageUrl: src,
+        imageUrl: url,
         imageBuilder: (context, imageProvider) => Container(
           decoration: BoxDecoration(
             image: DecorationImage(
