@@ -141,9 +141,9 @@ class Themings {
         ),
       ),
 
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
         color: AppColors.placeHolderColor,
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
     ),

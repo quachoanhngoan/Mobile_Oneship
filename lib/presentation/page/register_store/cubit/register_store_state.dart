@@ -26,7 +26,7 @@ enum ERegisterPageType {
       case ERegisterPageType.typeOfService:
         return 'Loại hình dịch vụ';
       case ERegisterPageType.locationService:
-        return 'Khu vực phục vụ';
+        return 'Khu vực kinh doanh';
       case ERegisterPageType.storeInformation:
         return 'Thông tin quán';
       case ERegisterPageType.representativeInformation:
@@ -52,6 +52,7 @@ class RegisterStoreState {
   final bool isAlcohol;
   final List<ProvinceModel> listProvinces;
   final ProvinceModel? locationBusSellected;
+  final Representative? representative;
   // final String? errorNameStore;
   final String? errorPhoneContact;
   final String? errorGroupService;
@@ -77,6 +78,7 @@ class RegisterStoreState {
     this.errorProvinces,
     this.errorStreetNumber,
     this.errorWard,
+    this.representative,
   });
 
   RegisterStoreState copyWith({
@@ -95,6 +97,7 @@ class RegisterStoreState {
     String? errorDistrict,
     String? errorWard,
     String? errorStreetNumber,
+    Representative? representative,
   }) {
     return RegisterStoreState(
       status: status ?? this.status,
@@ -107,6 +110,7 @@ class RegisterStoreState {
       listProvinces: listProvinces ?? this.listProvinces,
       locationBusSellected: locationBusSellected ?? this.locationBusSellected,
       showHintNameStore: showHintNameStore ?? this.showHintNameStore,
+      errorPhoneContact: errorPhoneContact ?? this.errorPhoneContact,
     );
   }
 
@@ -130,6 +134,39 @@ class RegisterStoreState {
         return true;
       default:
         return false;
+    }
+  }
+}
+
+enum ERepresentativeInformation {
+  individual,
+  businessHousehold,
+  business,
+  ;
+
+  String get name {
+    switch (this) {
+      case ERepresentativeInformation.individual:
+        return 'Cá nhân';
+      case ERepresentativeInformation.business:
+        return 'Doanh nghiệp';
+      case ERepresentativeInformation.businessHousehold:
+        return 'Hộ kinh doanh';
+      default:
+        return '';
+    }
+  }
+
+  String get value {
+    switch (this) {
+      case ERepresentativeInformation.individual:
+        return 'individual';
+      case ERepresentativeInformation.business:
+        return 'business';
+      case ERepresentativeInformation.businessHousehold:
+        return 'business_household';
+      default:
+        return '';
     }
   }
 }

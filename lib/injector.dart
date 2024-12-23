@@ -26,10 +26,10 @@ final injector = GetIt.instance;
 Future<void> initializeDependencies() async {
   final dio = Dio(BaseOptions(headers: {
     'Accept': '*/*',
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
   }));
 
-  dio.interceptors.add(AwesomeDioInterceptor());
+  // dio.interceptors.add(AwesomeDioInterceptor());
   injector.registerSingleton<Dio>(dio);
 
   //register your dependencies here

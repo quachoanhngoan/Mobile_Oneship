@@ -1,5 +1,10 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' as GetXXX;
+import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 
 import '../../core/resources/env_manager.dart';
@@ -32,10 +37,49 @@ class DioUtil {
     _dio.options.headers = {'Content-Type': 'application/json'};
   }
 
+  //checkToken
+  Future<bool> refreshToken() async {
+    log('refreshToken');
+    try {
+      final refreshToken = _pref.refreshToken;
+
+      if (refreshToken != null && refreshToken.isEmpty) {
+        await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
+        throw authException;
+      }
+      final response = await _dio.post(
+        "/api/v1/merchant/auth/refresh-token",
+        data: {
+          "refreshToken": _pref.refreshToken,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${_pref.token}',
+          },
+        ),
+      );
+
+      if (response.data != null) {
+        _pref.token = response.data['accessToken'];
+        _pref.refreshToken = response.data['refreshToken'];
+        return true;
+      } else {
+        await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
+
+        throw authException;
+      }
+    } on DioException catch (e) {
+      log('refreshToken error$e');
+      await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
+      rethrow;
+    }
+  }
+
   Future<Response<dynamic>> _execute(
     Future<Response<dynamic>> Function() request, {
     // bool isShowError = false,
     bool isRetry = false,
+    bool isAuth = true,
     bool isTranformData = false,
   }) async {
     try {
@@ -81,6 +125,23 @@ class DioUtil {
 
       return response;
     } on DioException catch (e) {
+      if (prefManager.token != null &&
+          (e.response?.statusCode == 401 || e.response?.statusCode == 403)) {
+        final checked = await refreshToken();
+        if (checked) {
+          return await _execute(
+            request,
+            isAuth: isAuth,
+            isRetry: isRetry,
+            isTranformData: isTranformData,
+          );
+        } else {
+          throw DioException(
+            requestOptions: e.requestOptions,
+            response: e.response,
+          );
+        }
+      }
       if (isRetry) {
         if (e.response?.statusCode == 401) {
           _retryCount = 0;
@@ -230,6 +291,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -282,6 +344,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -332,6 +395,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -388,6 +452,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -445,6 +510,7 @@ class DioUtil {
       queryParameters = {
         ...?queryParameters,
         // token: apiToken,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
