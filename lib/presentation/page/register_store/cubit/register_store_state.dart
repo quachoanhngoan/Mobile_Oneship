@@ -48,11 +48,35 @@ class RegisterStoreState {
   final List<StoreModel> stores;
   final ERegisterPageType currentPage;
   final bool isAcceptTermsAndConditions;
+  final int typeService;
+  final bool isAlcohol;
+  final List<ProvinceModel> listProvinces;
+  final ProvinceModel? locationBusSellected;
+  // final String? errorNameStore;
+  final String? errorPhoneContact;
+  final String? errorGroupService;
+  final String? errorProvinces;
+  final String? errorDistrict;
+  final String? errorWard;
+  final String? errorStreetNumber;
+  final bool showHintNameStore;
   RegisterStoreState({
+    this.showHintNameStore = false,
     this.status = EState.initial,
     this.stores = const [],
     this.currentPage = ERegisterPageType.termsAndConditions,
     this.isAcceptTermsAndConditions = false,
+    this.isAlcohol = false,
+    this.typeService = 1,
+    this.listProvinces = const [],
+    this.locationBusSellected,
+    this.errorDistrict,
+    this.errorGroupService,
+    // this.errorNameStore,
+    this.errorPhoneContact,
+    this.errorProvinces,
+    this.errorStreetNumber,
+    this.errorWard,
   });
 
   RegisterStoreState copyWith({
@@ -60,6 +84,17 @@ class RegisterStoreState {
     List<StoreModel>? stores,
     ERegisterPageType? currentPage,
     bool? isAcceptTermsAndConditions,
+    int? typeService,
+    bool? isAlcohol,
+    List<ProvinceModel>? listProvinces,
+    ProvinceModel? locationBusSellected,
+    bool? showHintNameStore,
+    String? errorPhoneContact,
+    String? errorGroupService,
+    String? errorProvinces,
+    String? errorDistrict,
+    String? errorWard,
+    String? errorStreetNumber,
   }) {
     return RegisterStoreState(
       status: status ?? this.status,
@@ -67,6 +102,11 @@ class RegisterStoreState {
       currentPage: currentPage ?? this.currentPage,
       isAcceptTermsAndConditions:
           isAcceptTermsAndConditions ?? this.isAcceptTermsAndConditions,
+      typeService: typeService ?? this.typeService,
+      isAlcohol: isAlcohol ?? this.isAlcohol,
+      listProvinces: listProvinces ?? this.listProvinces,
+      locationBusSellected: locationBusSellected ?? this.locationBusSellected,
+      showHintNameStore: showHintNameStore ?? this.showHintNameStore,
     );
   }
 
@@ -77,7 +117,7 @@ class RegisterStoreState {
       case ERegisterPageType.typeOfService:
         return true;
       case ERegisterPageType.locationService:
-        return true;
+        return locationBusSellected != null;
       case ERegisterPageType.storeInformation:
         return true;
       case ERegisterPageType.representativeInformation:

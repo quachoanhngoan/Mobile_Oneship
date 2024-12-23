@@ -468,8 +468,9 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
           ),
           const VSpacing(spacing: 12),
           TextFieldPassRegister(
+              paddingHintext: 10,
               focusNode: widget.passNode,
-              suffixClick: () {
+              obscureChange: () {
                 setState(() {
                   obscureTextPass = !obscureTextPass;
                 });
@@ -486,8 +487,9 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
               iSHintTextVisible: widget.state.showHintTextPass == true),
           const VSpacing(spacing: 16),
           TextFieldPassRegister(
+              paddingHintext: 10,
               focusNode: widget.rePassNode,
-              suffixClick: () {
+              obscureChange: () {
                 setState(() {
                   obscureTextRePass = !obscureTextRePass;
                 });
@@ -513,10 +515,15 @@ class TextFieldPassRegister extends StatelessWidget {
   final bool iSHintTextVisible;
   final String hintText;
   final Function(String?) onChange;
-  final bool obscureText;
-  final Function suffixClick;
+  final bool? obscureText;
+  final Function? obscureChange;
   final String? errorText;
   final FocusNode? focusNode;
+  final Widget? suffix;
+  final double? paddingHintext;
+  final bool? isStarRed;
+  final Widget? specialPrefix;
+  final double? horizontalPadding;
   const TextFieldPassRegister(
       {super.key,
       this.focusNode,
@@ -524,53 +531,71 @@ class TextFieldPassRegister extends StatelessWidget {
       required this.controller,
       required this.hintText,
       required this.iSHintTextVisible,
-      required this.obscureText,
-      required this.suffixClick,
-      this.errorText});
+      this.obscureText = false,
+      this.obscureChange,
+      this.errorText,
+      this.suffix = const SizedBox(),
+      this.paddingHintext,
+      this.isStarRed = true,
+      this.specialPrefix = const SizedBox(),
+      this.horizontalPadding});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.centerLeft,
       children: <Widget>[
-        Visibility(
-          visible: iSHintTextVisible,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text.rich(
-              TextSpan(
-                text: hintText,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.color2B3, fontWeight: FontWeight.w500),
-                children: const [
-                  TextSpan(
-                      text: '*',
-                      style: TextStyle(fontSize: 14, color: AppColors.red)),
-                ],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  left: paddingHintext ?? 0,
+                  bottom: !iSHintTextVisible ? 50 : 0),
+              child: Text.rich(
+                TextSpan(
+                  text: hintText,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.color2B3,
+                      fontWeight: FontWeight.w500,
+                      fontSize: !iSHintTextVisible ? 12 : 14),
+                  children: [
+                    TextSpan(
+                        text: isStarRed == true ? '*' : "",
+                        style:
+                            const TextStyle(fontSize: 14, color: AppColors.red))
+                  ],
+                ),
               ),
             ),
-          ),
+            specialPrefix ?? Container()
+          ],
         ),
         TextFieldBase(
           controller: controller,
           obscureText: obscureText,
           focusNode: focusNode,
+          horizontalPadding: horizontalPadding,
           hintText: "",
           errorText: errorText,
           onChanged: (value) {
             onChange(value);
           },
-          suffix: IconButton(
-              onPressed: () {
-                suffixClick();
-              },
-              icon: Icon(
-                obscureText
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                color: AppColors.color2B3,
-                size: 18,
-              )),
+          // label: !iSHintTextVisible ? hintText : null,
+          suffix: suffix ??
+              IconButton(
+                  onPressed: () {
+                    if (obscureChange != null) {
+                      obscureChange!();
+                    }
+                  },
+                  icon: Icon(
+                    obscureText == true
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: AppColors.color2B3,
+                    size: 18,
+                  )),
         ),
       ],
     );
