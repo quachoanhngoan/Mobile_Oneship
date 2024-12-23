@@ -14,30 +14,30 @@ part 'auth_api_service.g.dart';
 abstract class AuthApiService {
   factory AuthApiService(Dio dio, {String baseUrl}) = _AuthApiService;
 
-  // @Headers({
-  //   'Accept': '*/*',
-  //   'Content-Type': 'application/json',
-  // })
   @POST("/auth/register/sms")
   Future<HttpResponse<ResponseDomain>> registerPhone(
       @Body() RegisterPhoneRequest request);
 
-  // @Headers({
-  //   'Accept': '*/*',
-  //   'Content-Type': 'application/json',
-  // })
   @POST("/auth/register/email")
   Future<HttpResponse<ResponseDomain>> registerEmail(
       @Body() RegisterEmailRequest email);
 
-  // @Headers({
-  //   'Accept': '*/*',
-  //   'Content-Type': 'application/json',
-  // })
   @POST("/auth/check-otp")
   Future<HttpResponse<ResponseDomain>> checkOtp(@Body() OtpRequest request);
 
   @POST("/auth/register/email/completed")
   Future<HttpResponse<ResponseDomain>> createUserWithEmail(
       @Body() PasswordEmailRequest request);
+
+  @POST("/auth/forgot-password")
+  Future<HttpResponse<ResponseDomain>> getOTPWithForgotEmail(
+      @Body() RegisterEmailRequest email);
+
+  @POST("/auth/reset-password-by-email")
+  Future<HttpResponse<ResponseDomain>> forgotPassWithEmail(
+      @Body() PasswordEmailRequest request);
+
+  @POST("/auth/reset-password-by-sms")
+  Future<HttpResponse<ResponseDomain>> forgotPassWithPhone(
+      @Body() Map<String, String> body);
 }

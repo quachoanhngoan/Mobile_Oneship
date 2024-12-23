@@ -36,7 +36,11 @@ class RegisterCubit extends Cubit<RegisterState> {
         break;
     }
     emit(state.copyWith(
-        title: title, isEnableContinue: false, isContinueStep: false));
+        title: title,
+        isEnableContinue: false,
+        isContinueStep: false,
+        showHintTextPass: true,
+        showHintTextRePass: true));
   }
 
   void validateUserName(String? value) {
@@ -93,7 +97,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  void submitPhoneOrEmail(String value, {required bool isReSent}) {
+  void submitPhoneOrEmail(String value,
+      {required bool isReSent, required bool isRegister}) {
     if (!isReSent) {
       emit(state.copyWith(isLoading: true));
     }
@@ -103,14 +108,35 @@ class RegisterCubit extends Cubit<RegisterState> {
     } else {
       final isEmail = injector.get<UserValidate>().emailValid(value);
       if (isEmail) {
-        _registerEmail(value, isResent: isReSent);
+        if (isRegister) {
+          _registerEmail(value, isResent: isReSent);
+        } else {
+          _forgotPassWithEmail(value, isResent: isReSent);
+        }
       } else {
         emit(state.copyWith(titleFailedDialog: AppErrorString.kPhoneInvalid));
       }
     }
   }
 
-  void _registerEmail(String email, {required bool isResent}) async {
+  Future _forgotPassWithEmail(String email, {required bool isResent}) async {
+    final request = RegisterEmailRequest(email: email);
+    final response =
+        await injector.get<AuthRepositoy>().getOTPWithForgotEmail(request);
+
+    if (response is DataSuccess) {
+      emit(state.copyWith(isContinueStep: true, isPhone: false));
+    } else {
+      if (response.error?.response?.data['message'] ==
+          AppErrorString.kNotFound) {
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kEmailNotFound));
+      } else {
+        emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+      }
+    }
+  }
+
+  Future _registerEmail(String email, {required bool isResent}) async {
     final request = RegisterEmailRequest(email: email);
     final response = await injector.get<AuthRepositoy>().registerEmail(request);
     if (response is DataSuccess) {
@@ -175,7 +201,53 @@ class RegisterCubit extends Cubit<RegisterState> {
     return phone;
   }
 
-  Future createPasswordWithPhone(String password, {String? email}) async {
+  Future resetPasswordWithPhoneOrEmail(String password, {String? email}) async {
+    emit(state.copyWith(isLoading: true));
+    if (state.isPhone == true) {
+      final response = await injector
+          .get<AuthRepositoy>()
+          .createForgotPassWithPhone(password);
+
+      if (response is DataSuccess) {
+        log("reset pass success: $response", name: _tag);
+        emit(state.copyWith(
+            isContinueStep: true,
+            showHintTextPass: true,
+            showHintTextRePass: true));
+      } else {
+        log("reset pass failed: ${response.error?.response?.data['message']}",
+            name: _tag);
+        if (response.error?.response?.data['message'] ==
+            AppErrorString.kUnauthorized) {
+          emit(state.copyWith(
+              titleFailedDialog: AppErrorString.kPhoneNotRegister));
+        } else {
+          emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+        }
+      }
+    } else {
+      if (email != null) {
+        final request = PasswordEmailRequest(
+            email: email, password: password, otp: smsCode);
+        final response = await injector
+            .get<AuthRepositoy>()
+            .createForgotPassWithEmail(request);
+        if (response is DataSuccess) {
+          log("reset pass success: $response", name: _tag);
+          emit(state.copyWith(
+              isContinueStep: true,
+              showHintTextPass: true,
+              showHintTextRePass: true));
+        } else {
+          log("reset account failed: ${response.data?.message}", name: _tag);
+          emit(state.copyWith(titleFailedDialog: AppErrorString.kServerError));
+        }
+      }
+    }
+  }
+
+  Future createPasswordWithPhoneOrEmail(String password,
+      {String? email}) async {
     emit(state.copyWith(isLoading: true));
     if (state.isPhone == true) {
       final request = RegisterPhoneRequest(
@@ -191,7 +263,8 @@ class RegisterCubit extends Cubit<RegisterState> {
             showHintTextRePass: true));
       } else {
         log("create account failed: ${response.data?.message}", name: _tag);
-        if (response.error?.message == AppErrorString.kPhoneConflictType) {
+        if (response.error?.response?.data['message'] ==
+            AppErrorString.kPhoneConflictType) {
           emit(
               state.copyWith(titleFailedDialog: AppErrorString.kPhoneConflict));
         } else {

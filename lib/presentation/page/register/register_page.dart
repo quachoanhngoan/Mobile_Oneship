@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +11,6 @@ import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart'
 import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_base.dart';
 import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
-import '../../../config/theme/color.dart';
 import '../../../core/constant/app_assets.dart';
 import '../../../core/constant/dimensions.dart';
 import '../../widget/loading/loading.dart';
@@ -53,6 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isRegister = Get.arguments as bool;
+
     return BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
       if (state.isContinueStep == true) {
@@ -66,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
             Get.back();
             Get.toNamed(AppRoutes.loginPage);
           });
-          createAccountSuccessDialog();
+          createAccountSuccessDialog(isRegister);
         }
       }
       if (state.titleFailedDialog != null) {
@@ -140,7 +139,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           timeoutPressed: () {
                             context.read<RegisterCubit>().submitPhoneOrEmail(
                                 _phoneController.text.trim(),
-                                isReSent: true);
+                                isReSent: true,
+                                isRegister: isRegister);
                           },
                           onDone: (value) {
                             context.read<RegisterCubit>().validateOtp(value);
@@ -167,7 +167,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           _phoneNode.unfocus();
                           context.read<RegisterCubit>().submitPhoneOrEmail(
                               _phoneController.text.trim(),
-                              isReSent: false);
+                              isReSent: false,
+                              isRegister: isRegister);
                           break;
                         case 1:
                           context
@@ -177,9 +178,20 @@ class _RegisterPageState extends State<RegisterPage> {
                         case 2:
                           _passNode.unfocus();
                           _rePassNode.unfocus();
-                          context.read<RegisterCubit>().createPasswordWithPhone(
-                              _rePassController.text,
-                              email: _phoneController.text);
+                          if (isRegister) {
+                            context
+                                .read<RegisterCubit>()
+                                .createPasswordWithPhoneOrEmail(
+                                    _rePassController.text,
+                                    email: _phoneController.text);
+                          } else {
+                            context
+                                .read<RegisterCubit>()
+                                .resetPasswordWithPhoneOrEmail(
+                                    _rePassController.text,
+                                    email: _phoneController.text);
+                          }
+
                           break;
                       }
                     },
@@ -230,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  createAccountSuccessDialog() {
+  createAccountSuccessDialog(bool isRegister) {
     context.showDialogWidget(context,
         child: Dialog(
           backgroundColor: AppColors.transparent,
@@ -263,11 +275,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const VSpacing(spacing: 8),
                 Text(
-                  "Bạn đã tạo mật khẩu thành công!",
+                  isRegister == true
+                      ? "Bạn đã đăng ký tài khoản\nthành công!"
+                      : "Bạn đã tạo mật khẩu thành công!",
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
                       ?.copyWith(fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
                 )
               ],
             ),

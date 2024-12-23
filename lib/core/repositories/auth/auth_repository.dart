@@ -33,6 +33,14 @@ abstract class AuthRepositoy {
 
   Future<DataState<ResponseDomain>> createUserWithEmail(
       PasswordEmailRequest request);
+
+  Future<DataState<ResponseDomain>> getOTPWithForgotEmail(
+      RegisterEmailRequest request);
+
+  Future<DataState<ResponseDomain>> createForgotPassWithPhone(String password);
+
+  Future<DataState<ResponseDomain>> createForgotPassWithEmail(
+      PasswordEmailRequest request);
 }
 
 class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
@@ -150,6 +158,30 @@ class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
       PasswordEmailRequest request) {
     return getStateOf<ResponseDomain>(request: () async {
       return await _authApiService.createUserWithEmail(request);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> getOTPWithForgotEmail(
+      RegisterEmailRequest request) {
+    return getStateOf(request: () async {
+      return await _authApiService.getOTPWithForgotEmail(request);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> createForgotPassWithEmail(
+      PasswordEmailRequest request) {
+    return getStateOf(request: () async {
+      return await _authApiService.forgotPassWithEmail(request);
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> createForgotPassWithPhone(String password) {
+    return getStateOf(request: () async {
+      return await _authApiService.forgotPassWithPhone(
+          {"idToken": idToken ?? "", "password": password});
     });
   }
 }

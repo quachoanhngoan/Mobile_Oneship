@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
                 onPressed: () {
                   context.pushWithNamed(context,
-                      routerName: AppRoutes.registerpage);
+                      routerName: AppRoutes.registerpage, arguments: true);
                 },
                 child: const Text("Đăng ký")),
             ElevatedButton(

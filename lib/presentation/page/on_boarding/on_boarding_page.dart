@@ -103,7 +103,7 @@ class OnBoardingPage extends StatelessWidget {
                       text: "Đăng ký",
                       isEnable: true,
                       onPressed: () {
-                        Get.toNamed(AppRoutes.registerpage);
+                        Get.toNamed(AppRoutes.registerpage, arguments: true);
                       },
                     ),
                   ),
