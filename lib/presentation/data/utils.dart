@@ -60,8 +60,8 @@ class DioUtil {
       );
 
       if (response.data != null) {
-        _pref.token = response.data?.accessToken;
-        _pref.refreshToken = response.data?.refreshToken;
+        _pref.token = response.data['accessToken'];
+        _pref.refreshToken = response.data['refreshToken'];
         return true;
       } else {
         await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
@@ -291,6 +291,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -343,6 +344,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -393,6 +395,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -449,6 +452,7 @@ class DioUtil {
 
       queryParameters = {
         ...?queryParameters,
+        "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -506,6 +510,7 @@ class DioUtil {
       queryParameters = {
         ...?queryParameters,
         // token: apiToken,
+        "Authorization": "Bearer $apiToken",
       };
     }
 

@@ -16,6 +16,7 @@ class TextFieldBase extends StatelessWidget {
   final double? height;
   final FocusNode? focusNode;
   final Function()? onEditingComplete;
+  final double? horizontalPadding;
   const TextFieldBase(
       {super.key,
       this.label,
@@ -29,7 +30,8 @@ class TextFieldBase extends StatelessWidget {
       this.onBorder = true,
       this.height,
       this.focusNode,
-      this.onEditingComplete});
+      this.onEditingComplete,
+      this.horizontalPadding});
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +66,8 @@ class TextFieldBase extends StatelessWidget {
                   fontWeight: FontWeight.w500),
               suffixIcon: suffix,
               prefixIcon: prefix,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: 10, horizontal: horizontalPadding ?? 10),
               focusedBorder: _border(onBorder: onBorder),
               enabledBorder: _border(onBorder: onBorder),
               border: _border(onBorder: onBorder),

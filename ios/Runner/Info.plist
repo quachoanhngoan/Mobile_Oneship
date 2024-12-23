@@ -13,6 +13,12 @@
 			</array>
 		</dict>
 	</array>
+	  <key>NSCameraUsageDescription</key>
+    <string> App wants to access your camera</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string> App wants to access your gallery</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string> App wants to access your microphone</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
     <key>NSAllowsLocalNetworking</key>
