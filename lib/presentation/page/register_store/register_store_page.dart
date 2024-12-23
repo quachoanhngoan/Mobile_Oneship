@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_LocationOfService.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_StoreInformation.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_termsAndConditions.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_typeOfService.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
@@ -75,7 +77,8 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
           body: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 child: SizedBox(
                   width: double.infinity,
                   child: Row(
@@ -112,6 +115,8 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                     ),
                     const StepTypeOfService(),
                     const StepLocationOfService(),
+                    const StepStoreInformation(),
+                    const StepRepresentativeInformation(),
                   ],
                 ),
               ),

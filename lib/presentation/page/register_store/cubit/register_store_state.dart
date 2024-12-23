@@ -26,7 +26,7 @@ enum ERegisterPageType {
       case ERegisterPageType.typeOfService:
         return 'Loại hình dịch vụ';
       case ERegisterPageType.locationService:
-        return 'Khu vực phục vụ';
+        return 'Khu vực kinh doanh';
       case ERegisterPageType.storeInformation:
         return 'Thông tin quán';
       case ERegisterPageType.representativeInformation:
