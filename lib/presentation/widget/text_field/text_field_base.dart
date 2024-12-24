@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,21 +19,28 @@ class TextFieldBase extends StatelessWidget {
   final FocusNode? focusNode;
   final Function()? onEditingComplete;
   final double? horizontalPadding;
-  const TextFieldBase(
-      {super.key,
-      this.label,
-      this.controller,
-      required this.hintText,
-      this.suffix,
-      this.onChanged,
-      this.obscureText = false,
-      this.errorText,
-      this.prefix,
-      this.onBorder = true,
-      this.height,
-      this.focusNode,
-      this.onEditingComplete,
-      this.horizontalPadding});
+  final bool? isNumber;
+  final bool? readOnly;
+  // final Function? onTap;
+  const TextFieldBase({
+    super.key,
+    this.label,
+    this.controller,
+    required this.hintText,
+    this.suffix,
+    this.onChanged,
+    this.obscureText = false,
+    this.errorText,
+    this.prefix,
+    this.onBorder = true,
+    this.height,
+    this.focusNode,
+    this.onEditingComplete,
+    this.horizontalPadding,
+    this.isNumber = false,
+    this.readOnly = false,
+    // this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +61,17 @@ class TextFieldBase extends StatelessWidget {
             controller: controller,
             obscureText: obscureText!,
             textAlignVertical: TextAlignVertical.center,
+            keyboardType: isNumber == true ? TextInputType.number : null,
             onEditingComplete: () {
               focusNode?.unfocus();
               onEditingComplete?.call();
             },
+            readOnly: readOnly ?? false,
+            // onTap: () {
+            //   if (onTap != null) {
+            //     onTap!();
+            //   }
+            // },
             cursorColor: AppColors.black,
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -524,52 +526,57 @@ class TextFieldPassRegister extends StatelessWidget {
   final bool? isStarRed;
   final Widget? specialPrefix;
   final double? horizontalPadding;
-  const TextFieldPassRegister(
-      {super.key,
-      this.focusNode,
-      required this.onChange,
-      required this.controller,
-      required this.hintText,
-      required this.iSHintTextVisible,
-      this.obscureText = false,
-      this.obscureChange,
-      this.errorText,
-      this.suffix = const SizedBox(),
-      this.paddingHintext,
-      this.isStarRed = true,
-      this.specialPrefix = const SizedBox(),
-      this.horizontalPadding});
+  final bool? isNumber;
+  final bool? readOnly;
+  final Function? onTap;
+  const TextFieldPassRegister({
+    super.key,
+    this.focusNode,
+    required this.onChange,
+    required this.controller,
+    required this.hintText,
+    required this.iSHintTextVisible,
+    this.obscureText = false,
+    this.obscureChange,
+    this.errorText,
+    this.suffix = const SizedBox(),
+    this.paddingHintext,
+    this.isStarRed = true,
+    this.specialPrefix = const SizedBox(),
+    this.horizontalPadding,
+    this.isNumber = false,
+    this.readOnly = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.centerLeft,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: paddingHintext ?? 0,
-                  bottom: !iSHintTextVisible ? 50 : 0),
-              child: Text.rich(
+        Padding(
+          padding: EdgeInsets.only(
+              left: paddingHintext ?? 0,
+              bottom: !iSHintTextVisible
+                  ? errorText == null
+                      ? 50
+                      : 65
+                  : 0),
+          child: Text.rich(
+            TextSpan(
+              text: hintText,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.color2B3,
+                  fontWeight: FontWeight.w500,
+                  fontSize: !iSHintTextVisible ? 12 : 14),
+              children: [
                 TextSpan(
-                  text: hintText,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.color2B3,
-                      fontWeight: FontWeight.w500,
-                      fontSize: !iSHintTextVisible ? 12 : 14),
-                  children: [
-                    TextSpan(
-                        text: isStarRed == true ? '*' : "",
-                        style:
-                            const TextStyle(fontSize: 14, color: AppColors.red))
-                  ],
-                ),
-              ),
+                    text: isStarRed == true ? '*' : "",
+                    style:
+                        const TextStyle(fontSize: 14, color: AppColors.red))
+              ],
             ),
-            specialPrefix ?? Container()
-          ],
+          ),
         ),
         TextFieldBase(
           controller: controller,
@@ -581,7 +588,9 @@ class TextFieldPassRegister extends StatelessWidget {
           onChanged: (value) {
             onChange(value);
           },
-          // label: !iSHintTextVisible ? hintText : null,
+          // onTap: onTap,
+          readOnly: readOnly ?? false,
+          isNumber: isNumber,
           suffix: suffix ??
               IconButton(
                   onPressed: () {
@@ -597,6 +606,27 @@ class TextFieldPassRegister extends StatelessWidget {
                     size: 18,
                   )),
         ),
+        readOnly == true
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (onTap != null) {
+                        onTap!();
+                      }
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 80),
+                      width: 200,
+                      height: 48,
+                      color: AppColors.transparent,
+                    ),
+                  ),
+                  specialPrefix ?? Container()
+                ],
+              )
+            : const SizedBox()
       ],
     );
   }

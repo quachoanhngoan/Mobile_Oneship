@@ -53,33 +53,37 @@ class RegisterStoreState {
   final List<ProvinceModel> listProvinces;
   final ProvinceModel? locationBusSellected;
   final Representative? representative;
-  // final String? errorNameStore;
   final String? errorPhoneContact;
-  final String? errorGroupService;
+  final List<GroupServiceModel> listGroupService;
   final String? errorProvinces;
   final String? errorDistrict;
   final String? errorWard;
   final String? errorStreetNumber;
   final bool showHintNameStore;
-  RegisterStoreState({
-    this.showHintNameStore = false,
-    this.status = EState.initial,
-    this.stores = const [],
-    this.currentPage = ERegisterPageType.termsAndConditions,
-    this.isAcceptTermsAndConditions = false,
-    this.isAlcohol = false,
-    this.typeService = 1,
-    this.listProvinces = const [],
-    this.locationBusSellected,
-    this.errorDistrict,
-    this.errorGroupService,
-    // this.errorNameStore,
-    this.errorPhoneContact,
-    this.errorProvinces,
-    this.errorStreetNumber,
-    this.errorWard,
-    this.representative,
-  });
+  final List<DistrictModel> listDistrict;
+  final List<DistrictModel> listWard;
+  final bool isNextEnable;
+
+  RegisterStoreState(
+      {this.showHintNameStore = true,
+      this.status = EState.initial,
+      this.stores = const [],
+      this.currentPage = ERegisterPageType.termsAndConditions,
+      this.isAcceptTermsAndConditions = false,
+      this.isAlcohol = false,
+      this.typeService = 1,
+      this.listProvinces = const [],
+      this.locationBusSellected,
+      this.errorDistrict,
+      this.listGroupService = const [],
+      this.errorPhoneContact,
+      this.errorProvinces,
+      this.errorStreetNumber,
+      this.errorWard,
+      this.representative,
+      this.listDistrict = const [],
+      this.listWard = const [],
+      this.isNextEnable = false});
 
   RegisterStoreState copyWith({
     EState? status,
@@ -92,12 +96,15 @@ class RegisterStoreState {
     ProvinceModel? locationBusSellected,
     bool? showHintNameStore,
     String? errorPhoneContact,
-    String? errorGroupService,
+    List<GroupServiceModel>? listGroupService,
+    List<DistrictModel>? listDistrict,
     String? errorProvinces,
     String? errorDistrict,
     String? errorWard,
     String? errorStreetNumber,
     Representative? representative,
+    List<DistrictModel>? listWard,
+    bool? isNextEnable,
   }) {
     return RegisterStoreState(
       status: status ?? this.status,
@@ -110,7 +117,15 @@ class RegisterStoreState {
       listProvinces: listProvinces ?? this.listProvinces,
       locationBusSellected: locationBusSellected ?? this.locationBusSellected,
       showHintNameStore: showHintNameStore ?? this.showHintNameStore,
-      errorPhoneContact: errorPhoneContact ?? this.errorPhoneContact,
+      errorPhoneContact: errorPhoneContact,
+      listGroupService: listGroupService ?? this.listGroupService,
+      errorProvinces: errorProvinces,
+      errorDistrict: errorDistrict,
+      errorWard: errorWard,
+      errorStreetNumber: errorStreetNumber,
+      listDistrict: listDistrict ?? this.listDistrict,
+      listWard: listWard ?? this.listWard,
+      isNextEnable: isNextEnable ?? false,
     );
   }
 
@@ -123,7 +138,7 @@ class RegisterStoreState {
       case ERegisterPageType.locationService:
         return locationBusSellected != null;
       case ERegisterPageType.storeInformation:
-        return true;
+        return isNextEnable;
       case ERegisterPageType.representativeInformation:
         return true;
       case ERegisterPageType.bankInformation:
