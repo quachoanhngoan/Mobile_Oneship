@@ -4,10 +4,14 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
+import '../../../data/model/store/group_service_model.dart';
 import '../../../data/model/store/provinces_model.dart';
 import 'register_request.dart';
 
@@ -56,6 +60,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     );
     if (state.currentPage == ERegisterPageType.typeOfService) {
       _getAllLocationBussiness();
+      _getAllGroupService();
     }
     setCurrentPage(ERegisterPageType.values[state.currentPage.index + 1]);
   }
@@ -103,5 +108,60 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
 
   nameStoreVerify(String? value) {
     emit(state.copyWith(showHintNameStore: !value.isNotNullOrEmpty));
+  }
+
+  validatePhone(String? phone) {
+    if (phone.isNotNullOrEmpty) {
+      final isPhone = injector.get<UserValidate>().phoneValid(phone!);
+      if (isPhone) {
+        emit(state.copyWith(errorPhoneContact: null));
+      } else {
+        emit(state.copyWith(errorPhoneContact: "Số điện thoại không đúng."));
+      }
+    } else {
+      emit(state.copyWith(errorPhoneContact: null));
+    }
+  }
+
+  _getAllGroupService() async {
+    if (state.listGroupService.isEmpty) {
+      final listGroupService = await repository.getGroupService();
+      emit(state.copyWith(listGroupService: listGroupService));
+    }
+  }
+
+  changeProvices(ProvinceModel provices) async {
+    if (provices.id != null) {
+      final listDistrict = await repository.listDistrict(provices.id!);
+      emit(state.copyWith(listDistrict: listDistrict));
+    }
+  }
+
+  changeDistrict(DistrictModel district) async {
+    if (district.id != null) {
+      final listWard = await repository.listWard(district.id!);
+      emit(state.copyWith(listWard: listWard));
+    }
+  }
+
+  verifyContinueInfoStore(
+      {String? nameStore,
+      String? phoneNumber,
+      String? groupService,
+      String? provinces,
+      String? district,
+      String? ward,
+      String? homeAndStreet}) {
+    if (nameStore.isNotNullOrEmpty &&
+        phoneNumber.isNotNullOrEmpty &&
+        groupService.isNotNullOrEmpty &&
+        provinces.isNotNullOrEmpty &&
+        district.isNotNullOrEmpty &&
+        ward.isNotNullOrEmpty &&
+        homeAndStreet.isNotNullOrEmpty) {
+      emit(state.copyWith(isNextEnable: true));
+    } else {
+      emit(state.copyWith(isNextEnable: false));
+    }
   }
 }
