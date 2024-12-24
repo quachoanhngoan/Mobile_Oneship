@@ -51,6 +51,8 @@ class RegisterStoreState {
   final int typeService;
   final bool isAlcohol;
   final List<ProvinceModel> listProvinces;
+  final List<BankM> banks;
+  final List<BranchBankM> branchBanks;
   final ProvinceModel? locationBusSellected;
   final Representative? representative;
   // final String? errorNameStore;
@@ -61,15 +63,18 @@ class RegisterStoreState {
   final String? errorWard;
   final String? errorStreetNumber;
   final bool showHintNameStore;
+  final BankRequest? bankRequest;
   RegisterStoreState({
     this.showHintNameStore = false,
     this.status = EState.initial,
     this.stores = const [],
+    this.banks = const [],
     this.currentPage = ERegisterPageType.termsAndConditions,
     this.isAcceptTermsAndConditions = false,
     this.isAlcohol = false,
     this.typeService = 1,
     this.listProvinces = const [],
+    this.branchBanks = const [],
     this.locationBusSellected,
     this.errorDistrict,
     this.errorGroupService,
@@ -78,12 +83,15 @@ class RegisterStoreState {
     this.errorProvinces,
     this.errorStreetNumber,
     this.errorWard,
-    this.representative,
+    this.representative = const Representative(),
+    this.bankRequest = const BankRequest(),
   });
 
   RegisterStoreState copyWith({
     EState? status,
     List<StoreModel>? stores,
+    List<BankM>? banks,
+    List<BranchBankM>? branchBanks,
     ERegisterPageType? currentPage,
     bool? isAcceptTermsAndConditions,
     int? typeService,
@@ -98,10 +106,14 @@ class RegisterStoreState {
     String? errorWard,
     String? errorStreetNumber,
     Representative? representative,
+    BankRequest? bankRequest,
   }) {
     return RegisterStoreState(
+      representative: representative ?? this.representative,
       status: status ?? this.status,
       stores: stores ?? this.stores,
+      banks: banks ?? this.banks,
+      branchBanks: branchBanks ?? this.branchBanks,
       currentPage: currentPage ?? this.currentPage,
       isAcceptTermsAndConditions:
           isAcceptTermsAndConditions ?? this.isAcceptTermsAndConditions,
@@ -111,6 +123,7 @@ class RegisterStoreState {
       locationBusSellected: locationBusSellected ?? this.locationBusSellected,
       showHintNameStore: showHintNameStore ?? this.showHintNameStore,
       errorPhoneContact: errorPhoneContact ?? this.errorPhoneContact,
+      bankRequest: bankRequest ?? this.bankRequest,
     );
   }
 
@@ -125,7 +138,7 @@ class RegisterStoreState {
       case ERegisterPageType.storeInformation:
         return true;
       case ERegisterPageType.representativeInformation:
-        return true;
+        return representative != null && representative!.isValid();
       case ERegisterPageType.bankInformation:
         return true;
       case ERegisterPageType.storeImages:

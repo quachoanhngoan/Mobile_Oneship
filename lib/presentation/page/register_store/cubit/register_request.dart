@@ -1,23 +1,25 @@
-class Representative {
-  String? type;
-  String? name;
-  String? businessName;
-  String? phone;
-  String? otherPhone;
-  String? email;
-  String? taxCode;
-  String? address;
-  String? personalTaxCode;
-  String? identityCard;
-  String? identityCardPlace;
-  String? identityCardDate;
-  String? identityCardFrontImageId;
-  String? identityCardBackImageId;
-  String? businessLicenseImageId;
-  String? relatedImageId;
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 
-  Representative({
-    this.type,
+class Representative {
+  final ERepresentativeInformation? type;
+  final String? name;
+  final String? businessName;
+  final String? phone;
+  final String? otherPhone;
+  final String? email;
+  final String? taxCode;
+  final String? address;
+  final String? personalTaxCode;
+  final String? identityCard;
+  final String? identityCardPlace;
+  final String? identityCardDate;
+  final String? identityCardFrontImageId;
+  final String? identityCardBackImageId;
+  final String? businessLicenseImageId;
+  final String? relatedImageId;
+
+  const Representative({
+    this.type = ERepresentativeInformation.individual,
     this.name,
     this.businessName,
     this.phone,
@@ -57,7 +59,7 @@ class Representative {
   }
 
   Representative copyWith({
-    String? type,
+    ERepresentativeInformation? type,
     String? name,
     String? businessName,
     String? phone,
@@ -94,6 +96,95 @@ class Representative {
       businessLicenseImageId:
           businessLicenseImageId ?? this.businessLicenseImageId,
       relatedImageId: relatedImageId ?? this.relatedImageId,
+    );
+  }
+
+  bool isValid() {
+    if (type == ERepresentativeInformation.individual) {
+      return name != null &&
+          phone != null &&
+          // email != null &&
+          // taxCode != null &&
+          // address != null &&
+          personalTaxCode != null &&
+          identityCard != null &&
+          identityCardPlace != null &&
+          identityCardDate != null &&
+          identityCardFrontImageId != null &&
+          identityCardBackImageId != null;
+    }
+    if (type == ERepresentativeInformation.businessHousehold) {
+      return name != null &&
+          businessName != null &&
+          phone != null &&
+          // email != null &&
+          taxCode != null &&
+          address != null &&
+          // personalTaxCode != null &&
+          // identityCard != null &&
+          // identityCardPlace != null &&
+          // identityCardDate != null &&
+          // identityCardFrontImageId != null &&
+          // identityCardBackImageId != null &&
+          businessLicenseImageId != null;
+    }
+    return name != null &&
+        businessName != null &&
+        phone != null &&
+        // email != null &&
+        taxCode != null &&
+        address != null &&
+        // personalTaxCode != null &&
+        // identityCard != null &&
+        // identityCardPlace != null &&
+        // identityCardDate != null &&
+        // identityCardFrontImageId != null &&
+        // identityCardBackImageId != null &&
+        businessLicenseImageId != null;
+  }
+}
+
+class BankRequest {
+  final String? bankId;
+  final String? bankName;
+  final String? bankBranchId;
+  final String? bankBranchName;
+  final String? bankAccountNumber;
+  final String? bankAccountName;
+
+  const BankRequest({
+    this.bankId,
+    this.bankBranchId,
+    this.bankBranchName,
+    this.bankAccountNumber,
+    this.bankAccountName,
+    this.bankName,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['bankId'] = bankId;
+    data['bankBranchId'] = bankBranchId;
+    data['bankAccountNumber'] = bankAccountNumber;
+    data['bankAccountName'] = bankAccountName;
+    return data;
+  }
+
+  BankRequest copyWith({
+    String? bankId,
+    String? bankBranchId,
+    String? bankAccountNumber,
+    String? bankAccountName,
+    String? bankName,
+    String? bankBranchName,
+  }) {
+    return BankRequest(
+      bankId: bankId ?? this.bankId,
+      bankBranchId: bankBranchId ?? this.bankBranchId,
+      bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
+      bankAccountName: bankAccountName ?? this.bankAccountName,
+      bankName: bankName ?? this.bankName,
+      bankBranchName: bankBranchName ?? this.bankBranchName,
     );
   }
 }

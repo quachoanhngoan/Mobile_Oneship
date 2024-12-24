@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/register_location_service.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/register_type_service.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_BankInfomation.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_terms_conditions.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
@@ -124,6 +125,9 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                   physics: const NeverScrollableScrollPhysics(),
                   controller: bloc.pageController,
                   children: [
+                    StepBankInformation(
+                      bloc: bloc,
+                    ),
                     TermsAndConditionsPage(
                       initialAcceptTermsAndConditions:
                           state.isAcceptTermsAndConditions,
@@ -152,7 +156,9 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                       bloc: bloc,
                       state: state,
                     ),
-                    const StepRepresentativeInformation(),
+                    StepRepresentativeInformation(
+                      bloc: bloc,
+                    ),
                   ],
                 ),
               ),

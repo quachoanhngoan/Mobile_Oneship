@@ -64,14 +64,15 @@ class DioUtil {
         _pref.refreshToken = response.data['refreshToken'];
         return true;
       } else {
-        await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
+        // await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
 
         throw authException;
       }
     } on DioException catch (e) {
       log('refreshToken error$e');
-      await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
-      rethrow;
+      throw authException;
+
+      // await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
     }
   }
 

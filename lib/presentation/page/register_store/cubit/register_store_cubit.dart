@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
@@ -15,10 +16,12 @@ part 'register_store_state.dart';
 
 class RegisterStoreCubit extends Cubit<RegisterStoreState> {
   final StoreRepository repository;
-  RegisterStoreCubit(this.repository) : super(RegisterStoreState());
+  RegisterStoreCubit(this.repository) : super(RegisterStoreState()) {
+    _getAllBanks();
+  }
 
   final pageController = PageController();
-
+  final TextEditingController dateController = TextEditingController();
   setStatusState(EState value) {
     emit(state.copyWith(status: value));
   }
@@ -56,6 +59,9 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     );
     if (state.currentPage == ERegisterPageType.typeOfService) {
       _getAllLocationBussiness();
+    }
+    if (state.currentPage == ERegisterPageType.bankInformation) {
+      _getAllBanks();
     }
     setCurrentPage(ERegisterPageType.values[state.currentPage.index + 1]);
   }
@@ -97,11 +103,58 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     }
   }
 
+  _getAllBanks() async {
+    if (state.banks.isEmpty) {
+      final banks = await execute(
+        () => repository.getBanks(),
+        isShowFailDialog: true,
+      );
+      banks.when(
+          success: (data) {
+            emit(state.copyWith(banks: data ?? []));
+          },
+          failure: (error) {});
+    }
+  }
+
+  _getBranchBanks(String bankId) async {
+    final branchBanks = await execute(
+      () => repository.getBanksBranch(bankId),
+      isShowFailDialog: true,
+    );
+    branchBanks.when(
+        success: (data) {
+          emit(state.copyWith(branchBanks: data ?? []));
+        },
+        failure: (error) {});
+  }
+
   sellectLocationBussiness(ProvinceModel provinces) {
     emit(state.copyWith(locationBusSellected: provinces));
   }
 
+  setBankRequest(BankRequest? request) {
+    if (request != null) {
+      if (request.bankId != null &&
+          request.bankId != state.bankRequest?.bankId) {
+        emit(state.copyWith(
+          bankRequest: request,
+          branchBanks: [],
+        ));
+        _getBranchBanks(request.bankId!);
+      } else {
+        emit(state.copyWith(bankRequest: request));
+      }
+    }
+  }
+
   nameStoreVerify(String? value) {
     emit(state.copyWith(showHintNameStore: !value.isNotNullOrEmpty));
+  }
+
+  setRepresentative(Representative? value) {
+    print("value?.type");
+    print(value?.type);
+    emit(state.copyWith(representative: value));
   }
 }
