@@ -37,6 +37,7 @@ class AppTextFormField extends StatelessWidget {
           ),
       onTap: onTap,
       enabled: enabled,
+      autocorrect: false,
       decoration: InputDecoration(
         // floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: false,

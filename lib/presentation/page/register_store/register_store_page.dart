@@ -32,6 +32,7 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
   late TextEditingController districtController;
   late TextEditingController streetAddressController;
   late TextEditingController parkingFeeController;
+  late TextEditingController wardController;
 
   @override
   void initState() {
@@ -45,6 +46,7 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
     districtController = TextEditingController();
     streetAddressController = TextEditingController();
     parkingFeeController = TextEditingController();
+    wardController = TextEditingController();
     super.initState();
   }
 
@@ -125,9 +127,6 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                   physics: const NeverScrollableScrollPhysics(),
                   controller: bloc.pageController,
                   children: [
-                    StepBankInformation(
-                      bloc: bloc,
-                    ),
                     TermsAndConditionsPage(
                       initialAcceptTermsAndConditions:
                           state.isAcceptTermsAndConditions,
@@ -153,10 +152,14 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                       specialDishController: specialDishController,
                       streetAddressController: streetAddressController,
                       streetNameController: streetNameController,
+                      wardController: wardController,
                       bloc: bloc,
                       state: state,
                     ),
                     StepRepresentativeInformation(
+                      bloc: bloc,
+                    ),
+                    StepBankInformation(
                       bloc: bloc,
                     ),
                   ],

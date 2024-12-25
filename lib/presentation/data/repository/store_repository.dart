@@ -1,4 +1,6 @@
 import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
@@ -9,6 +11,9 @@ mixin AuthUrl {
   static const String provinces = '/api/v1/provinces';
   static const String banks = '/api/v1/banks';
   static const String getBanksBranch = '/api/v1/banks/:id/branches';
+  static const String groupService = "/api/v1/service-groups";
+  static const String district = "/api/v1/districts";
+  static const String ward = "/api/v1/wards";
 }
 
 abstract class StoreRepository {
@@ -18,6 +23,11 @@ abstract class StoreRepository {
 
   Future<List<BankM>?> getBanks();
   Future<List<BranchBankM>?> getBanksBranch(String id);
+  Future<List<GroupServiceModel>> getGroupService();
+
+  Future<List<DistrictModel>> listDistrict(int idProvices);
+
+  Future<List<DistrictModel>> listWard(int idDistrict);
 }
 
 class StoreImpl implements StoreRepository {
@@ -58,5 +68,27 @@ class StoreImpl implements StoreRepository {
         isTranformData: true);
     return List<BranchBankM>.from(
         httpResponse.data?.map((x) => BranchBankM.fromJson(x)) ?? []);
+  }
+
+  Future<List<GroupServiceModel>> getGroupService() async {
+    final httpResponse = await _clientDio.get(AuthUrl.groupService);
+    final listData = httpResponse.data as List<dynamic>;
+    return listData.map((json) => GroupServiceModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<DistrictModel>> listDistrict(int idProvices) async {
+    final httpResponse = await _clientDio
+        .get(AuthUrl.district, queryParameters: {"provinceId": idProvices});
+    final listData = httpResponse.data as List<dynamic>;
+    return listData.map((json) => DistrictModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<List<DistrictModel>> listWard(int idDistrict) async {
+    final httpResponse = await _clientDio
+        .get(AuthUrl.ward, queryParameters: {"districtId": idDistrict});
+    final listData = httpResponse.data as List<dynamic>;
+    return listData.map((json) => DistrictModel.fromJson(json)).toList();
   }
 }

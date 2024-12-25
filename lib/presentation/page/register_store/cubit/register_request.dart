@@ -1,3 +1,4 @@
+import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 
 class Representative {
@@ -101,12 +102,12 @@ class Representative {
 
   bool isValid() {
     if (type == ERepresentativeInformation.individual) {
-      return name != null &&
-          phone != null &&
+      return name.isNotNullOrEmpty &&
+          phone.isNotNullOrEmpty &&
           // email != null &&
           // taxCode != null &&
           // address != null &&
-          personalTaxCode != null &&
+          personalTaxCode.isNotNullOrEmpty &&
           identityCard != null &&
           identityCardPlace != null &&
           identityCardDate != null &&
@@ -114,12 +115,12 @@ class Representative {
           identityCardBackImageId != null;
     }
     if (type == ERepresentativeInformation.businessHousehold) {
-      return name != null &&
-          businessName != null &&
-          phone != null &&
+      return name.isNotNullOrEmpty &&
+          businessName.isNotNullOrEmpty &&
+          phone.isNotNullOrEmpty &&
           // email != null &&
-          taxCode != null &&
-          address != null &&
+          taxCode.isNotNullOrEmpty &&
+          address.isNotNullOrEmpty &&
           // personalTaxCode != null &&
           // identityCard != null &&
           // identityCardPlace != null &&
@@ -128,12 +129,12 @@ class Representative {
           // identityCardBackImageId != null &&
           businessLicenseImageId != null;
     }
-    return name != null &&
-        businessName != null &&
-        phone != null &&
+    return name.isNotNullOrEmpty &&
+        businessName.isNotNullOrEmpty &&
+        phone.isNotNullOrEmpty &&
         // email != null &&
-        taxCode != null &&
-        address != null &&
+        taxCode.isNotNullOrEmpty &&
+        address.isNotNullOrEmpty &&
         // personalTaxCode != null &&
         // identityCard != null &&
         // identityCardPlace != null &&
@@ -186,5 +187,12 @@ class BankRequest {
       bankName: bankName ?? this.bankName,
       bankBranchName: bankBranchName ?? this.bankBranchName,
     );
+  }
+
+  bool isValid() {
+    return bankId != null &&
+        bankBranchId != null &&
+        bankAccountNumber.isNotNullOrEmpty &&
+        bankAccountName.isNotNullOrEmpty;
   }
 }

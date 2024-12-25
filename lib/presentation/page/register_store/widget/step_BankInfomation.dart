@@ -137,15 +137,16 @@ class StepBankInformation extends StatelessWidget {
                       child: RichText(
                         text: TextSpan(
                           text: state.bankRequest?.bankBranchName ??
-                              "Chọn chi nhánh",
+                              "Chọn chi nhánh ngân hàng",
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
                               ?.copyWith(
                                   fontWeight: FontWeight.w500,
-                                  color: state.bankRequest?.bankName != null
-                                      ? AppColors.textColor
-                                      : AppColors.color2B3),
+                                  color:
+                                      state.bankRequest?.bankBranchName != null
+                                          ? AppColors.textColor
+                                          : AppColors.color2B3),
                           children: [
                             if (state.bankRequest?.bankBranchName == null)
                               const TextSpan(
