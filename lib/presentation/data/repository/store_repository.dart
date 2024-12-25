@@ -1,9 +1,10 @@
-import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/group_service_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
-import '../model/store/provinces_model.dart';
+import '../model/register_store/provinces_model.dart';
 
 mixin AuthUrl {
   static const String base = '/api/v1/merchant/stores';
@@ -11,6 +12,7 @@ mixin AuthUrl {
   static const String groupService = "/api/v1/service-groups";
   static const String district = "/api/v1/districts";
   static const String ward = "/api/v1/wards";
+  static const String register = "/api/v1/merchant/stores";
 }
 
 abstract class StoreRepository {
@@ -23,6 +25,8 @@ abstract class StoreRepository {
   Future<List<DistrictModel>> listDistrict(int idProvices);
 
   Future<List<DistrictModel>> listWard(int idDistrict);
+
+  Future registerStore(StoreRequestModel request, {required bool isPost});
 }
 
 class StoreImpl implements StoreRepository {
@@ -71,5 +75,17 @@ class StoreImpl implements StoreRepository {
         .get(AuthUrl.ward, queryParameters: {"districtId": idDistrict});
     final listData = httpResponse.data as List<dynamic>;
     return listData.map((json) => DistrictModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future registerStore(StoreRequestModel request,
+      {required bool isPost}) async {
+    final data = request.removeNullValues(request.toJson());
+    if (isPost) {
+      final httpResponse = await _clientDio.post(AuthUrl.register, data: data);
+    }
+    else {
+      // final httpRespose = await _clientDio.patch(AuthUrl.register, data: , queryParameters: {"id": });
+    }
   }
 }

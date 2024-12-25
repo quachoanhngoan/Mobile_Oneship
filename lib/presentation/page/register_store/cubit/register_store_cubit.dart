@@ -5,14 +5,15 @@ import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
-import '../../../data/model/store/group_service_model.dart';
-import '../../../data/model/store/provinces_model.dart';
+import '../../../data/model/register_store/group_service_model.dart';
+import '../../../data/model/register_store/provinces_model.dart';
 import 'register_request.dart';
 
 part 'register_store_state.dart';
@@ -163,5 +164,9 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     } else {
       emit(state.copyWith(isNextEnable: false));
     }
+  }
+
+  registerStorePress(StoreRequestModel request, {bool? isInit = false}) {
+    
   }
 }

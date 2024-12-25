@@ -1,17 +1,13 @@
-import 'dart:developer';
-
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
-import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 
-import '../../../data/model/store/group_service_model.dart';
-import '../../../data/model/store/provinces_model.dart';
+import '../../../data/model/register_store/group_service_model.dart';
+import '../../../data/model/register_store/provinces_model.dart';
 import '../../register/register_page.dart';
 
 class RegisterShopInfo extends StatefulWidget {

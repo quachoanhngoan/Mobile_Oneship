@@ -26,6 +26,7 @@ class AppColors {
   static const Color textButtonDisable = Color(0xffA4A4A4);
   static const Color color723 = Color(0xff042723);
   static const Color color988 = Color(0xff00B988);
+  static const Color colorFA6 = Color(0xff31BFA6);
   static const Color color8E8 = Color(0xffE8E8E8);
   static const Color colorF1F = Color(0xff1F1F1F);
   static const Color color5DD = Color(0xffD0D5DD);
@@ -37,4 +38,6 @@ class AppColors {
   static const Color colorFF9 = Color(0xffEFFFF9);
   static const Color color05C = Color(0xff1D805C);
   static const Color color054 = Color(0xff344054);
+  static const Color color390 = Color(0xff838390);
+
 }

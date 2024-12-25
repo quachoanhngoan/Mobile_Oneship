@@ -96,4 +96,25 @@ class Representative {
       relatedImageId: relatedImageId ?? this.relatedImageId,
     );
   }
+
+  factory Representative.fromJson(Map<String, dynamic> json) {
+    return Representative(
+      type: json['type'],
+      name: json['name'],
+      businessName: json['businessName'],
+      phone: json['phone'],
+      otherPhone: json['otherPhone'],
+      email: json['email'],
+      taxCode: json['taxCode'],
+      address: json['address'],
+      personalTaxCode: json['personalTaxCode'],
+      identityCard: json['identityCard'],
+      identityCardPlace: json['identityCardPlace'],
+      identityCardDate: json['identityCardDate'],
+      identityCardFrontImageId: json['identityCardFrontImageId'],
+      identityCardBackImageId: json['identityCardBackImageId'],
+      businessLicenseImageId: json['businessLicenseImageId'],
+      relatedImageId: json['relatedImageId'],
+    );
+  }
 }

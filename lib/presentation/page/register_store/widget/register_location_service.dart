@@ -4,7 +4,7 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 
-import '../../../data/model/store/provinces_model.dart';
+import '../../../data/model/register_store/provinces_model.dart';
 
 class RegisterLocationOfService extends StatelessWidget {
   final RegisterStoreCubit bloc;
