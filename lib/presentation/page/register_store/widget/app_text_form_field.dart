@@ -12,6 +12,7 @@ class AppTextFormField extends StatelessWidget {
   final String? initialValue;
   final void Function()? onTap;
   final void Function(String)? onChanged;
+  final Widget? suffix;
   const AppTextFormField({
     super.key,
     required this.isRequired,
@@ -21,6 +22,7 @@ class AppTextFormField extends StatelessWidget {
     this.enabled,
     this.onTap,
     this.initialValue,
+    this.suffix,
     this.onChanged,
   });
 
@@ -39,6 +41,7 @@ class AppTextFormField extends StatelessWidget {
       enabled: enabled,
       autocorrect: false,
       decoration: InputDecoration(
+        suffixIcon: suffix,
         // floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: false,
         filled: filled,

@@ -1,10 +1,12 @@
 import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/district_model.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/group_service_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/create_store.response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
-import '../model/store/provinces_model.dart';
+import '../model/register_store/provinces_model.dart';
 
 mixin AuthUrl {
   static const String base = '/api/v1/merchant/stores';
@@ -14,6 +16,7 @@ mixin AuthUrl {
   static const String groupService = "/api/v1/service-groups";
   static const String district = "/api/v1/districts";
   static const String ward = "/api/v1/wards";
+  static const String register = "/api/v1/merchant/stores";
 }
 
 abstract class StoreRepository {
@@ -22,12 +25,18 @@ abstract class StoreRepository {
   Future<ProvinceResponse?> getProvinces();
 
   Future<List<BankM>?> getBanks();
-  Future<List<BranchBankM>?> getBanksBranch(String id);
+  Future<List<BranchBankM>?> getBanksBranch(int id);
   Future<List<GroupServiceModel>> getGroupService();
 
   Future<List<DistrictModel>> listDistrict(int idProvices);
 
   Future<List<DistrictModel>> listWard(int idDistrict);
+
+  Future<CreateStoreResponse?> registerStore(StoreRequestModel request);
+  Future<CreateStoreResponse> registerPatchStore(
+      int id, StoreRequestModel request);
+  Future<bool> deleteStore(int id);
+  Future<CreateStoreResponse> getStoreById(int id);
 }
 
 class StoreImpl implements StoreRepository {
@@ -62,7 +71,7 @@ class StoreImpl implements StoreRepository {
   }
 
   @override
-  Future<List<BranchBankM>?> getBanksBranch(String id) async {
+  Future<List<BranchBankM>?> getBanksBranch(int id) async {
     final httpResponse = await _clientDio.get(
         AuthUrl.getBanksBranch.replaceAll(':id', id.toString()),
         isTranformData: true);
@@ -70,6 +79,7 @@ class StoreImpl implements StoreRepository {
         httpResponse.data?.map((x) => BranchBankM.fromJson(x)) ?? []);
   }
 
+  @override
   Future<List<GroupServiceModel>> getGroupService() async {
     final httpResponse = await _clientDio.get(AuthUrl.groupService);
     final listData = httpResponse.data as List<dynamic>;
@@ -90,5 +100,42 @@ class StoreImpl implements StoreRepository {
         .get(AuthUrl.ward, queryParameters: {"districtId": idDistrict});
     final listData = httpResponse.data as List<dynamic>;
     return listData.map((json) => DistrictModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<CreateStoreResponse> registerStore(StoreRequestModel request) async {
+    final result = await _clientDio.post(
+      AuthUrl.register,
+      data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<CreateStoreResponse> getStoreById(int id) async {
+    final result = await _clientDio.get(
+      '${AuthUrl.register}/$id',
+      // data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<CreateStoreResponse> registerPatchStore(
+      int id, StoreRequestModel request) async {
+    final result = await _clientDio.patch(
+      '${AuthUrl.register}/$id',
+      data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<bool> deleteStore(int id) async {
+    final result = await _clientDio.delete('${AuthUrl.base}/$id');
+    return result.statusCode == 200;
   }
 }

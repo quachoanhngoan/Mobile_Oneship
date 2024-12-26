@@ -57,7 +57,7 @@ class _StepRepresentativeInformationState
                     return GestureDetector(
                       onTap: () {
                         bloc.setRepresentative(
-                          Representative(type: item),
+                          state.representative?.copyWith(type: item),
                         );
                         bloc.dateController.clear();
                       },
@@ -214,6 +214,8 @@ class Individual extends StatelessWidget {
                     Flexible(
                       child: FormUploadImage(
                         title: 'Mặt trước CMND/CCCD/Hộ chiếu',
+                        initialImage:
+                            state.representative?.identityCardFrontImageId,
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(
                             identityCardFrontImageId: file,
@@ -225,6 +227,8 @@ class Individual extends StatelessWidget {
                     Flexible(
                       child: FormUploadImage(
                         title: 'Mặt sau CMND/CCCD/Hộ chiếu',
+                        initialImage:
+                            state.representative?.identityCardBackImageId,
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(
                             identityCardBackImageId: file,
@@ -362,6 +366,7 @@ class BusinessHousehold extends StatelessWidget {
                 AppTextFormField(
                   isRequired: false,
                   hintText: 'Nhập email',
+                  initialValue: state.representative?.email,
                   onChanged: (p0) {
                     bloc.setRepresentative(
                       state.representative?.copyWith(email: p0),
@@ -371,6 +376,7 @@ class BusinessHousehold extends StatelessWidget {
                 const SizedBox(height: 8),
                 AppTextFormField(
                   isRequired: true,
+                  initialValue: state.representative?.address,
                   hintText: 'Nhập địa chỉ kinh doanh',
                   onChanged: (p0) {
                     bloc.setRepresentative(
@@ -381,6 +387,7 @@ class BusinessHousehold extends StatelessWidget {
                 const SizedBox(height: 8),
                 AppTextFormField(
                   isRequired: true,
+                  initialValue: state.representative?.businessName,
                   hintText: 'Nhập tên hộ kinh doanh',
                   onChanged: (p0) {
                     bloc.setRepresentative(
@@ -425,6 +432,8 @@ class BusinessHousehold extends StatelessWidget {
                     Flexible(
                       child: FormUploadImage(
                         title: '550 x 500px. Tối đa 1MB',
+                        initialImage:
+                            state.representative?.businessLicenseImageId,
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(
                             businessLicenseImageId: file,
@@ -469,6 +478,7 @@ class BusinessHousehold extends StatelessWidget {
                     Flexible(
                       child: FormUploadImage(
                         title: '550 x 500px. Tối đa 1MB',
+                        initialImage: state.representative?.relatedImageId,
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(
                             relatedImageId: file,
@@ -562,6 +572,7 @@ class Business extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 AppTextFormField(
+                  initialValue: state.representative?.address,
                   isRequired: true,
                   hintText: 'Nhập địa chỉ công ty',
                   onChanged: (p0) {
@@ -573,6 +584,7 @@ class Business extends StatelessWidget {
                 const SizedBox(height: 8),
                 AppTextFormField(
                   isRequired: true,
+                  initialValue: state.representative?.businessName,
                   hintText: 'Nhập tên công ty',
                   onChanged: (p0) {
                     bloc.setRepresentative(
@@ -616,6 +628,8 @@ class Business extends StatelessWidget {
                   children: [
                     Flexible(
                       child: FormUploadImage(
+                        initialImage:
+                            state.representative?.businessLicenseImageId,
                         title: '550 x 500px. Tối đa 1MB',
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(
@@ -660,6 +674,7 @@ class Business extends StatelessWidget {
                   children: [
                     Flexible(
                       child: FormUploadImage(
+                        initialImage: state.representative?.relatedImageId,
                         title: '550 x 500px. Tối đa 1MB',
                         onUploadedImage: (file) {
                           bloc.setRepresentative(state.representative?.copyWith(

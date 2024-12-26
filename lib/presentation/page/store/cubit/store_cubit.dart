@@ -32,6 +32,27 @@ class StoreCubit extends Cubit<StoreState> {
     }
   }
 
+  deleteStore(int id) async {
+    setStatusState(EState.loading);
+    try {
+      final response = await execute(
+        () => repository.deleteStore(id),
+        isShowFailDialog: true,
+      );
+      response.when(success: (data) {
+        setStatusState(EState.success);
+        emit(state.copyWith(
+            stores:
+                state.stores.where((element) => element.id != id).toList()));
+        getAll();
+      }, failure: (error) {
+        setStatusState(EState.failure);
+      });
+    } catch (e) {
+      setStatusState(EState.failure);
+    }
+  }
+
   resetState() {
     emit(StoreState());
   }

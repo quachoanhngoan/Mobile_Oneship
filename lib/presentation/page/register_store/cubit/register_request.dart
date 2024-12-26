@@ -1,5 +1,107 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
+import 'package:oneship_merchant_app/extensions/number_extention.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
+
+class Infomation {
+  final String? nameStore;
+  final String? provinces;
+  final int? idProvince;
+
+  final String? phoneNumber;
+  final int? groupServiceID;
+  final String? groupServiceName;
+  final int? district;
+  final String? districtName;
+  final int? ward;
+  final String? wardName;
+
+  final String? homeAndStreet;
+  final String? specialDish;
+  final String? parkingFee;
+  final String? streetName;
+  const Infomation({
+    this.nameStore,
+    this.provinces,
+    this.idProvince,
+    this.phoneNumber,
+    this.groupServiceID,
+    this.groupServiceName,
+    this.district,
+    this.districtName,
+    this.ward,
+    this.wardName,
+    this.homeAndStreet,
+    this.specialDish,
+    this.parkingFee,
+    this.streetName,
+  });
+
+  Infomation copyWith({
+    String? nameStore,
+    String? provinces,
+    int? idProvince,
+    String? phoneNumber,
+    int? groupServiceID,
+    String? groupServiceName,
+    int? district,
+    String? districtName,
+    int? ward,
+    String? wardName,
+    String? homeAndStreet,
+    String? specialDish,
+    String? parkingFee,
+    String? streetName,
+  }) {
+    return Infomation(
+      nameStore: nameStore ?? this.nameStore,
+      provinces: provinces ?? this.provinces,
+      idProvince: idProvince ?? this.idProvince,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      groupServiceID: groupServiceID ?? this.groupServiceID,
+      groupServiceName: groupServiceName ?? this.groupServiceName,
+      district: district ?? this.district,
+      districtName: districtName ?? this.districtName,
+      ward: ward ?? this.ward,
+      wardName: wardName ?? this.wardName,
+      homeAndStreet: homeAndStreet ?? this.homeAndStreet,
+      specialDish: specialDish ?? this.specialDish,
+      parkingFee: parkingFee ?? this.parkingFee,
+      streetName: streetName ?? this.streetName,
+    );
+  }
+
+  bool isValid() {
+    return nameStore.isNotNullOrEmpty &&
+        // provinces.isNotNullOrEmpty &&
+        specialDish.isNotNullOrEmpty &&
+        phoneNumber.isNotNullOrEmpty &&
+        !groupServiceID.isNullOrZero &&
+        !district.isNullOrZero &&
+        !ward.isNullOrZero &&
+        homeAndStreet.isNotNullOrEmpty;
+  }
+
+  num? parkingFeeToNum() {
+    if (parkingFee.isNullOrEmpty) return null;
+    return num.tryParse(parkingFee ?? '0');
+  }
+
+  String getParkingFee() {
+    if (parkingFee.isNullOrEmpty) return '';
+
+    final format = NumberFormat.currency(locale: 'vi', symbol: 'đ');
+    final parkingFeeF = format.format(parkingFeeToNum() ?? 0);
+    return parkingFeeF;
+  }
+
+  String formatPhone() {
+    if (phoneNumber.isNullOrEmpty) return '';
+    return phoneNumber!.replaceAll(RegExp(r'[^0-9]'), '');
+  }
+}
 
 class Representative {
   final ERepresentativeInformation? type;
@@ -38,9 +140,13 @@ class Representative {
     this.relatedImageId,
   });
 
+  Map<String, dynamic> removeNullValues() {
+    return toJson()..removeWhere((key, value) => value == null);
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['type'] = type;
+    data['type'] = type?.value;
     data['name'] = name;
     data['businessName'] = businessName;
     data['phone'] = phone;
@@ -143,12 +249,59 @@ class Representative {
         // identityCardBackImageId != null &&
         businessLicenseImageId != null;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'name': name,
+      'businessName': businessName,
+      'phone': phone,
+      'otherPhone': otherPhone,
+      'email': email,
+      'taxCode': taxCode,
+      'address': address,
+      'personalTaxCode': personalTaxCode,
+      'identityCard': identityCard,
+      'identityCardPlace': identityCardPlace,
+      'identityCardDate': identityCardDate,
+      'identityCardFrontImageId': identityCardFrontImageId,
+      'identityCardBackImageId': identityCardBackImageId,
+      'businessLicenseImageId': businessLicenseImageId,
+      'relatedImageId': relatedImageId,
+    };
+  }
+
+  factory Representative.fromMap(Map<String, dynamic> map) {
+    return Representative(
+      type: map['type'] != null
+          ? ERepresentativeInformation.fromString(map['type'])
+          : null,
+      name: map['name'],
+      businessName: map['businessName'],
+      phone: map['phone'],
+      otherPhone: map['otherPhone'],
+      email: map['email'],
+      taxCode: map['taxCode'],
+      address: map['address'],
+      personalTaxCode: map['personalTaxCode'],
+      identityCard: map['identityCard'],
+      identityCardPlace: map['identityCardPlace'],
+      identityCardDate: map['identityCardDate'],
+      identityCardFrontImageId: map['identityCardFrontImageId'],
+      identityCardBackImageId: map['identityCardBackImageId'],
+      businessLicenseImageId: map['businessLicenseImageId'],
+      relatedImageId: map['relatedImageId'],
+    );
+  }
+
+  factory Representative.fromJson(String source) =>
+      Representative.fromMap(json.decode(source));
 }
 
 class BankRequest {
-  final String? bankId;
+  final int? bankId;
   final String? bankName;
-  final String? bankBranchId;
+  final int? bankBranchId;
   final String? bankBranchName;
   final String? bankAccountNumber;
   final String? bankAccountName;
@@ -162,18 +315,9 @@ class BankRequest {
     this.bankName,
   });
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['bankId'] = bankId;
-    data['bankBranchId'] = bankBranchId;
-    data['bankAccountNumber'] = bankAccountNumber;
-    data['bankAccountName'] = bankAccountName;
-    return data;
-  }
-
   BankRequest copyWith({
-    String? bankId,
-    String? bankBranchId,
+    int? bankId,
+    int? bankBranchId,
     String? bankAccountNumber,
     String? bankAccountName,
     String? bankName,
@@ -194,5 +338,36 @@ class BankRequest {
         bankBranchId != null &&
         bankAccountNumber.isNotNullOrEmpty &&
         bankAccountName.isNotNullOrEmpty;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'bankId': bankId,
+      'bankName': bankName,
+      'bankBranchId': bankBranchId,
+      'bankBranchName': bankBranchName,
+      'bankAccountNumber': bankAccountNumber,
+      'bankAccountName': bankAccountName,
+    };
+  }
+
+  factory BankRequest.fromMap(Map<String, dynamic> map) {
+    return BankRequest(
+      bankId: map['bankId'],
+      bankName: map['bankName'],
+      bankBranchId: map['bankBranchId'],
+      bankBranchName: map['bankBranchName'],
+      bankAccountNumber: map['bankAccountNumber'],
+      bankAccountName: map['bankAccountName'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory BankRequest.fromJson(String source) =>
+      BankRequest.fromMap(json.decode(source));
+
+  Map<String, dynamic> removeNullValues() {
+    return toMap()..removeWhere((key, value) => value == null);
   }
 }

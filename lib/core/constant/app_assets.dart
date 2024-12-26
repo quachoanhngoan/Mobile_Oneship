@@ -54,6 +54,14 @@ class AppAssets {
 
   static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
 
+  static const String imagesIconsIcTabAccount = "assets/images/icons/ic_tab_account.png";
+
+  static const String imagesIconsIcTabCart = "assets/images/icons/ic_tab_cart.png";
+
+  static const String imagesIconsIcTabHome = "assets/images/icons/ic_tab_home.png";
+
+  static const String imagesIconsIcTabNotification = "assets/images/icons/ic_tab_notification.png";
+
   static const String imagesIconsIcon = "assets/images/icons/Icon.png";
 
   static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";

@@ -45,10 +45,12 @@ enum ERegisterPageType {
 
 class RegisterStoreState {
   final EState status;
+  final EState registerStatus;
   final List<StoreModel> stores;
   final ERegisterPageType currentPage;
   final bool isAcceptTermsAndConditions;
   final int typeService;
+  final String? nameService;
   final bool isAlcohol;
   final List<ProvinceModel> listProvinces;
   final List<BankM> banks;
@@ -63,18 +65,25 @@ class RegisterStoreState {
   final String? errorStreetNumber;
   final bool showHintNameStore;
   final BankRequest? bankRequest;
+  final Infomation? infomation;
   final List<DistrictModel> listDistrict;
   final List<DistrictModel> listWard;
   final bool isNextEnable;
+  final String? storeAvatarId;
+  final String? storeCoverId;
+  final String? storeFrontId;
+  final String? storeMenuId;
 
-  RegisterStoreState({
+  const RegisterStoreState({
     this.showHintNameStore = true,
     this.status = EState.initial,
+    this.registerStatus = EState.initial,
     this.stores = const [],
     this.banks = const [],
     this.currentPage = ERegisterPageType.termsAndConditions,
     this.isAcceptTermsAndConditions = false,
     this.isAlcohol = false,
+    this.nameService,
     this.typeService = 1,
     this.listProvinces = const [],
     this.locationBusSellected,
@@ -85,15 +94,21 @@ class RegisterStoreState {
     this.errorStreetNumber,
     this.errorWard,
     this.representative = const Representative(),
+    this.infomation = const Infomation(),
     this.bankRequest = const BankRequest(),
     this.branchBanks = const [],
     this.listDistrict = const [],
     this.listWard = const [],
     this.isNextEnable = false,
+    this.storeAvatarId,
+    this.storeCoverId,
+    this.storeFrontId,
+    this.storeMenuId,
   });
 
   RegisterStoreState copyWith({
     EState? status,
+    EState? registerStatus,
     List<StoreModel>? stores,
     List<BankM>? banks,
     List<BranchBankM>? branchBanks,
@@ -112,13 +127,21 @@ class RegisterStoreState {
     String? errorWard,
     String? errorStreetNumber,
     Representative? representative,
+    Infomation? infomation,
     BankRequest? bankRequest,
     List<DistrictModel>? listWard,
     bool? isNextEnable,
+    bool? isInit,
+    String? storeAvatarId,
+    String? storeCoverId,
+    String? storeFrontId,
+    String? storeMenuId,
+    String? nameService,
   }) {
     return RegisterStoreState(
       representative: representative ?? this.representative,
       status: status ?? this.status,
+      registerStatus: registerStatus ?? this.registerStatus,
       stores: stores ?? this.stores,
       banks: banks ?? this.banks,
       branchBanks: branchBanks ?? this.branchBanks,
@@ -138,8 +161,14 @@ class RegisterStoreState {
       errorWard: errorWard,
       errorStreetNumber: errorStreetNumber,
       listDistrict: listDistrict ?? this.listDistrict,
+      infomation: infomation ?? this.infomation,
       listWard: listWard ?? this.listWard,
       isNextEnable: isNextEnable ?? false,
+      storeAvatarId: storeAvatarId ?? this.storeAvatarId,
+      storeCoverId: storeCoverId ?? this.storeCoverId,
+      storeFrontId: storeFrontId ?? this.storeFrontId,
+      storeMenuId: storeMenuId ?? this.storeMenuId,
+      nameService: nameService ?? this.nameService,
     );
   }
 
@@ -152,13 +181,16 @@ class RegisterStoreState {
       case ERegisterPageType.locationService:
         return locationBusSellected != null;
       case ERegisterPageType.storeInformation:
-        return isNextEnable;
+        return infomation != null && infomation!.isValid();
       case ERegisterPageType.representativeInformation:
         return representative != null && representative!.isValid();
       case ERegisterPageType.bankInformation:
         return bankRequest != null && bankRequest!.isValid();
       case ERegisterPageType.storeImages:
-        return true;
+        return storeAvatarId != null &&
+            storeCoverId != null &&
+            storeFrontId != null &&
+            storeMenuId != null;
       case ERegisterPageType.reviewInformation:
         return true;
       default:
@@ -196,6 +228,19 @@ enum ERepresentativeInformation {
         return 'business_household';
       default:
         return '';
+    }
+  }
+
+  static ERepresentativeInformation fromString(String value) {
+    switch (value) {
+      case 'individual':
+        return ERepresentativeInformation.individual;
+      case 'business':
+        return ERepresentativeInformation.business;
+      case 'business_household':
+        return ERepresentativeInformation.businessHousehold;
+      default:
+        return ERepresentativeInformation.individual;
     }
   }
 }

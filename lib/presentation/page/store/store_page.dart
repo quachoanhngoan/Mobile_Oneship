@@ -47,7 +47,9 @@ class _StorePageState extends State<StorePage> {
               horizontal: 12.sp,
             ),
             onPressed: () {
-              Get.toNamed(AppRoutes.registerStorePage);
+              Get.toNamed(AppRoutes.registerStorePage)?.then((value) {
+                Get.context?.read<StoreCubit>().getAll();
+              });
             },
             text: 'Đăng ký quán',
           ),
