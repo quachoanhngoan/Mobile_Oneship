@@ -16,6 +16,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
@@ -43,6 +44,7 @@ Future<void> main() async {
         BlocProvider(create: (context) => injector<AuthCubit>()),
         BlocProvider(create: (context) => injector<StoreCubit>()),
         BlocProvider(create: (context) => injector<BottomCubit>()),
+        BlocProvider(create: (context) => injector<MenuDinerCubit>()),
         // BlocProvider(create: (context) => injector<RegisterStoreCubit>()),
         BlocProvider(
           create: (context) => RegisterCubit(),

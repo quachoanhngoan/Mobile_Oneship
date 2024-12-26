@@ -30,7 +30,11 @@ class HomePage extends StatelessWidget {
                 context.read<AuthCubit>().logout();
               },
               child: const Text("Đăng xuất")),
-          ElevatedButton(onPressed: () {}, child: const Text("Thực đơn")),
+          ElevatedButton(
+              onPressed: () {
+                context.pushWithNamed(context, routerName: AppRoutes.menuPage);
+              },
+              child: const Text("Thực đơn")),
         ],
       ),
     );
