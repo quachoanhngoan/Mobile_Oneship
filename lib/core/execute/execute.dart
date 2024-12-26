@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 import '../resources/result.dart';
@@ -37,6 +38,8 @@ Future<Result<T>> execute<T>(
           buttonTitle: "OK",
           onPressed: () => Get.offAllNamed(AppRoutes.onBoardingPage),
         );
+        prefManager.logout();
+
         return Failure(e.message ?? "Đã có lỗi xảy ra");
         // }
       }
@@ -51,6 +54,15 @@ Future<Result<T>> execute<T>(
       }
 
       return Failure(e.message ?? "Đã có lỗi xảy ra");
+    } else {
+      if (isShowFailDialog) {
+        dialogService.showAlertDialog(
+          title: "Lỗi",
+          description: e.toString(),
+          buttonTitle: "OK",
+          onPressed: () => Get.back(),
+        );
+      }
     }
     return Failure(e.toString());
   }

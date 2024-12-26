@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/config.dart';
-import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 
-class AppTextFormField extends StatelessWidget {
+class AppTextFormFieldDate extends StatelessWidget {
   final bool isRequired;
   final bool? filled;
   final TextEditingController? controller;
@@ -12,8 +11,7 @@ class AppTextFormField extends StatelessWidget {
   final String? initialValue;
   final void Function()? onTap;
   final void Function(String)? onChanged;
-  final Widget? suffix;
-  const AppTextFormField({
+  const AppTextFormFieldDate({
     super.key,
     required this.isRequired,
     this.controller,
@@ -22,7 +20,6 @@ class AppTextFormField extends StatelessWidget {
     this.enabled,
     this.onTap,
     this.initialValue,
-    this.suffix,
     this.onChanged,
   });
 
@@ -39,12 +36,17 @@ class AppTextFormField extends StatelessWidget {
           ),
       onTap: onTap,
       enabled: enabled,
-      autocorrect: false,
       decoration: InputDecoration(
-        suffixIcon: suffix,
         // floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: false,
         filled: filled,
+        suffixIcon: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.calendar_today,
+            color: Color(0xffD0D5DD),
+          ),
+        ),
         fillColor: const Color(0xffF9FAFB),
         enabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
@@ -65,6 +67,7 @@ class AppTextFormField extends StatelessWidget {
               fontSize: 14.sp,
               color: filled == true ? Colors.grey : AppColors.placeHolderColor,
             ),
+
         label: RichText(
           text: TextSpan(
             text: hintText,

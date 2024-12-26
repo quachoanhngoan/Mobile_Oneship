@@ -1,5 +1,7 @@
+import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/create_store.response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
@@ -9,6 +11,8 @@ import '../model/register_store/provinces_model.dart';
 mixin AuthUrl {
   static const String base = '/api/v1/merchant/stores';
   static const String provinces = '/api/v1/provinces';
+  static const String banks = '/api/v1/banks';
+  static const String getBanksBranch = '/api/v1/banks/:id/branches';
   static const String groupService = "/api/v1/service-groups";
   static const String district = "/api/v1/districts";
   static const String ward = "/api/v1/wards";
@@ -20,13 +24,19 @@ abstract class StoreRepository {
 
   Future<ProvinceResponse?> getProvinces();
 
+  Future<List<BankM>?> getBanks();
+  Future<List<BranchBankM>?> getBanksBranch(int id);
   Future<List<GroupServiceModel>> getGroupService();
 
   Future<List<DistrictModel>> listDistrict(int idProvices);
 
   Future<List<DistrictModel>> listWard(int idDistrict);
 
-  Future registerStore(StoreRequestModel request, {required bool isPost});
+  Future<CreateStoreResponse?> registerStore(StoreRequestModel request);
+  Future<CreateStoreResponse> registerPatchStore(
+      int id, StoreRequestModel request);
+  Future<bool> deleteStore(int id);
+  Future<CreateStoreResponse> getStoreById(int id);
 }
 
 class StoreImpl implements StoreRepository {
@@ -39,8 +49,6 @@ class StoreImpl implements StoreRepository {
   Future<StoresResponse> getAll() async {
     final httpResponse = await _clientDio.get(
       AuthUrl.base,
-      // data: request.toJson(),
-      // isShowError: false,
       isTranformData: true,
       isAuth: true,
     );
@@ -52,6 +60,23 @@ class StoreImpl implements StoreRepository {
   Future<ProvinceResponse?> getProvinces() async {
     final httpResponse = await _clientDio.get(AuthUrl.provinces);
     return ProvinceResponse.fromJson(httpResponse.data ?? {});
+  }
+
+  @override
+  Future<List<BankM>?> getBanks() async {
+    final httpResponse =
+        await _clientDio.get(AuthUrl.banks, isTranformData: true);
+    return List<BankM>.from(
+        httpResponse.data?.map((x) => BankM.fromJson(x)) ?? []);
+  }
+
+  @override
+  Future<List<BranchBankM>?> getBanksBranch(int id) async {
+    final httpResponse = await _clientDio.get(
+        AuthUrl.getBanksBranch.replaceAll(':id', id.toString()),
+        isTranformData: true);
+    return List<BranchBankM>.from(
+        httpResponse.data?.map((x) => BranchBankM.fromJson(x)) ?? []);
   }
 
   @override
@@ -78,14 +103,39 @@ class StoreImpl implements StoreRepository {
   }
 
   @override
-  Future registerStore(StoreRequestModel request,
-      {required bool isPost}) async {
-    final data = request.removeNullValues(request.toJson());
-    if (isPost) {
-      final httpResponse = await _clientDio.post(AuthUrl.register, data: data);
-    }
-    else {
-      // final httpRespose = await _clientDio.patch(AuthUrl.register, data: , queryParameters: {"id": });
-    }
+  Future<CreateStoreResponse> registerStore(StoreRequestModel request) async {
+    final result = await _clientDio.post(
+      AuthUrl.register,
+      data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<CreateStoreResponse> getStoreById(int id) async {
+    final result = await _clientDio.get(
+      '${AuthUrl.register}/$id',
+      // data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<CreateStoreResponse> registerPatchStore(
+      int id, StoreRequestModel request) async {
+    final result = await _clientDio.patch(
+      '${AuthUrl.register}/$id',
+      data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<bool> deleteStore(int id) async {
+    final result = await _clientDio.delete('${AuthUrl.base}/$id');
+    return result.statusCode == 200;
   }
 }

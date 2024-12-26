@@ -28,7 +28,7 @@ final injector = GetIt.instance;
 Future<void> initializeDependencies() async {
   final dio = Dio(BaseOptions(headers: {
     'Accept': '*/*',
-    // 'Content-Type': 'application/json',
+    'Content-Type': 'application/json',
   }));
 
   // dio.interceptors.add(AwesomeDioInterceptor());

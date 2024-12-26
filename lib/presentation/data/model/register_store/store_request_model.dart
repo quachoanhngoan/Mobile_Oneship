@@ -6,7 +6,7 @@ class StoreRequestModel {
   int? businessAreaId;
   int? serviceTypeId;
   String? name;
-  int? parkingFee;
+  num? parkingFee;
   String? specialDish;
   String? streetName;
   int? serviceGroupId;
@@ -19,7 +19,7 @@ class StoreRequestModel {
   String? storeMenuId;
   List<WorkingTime>? workingTimes;
   Representative? representative;
-  List<BankRegister>? banks;
+  List<BankRequest>? banks;
 
   StoreRequestModel({
     this.isDraft,
@@ -62,7 +62,7 @@ class StoreRequestModel {
     String? storeMenuId,
     List<WorkingTime>? workingTimes,
     Representative? representative,
-    List<BankRegister>? banks,
+    List<BankRequest>? banks,
   }) {
     return StoreRequestModel(
       isDraft: isDraft ?? this.isDraft,
@@ -112,7 +112,7 @@ class StoreRequestModel {
           ? Representative.fromJson(json['representative'])
           : null,
       banks: (json['banks'] as List<dynamic>?)
-          ?.map((e) => BankRegister.fromJson(e))
+          ?.map((e) => BankRequest.fromJson(e))
           .toList(),
     );
   }
@@ -136,14 +136,14 @@ class StoreRequestModel {
       'storeFrontId': storeFrontId,
       'storeMenuId': storeMenuId,
       'workingTimes': workingTimes?.map((e) => e.toJson()).toList(),
-      'representative': representative?.toJson(),
-      'banks': banks?.map((e) => e.toJson()).toList(),
+      'representative': representative?.removeNullValues(),
+      'banks': banks?.map((e) => e.removeNullValues()).toList(),
     };
   }
 
-  Map<String, dynamic> removeNullValues(Map<String, dynamic> json) {
-  return json..removeWhere((key, value) => value == null);
-}
+  Map<String, dynamic> removeNullValues() {
+    return toJson()..removeWhere((key, value) => value == null);
+  }
 }
 
 class WorkingTime {
@@ -180,50 +180,52 @@ class WorkingTime {
       'closeTime': closeTime,
     };
   }
-}
+// }
 
-class BankRegister {
-  String? bankId;
-  String? bankBranchId;
-  String? bankAccountNumber;
-  String? bankAccountName;
+// class BankRegister {
+//   String? bankId;
+//   String? bankBranchId;
+//   String? bankAccountNumber;
+//   String? bankAccountName;
 
-  BankRegister({
-    this.bankId,
-    this.bankBranchId,
-    this.bankAccountNumber,
-    this.bankAccountName,
-  });
+//   BankRegister({
+//     this.bankId,
+//     this.bankBranchId,
+//     this.bankAccountNumber,
+//     this.bankAccountName,
+//   });
 
-  BankRegister copyWith({
-    String? bankId,
-    String? bankBranchId,
-    String? bankAccountNumber,
-    String? bankAccountName,
-  }) {
-    return BankRegister(
-      bankId: bankId ?? this.bankId,
-      bankBranchId: bankBranchId ?? this.bankBranchId,
-      bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
-      bankAccountName: bankAccountName ?? this.bankAccountName,
-    );
-  }
+//   BankRegister copyWith({
+//     String? bankId,
+//     String? bankBranchId,
+//     String? bankAccountNumber,
+//     String? bankAccountName,
+//   }) {
+//     return BankRegister(
+//       bankId: bankId ?? this.bankId,
+//       bankBranchId: bankBranchId ?? this.bankBranchId,
+//       bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,
+//       bankAccountName: bankAccountName ?? this.bankAccountName,
+//     );
+//   }
 
-  factory BankRegister.fromJson(Map<String, dynamic> json) {
-    return BankRegister(
-      bankId: json['bankId'],
-      bankBranchId: json['bankBranchId'],
-      bankAccountNumber: json['bankAccountNumber'],
-      bankAccountName: json['bankAccountName'],
-    );
-  }
+//   factory BankRegister.fromJson(Map<String, dynamic> json) {
+//     return BankRegister(
+//       bankId: json['bankId'],
+//       bankBranchId: json['bankBranchId'],
+//       bankAccountNumber: json['bankAccountNumber'],
+//       bankAccountName: json['bankAccountName'],
+//     );
+//   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'bankId': bankId,
-      'bankBranchId': bankBranchId,
-      'bankAccountNumber': bankAccountNumber,
-      'bankAccountName': bankAccountName,
-    };
-  }
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'bankId': bankId,
+//       'bankBranchId': bankBranchId,
+//       'bankAccountNumber': bankAccountNumber,
+//       'bankAccountName': bankAccountName,
+//     };
+//   }
+// }
+// //
 }

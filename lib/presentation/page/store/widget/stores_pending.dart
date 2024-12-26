@@ -41,7 +41,7 @@ class StoresPending extends StatelessWidget {
                 bottom: 100,
                 top: 12,
               ),
-              physics: const NeverScrollableScrollPhysics(),
+              // physics: const NeverScrollableScrollPhysics(),
               itemCount: state.getStoresDontApproveCount,
               itemBuilder: (context, index) {
                 final item = state.getStoresDontApprove[index];

@@ -52,6 +52,7 @@ class RegisterTypeOfService extends StatelessWidget {
               isSellected: state.typeService == 1,
               onPressed: () {
                 bloc.typeServiceSellect(1);
+                bloc.setNameService("Giao đồ ăn (cửa hàng ăn uống)");
               },
               alcoholSellect: (alcohol) {
                 bloc.alcoholSellect(alcohol);
@@ -65,6 +66,7 @@ class RegisterTypeOfService extends StatelessWidget {
               isSellected: state.typeService == 2,
               onPressed: () {
                 bloc.typeServiceSellect(2);
+                bloc.setNameService("Giao hàng siêu thị/ bách hoá");
               },
               alcoholSellect: (alcohol) {
                 bloc.alcoholSellect(alcohol);

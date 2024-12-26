@@ -44,6 +44,8 @@ class AppAssets {
 
   static const String imagesIcPerson = "assets/images/ic_person.png";
 
+  static const String imagesIconsCalendar = "assets/images/icons/Calendar.png";
+
   static const String imagesIconsCamera = "assets/images/icons/camera.png";
 
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";

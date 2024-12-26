@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
@@ -22,7 +23,7 @@ class AppButton extends StatelessWidget {
   final Color? backgroundColor;
   final BorderSide? borderSide;
   final double? height;
-
+  final bool isLoading;
   final Color? textColor;
   const AppButton(
       {super.key,
@@ -33,6 +34,7 @@ class AppButton extends StatelessWidget {
       this.isCheckLastPress = true,
       this.radius = 8,
       this.isSafeArea = true,
+      this.isLoading = false,
       this.padding,
       this.margin,
       this.backgroundColor = AppColors.primary,
@@ -52,6 +54,9 @@ class AppButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             if (isEnable == false) {
+              return;
+            }
+            if (isLoading) {
               return;
             }
             if (isCheckLastPress == false) {
@@ -78,11 +83,19 @@ class AppButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius),
             ),
           ),
-          child: Text(text,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall!
-                  .copyWith(color: textColor ?? Colors.white)),
+          child: Builder(builder: (context) {
+            if (isLoading) {
+              return CupertinoActivityIndicator(
+                radius: 12,
+                color: textColor ?? Colors.white,
+              );
+            }
+            return Text(text,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: textColor ?? Colors.white));
+          }),
         ),
       ),
     );

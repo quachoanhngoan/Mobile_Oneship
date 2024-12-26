@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:dio/dio.dart' as dio2;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +17,12 @@ import 'package:oneship_merchant_app/service/dialog.dart';
 class FormUploadImage extends StatefulWidget {
   final ValueChanged<String> onUploadedImage;
   final String title;
+  final String? initialImage;
   const FormUploadImage(
-      {super.key, required this.onUploadedImage, required this.title});
+      {super.key,
+      required this.onUploadedImage,
+      required this.title,
+      this.initialImage});
 
   @override
   State<FormUploadImage> createState() => _FormUploadImageState();
@@ -27,6 +34,12 @@ class _FormUploadImageState extends State<FormUploadImage> {
   final ImagePicker _picker = ImagePicker();
   List<XFile>? _mediaFileList;
   String image = '';
+  @override
+  void initState() {
+    super.initState();
+    image = widget.initialImage ?? '';
+  }
+
   void _setImageFileListFromFile(XFile? value) {
     _mediaFileList = value == null ? null : <XFile>[value];
   }
@@ -77,6 +90,16 @@ class _FormUploadImageState extends State<FormUploadImage> {
       try {
         isLoading = true;
         setState(() {});
+        if (_mediaFileList!.isEmpty) {
+          throw Exception('Chưa chọn ảnh');
+        }
+        final file = File(_mediaFileList!.first.path);
+
+        int sizeInBytes = file.lengthSync();
+        double sizeInMb = sizeInBytes / (1024 * 1024);
+        if (sizeInMb > 1) {
+          throw Exception('Dung lượng ảnh không được lớn hơn 5MB');
+        }
         final url = '${EnvManager.shared.api}/api/v1/uploads';
         final httpResponse = await uploadFileHTTP(
           url,
@@ -89,7 +112,7 @@ class _FormUploadImageState extends State<FormUploadImage> {
       } catch (e) {
         dialogService.showAlertDialog(
             title: "Lỗi",
-            description: "Có lỗi xảy ra khi tải ảnh lên, vui lòng thử lại",
+            description: e.toString(),
             buttonTitle: "Đóng",
             onPressed: () {
               Get.back();
