@@ -76,7 +76,7 @@ class Infomation {
   bool isValid() {
     return nameStore.isNotNullOrEmpty &&
         // provinces.isNotNullOrEmpty &&
-        specialDish.isNotNullOrEmpty &&
+        // specialDish.isNotNullOrEmpty &&
         phoneNumber.isNotNullOrEmpty &&
         !groupServiceID.isNullOrZero &&
         !district.isNullOrZero &&
@@ -112,7 +112,7 @@ class Representative {
   final String? email;
   final String? taxCode;
   final String? address;
-  final String? personalTaxCode;
+  // final String? personalTaxCode;
   final String? identityCard;
   final String? identityCardPlace;
   final String? identityCardDate;
@@ -130,7 +130,7 @@ class Representative {
     this.email,
     this.taxCode,
     this.address,
-    this.personalTaxCode,
+    // this.personalTaxCode,
     this.identityCard,
     this.identityCardPlace,
     this.identityCardDate,
@@ -154,7 +154,7 @@ class Representative {
     data['email'] = email;
     data['taxCode'] = taxCode;
     data['address'] = address;
-    data['personalTaxCode'] = personalTaxCode;
+    // data['personalTaxCode'] = personalTaxCode;
     data['identityCard'] = identityCard;
     data['identityCardPlace'] = identityCardPlace;
     data['identityCardDate'] = identityCardDate;
@@ -174,7 +174,7 @@ class Representative {
     String? email,
     String? taxCode,
     String? address,
-    String? personalTaxCode,
+    // String? personalTaxCode,
     String? identityCard,
     String? identityCardPlace,
     String? identityCardDate,
@@ -192,7 +192,7 @@ class Representative {
       email: email ?? this.email,
       taxCode: taxCode ?? this.taxCode,
       address: address ?? this.address,
-      personalTaxCode: personalTaxCode ?? this.personalTaxCode,
+      // personalTaxCode: personalTaxCode ?? this.personalTaxCode,
       identityCard: identityCard ?? this.identityCard,
       identityCardPlace: identityCardPlace ?? this.identityCardPlace,
       identityCardDate: identityCardDate ?? this.identityCardDate,
@@ -213,7 +213,7 @@ class Representative {
           // email != null &&
           // taxCode != null &&
           // address != null &&
-          personalTaxCode.isNotNullOrEmpty &&
+          taxCode.isNotNullOrEmpty &&
           identityCard != null &&
           identityCardPlace != null &&
           identityCardDate != null &&
@@ -260,7 +260,7 @@ class Representative {
       'email': email,
       'taxCode': taxCode,
       'address': address,
-      'personalTaxCode': personalTaxCode,
+      // 'personalTaxCode': personalTaxCode,
       'identityCard': identityCard,
       'identityCardPlace': identityCardPlace,
       'identityCardDate': identityCardDate,
@@ -283,7 +283,7 @@ class Representative {
       email: map['email'],
       taxCode: map['taxCode'],
       address: map['address'],
-      personalTaxCode: map['personalTaxCode'],
+      // personalTaxCode: map['personalTaxCode'],
       identityCard: map['identityCard'],
       identityCardPlace: map['identityCardPlace'],
       identityCardDate: map['identityCardDate'],

@@ -63,7 +63,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     });
   }
 
-  getStoreById(int id) async {
+  getStoreById(int id, bool isRegistered) async {
     setStatusState(EState.loading);
     await _getAllBanks();
     await _getAllLocationBussiness();
@@ -121,7 +121,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
           ? "Giao đồ ăn (cửa hàng ăn uống)"
           : data.serviceTypeId == 2
               ? "Giao hàng siêu thị/ bách hoá"
-              : "";
+              : "Giao đồ ăn (cửa hàng ăn uống)";
       setNameService(name);
       if (data.representative != null) {
         setRepresentative(state.representative?.copyWith(
@@ -133,7 +133,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
           email: data.representative!.email,
           taxCode: data.representative!.taxCode,
           address: data.representative!.address,
-          personalTaxCode: data.representative!.personalTaxCode,
+          // personalTaxCode: data.representative!.personalTaxCode,
           businessName: data.representative!.businessName,
           businessLicenseImageId: data.representative!.businessLicenseImageId,
           identityCard: data.representative!.identityCard,
@@ -415,6 +415,38 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
       );
       return;
     }
+
+    if (state.currentPage == ERegisterPageType.representativeInformation) {
+      if (state.representative?.phone.isNotNullOrEmpty == true &&
+          ValidateHelper.validatePhone(state.representative?.phone ?? "") ==
+              false) {
+        dialogService.showAlertDialog(
+          onPressed: () {
+            Get.back();
+          },
+          title: 'Thông báo',
+          description: "Số điện thoại không đúng.",
+          buttonTitle: 'Đóng',
+        );
+        return;
+      }
+
+      if (state.representative?.otherPhone?.isNotNullOrEmpty == true &&
+          ValidateHelper.validatePhone(
+                  state.representative?.otherPhone ?? "") ==
+              false) {
+        dialogService.showAlertDialog(
+          onPressed: () {
+            Get.back();
+          },
+          title: 'Thông báo',
+          description: "Số điện thoại khác không đúng.",
+          buttonTitle: 'Đóng',
+        );
+        return;
+      }
+    }
+
     setRegisterStatus(EState.loading);
     final request = StoreRequestModel(
       isDraft: state.currentPage == ERegisterPageType.reviewInformation
@@ -499,5 +531,13 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
 
   setStoreMenuId(String? value) {
     emit(state.copyWith(storeMenuId: value));
+  }
+
+  setdistricts(List<DistrictModel> value) {
+    emit(state.copyWith(listDistrict: value));
+  }
+
+  setWards(List<DistrictModel> value) {
+    emit(state.copyWith(listWard: value));
   }
 }

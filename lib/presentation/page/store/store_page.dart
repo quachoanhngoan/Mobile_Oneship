@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/widget/stores_approve.dart';
 import 'package:oneship_merchant_app/presentation/page/store/widget/stores_pending.dart';
@@ -55,7 +56,7 @@ class _StorePageState extends State<StorePage> {
           ),
         ),
         appBar: const AppBarAuth(
-          title: 'Quản lí quán',
+          title: 'Quản lý quán',
           isShowHelpButton: false,
         ),
         body: DefaultTabController(
@@ -93,7 +94,7 @@ class _StorePageState extends State<StorePage> {
                         width: Get.width,
                         padding: const EdgeInsets.all(12),
                         child: Text(
-                          "Quản lí quán "
+                          "Quán của tôi "
                           "(${state.getStoresApproveCount})",
                           textAlign: TextAlign.center,
                         ),
@@ -127,11 +128,13 @@ class StoreStatusWidget extends StatelessWidget {
   final String status;
   final String approvalStatus;
   final String? reason;
+  final int? idStore;
   const StoreStatusWidget({
     super.key,
     required this.status,
     required this.approvalStatus,
     this.reason,
+    this.idStore,
   });
 
   String getTextFromStatusAndApprovalStatus() {
@@ -244,6 +247,14 @@ class StoreStatusWidget extends StatelessWidget {
                 buttonCancelTitle: 'Quay lại',
                 onPressed: () {
                   Get.back();
+                  if (idStore != null) {
+                    Get.to(() => RegisterStorePage(
+                          idStore: idStore,
+                          isRegistered: false,
+                        ))?.then((value) {
+                      Get.context?.read<StoreCubit>().getAll();
+                    });
+                  }
                 },
                 onCancel: () {
                   Get.back();

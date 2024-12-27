@@ -183,7 +183,7 @@ class _SectionList extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: ' trên OneShip.',
+                            text: ' trên GOO+.',
                             style: TextStyle(
                               fontFamily: 'Mulish',
                               fontSize: 14,
@@ -271,7 +271,7 @@ class SectionAgreement extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Tôi xác nhận rằng đã đọc tất cả điều khoản và điều kiện nêu trên và đồng ý ký hợp đồng với OneShip với các mục phí để trở thành đối tác chính thức của OneShip:',
+                  'Tôi xác nhận rằng đã đọc tất cả điều khoản và điều kiện nêu trên và đồng ý ký hợp đồng với GOO+ với các mục phí để trở thành đối tác chính thức của GOO+:',
                   style: TextStyle(
                     fontFamily: 'Mulish',
                     fontSize: 14,
@@ -287,9 +287,9 @@ class SectionAgreement extends StatelessWidget {
         const _SectionList(
           padding: EdgeInsets.only(left: 34),
           items: [
-            'Phí hoa hồng 25% với mỗi đơn hàng được giao thành công, OneShip thu 25% phí hoa hồng và thanh toán cho Quý Đối Tác khoản còn lại.',
-            'Trong vòng 7 ngày kể từ khi đăng ký gian hàng thành công, OneShip thu 25% phí hoàn tất việc ký hợp đồng hợp tác với OneShip. Nếu quá thời hạn trên, yêu cầu đăng ký sẽ bị hủy.',
-            'Bằng việc tiếp tục đăng ký, Đối tác đồng ý sẽ chịu toàn bộ trách nhiệm pháp lý liên quan đến việc đăng bán các SẢN PHẨM BỊ CẤM trên OneShip.',
+            'Phí hoa hồng 25% với mỗi đơn hàng được giao thành công, GOO+ thu 25% phí hoa hồng và thanh toán cho Quý Đối Tác khoản còn lại.',
+            'Trong vòng 7 ngày kể từ khi đăng ký gian hàng thành công, GOO+ thu 25% phí hoàn tất việc ký hợp đồng hợp tác với GOO+. Nếu quá thời hạn trên, yêu cầu đăng ký sẽ bị hủy.',
+            'Bằng việc tiếp tục đăng ký, Đối tác đồng ý sẽ chịu toàn bộ trách nhiệm pháp lý liên quan đến việc đăng bán các SẢN PHẨM BỊ CẤM trên GOO+.',
           ],
         ),
       ],

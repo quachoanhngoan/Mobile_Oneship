@@ -60,7 +60,10 @@ class RegisterLocationOfService extends StatelessWidget {
                   child: Text(
                     state.locationBusSellected?.name ?? "Chọn khu vực",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w500, color: AppColors.color2B3),
+                        fontWeight: FontWeight.w500,
+                        color: state.locationBusSellected == null
+                            ? AppColors.color2B3
+                            : AppColors.textColor),
                   ),
                 ),
               ),
