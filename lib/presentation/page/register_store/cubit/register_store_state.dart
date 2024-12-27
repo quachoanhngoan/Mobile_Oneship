@@ -83,7 +83,7 @@ class RegisterStoreState {
     this.currentPage = ERegisterPageType.termsAndConditions,
     this.isAcceptTermsAndConditions = false,
     this.isAlcohol = false,
-    this.nameService,
+    this.nameService = "Giao đồ ăn (cửa hàng ăn uống)",
     this.typeService = 1,
     this.listProvinces = const [],
     this.locationBusSellected,

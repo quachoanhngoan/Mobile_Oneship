@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/provinces_model.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
 
 class CreateStoreResponse {
   final int? merchantId;
@@ -32,7 +30,7 @@ class CreateStoreResponse {
   final String? storeCoverId;
   final String? storeFrontId;
   final String? storeMenuId;
-  final String? parkingFee;
+  final num? parkingFee;
   final String? rejectReason;
   final int? id;
   final bool? isPause;

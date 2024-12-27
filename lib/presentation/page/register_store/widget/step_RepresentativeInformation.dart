@@ -147,6 +147,7 @@ class Individual extends StatelessWidget {
                 const SizedBox(height: 8),
                 AppTextFormField(
                   isRequired: true,
+                  keyboardType: TextInputType.phone,
                   initialValue: state.representative?.phone,
                   onChanged: (p0) {
                     bloc.setRepresentative(
@@ -158,6 +159,7 @@ class Individual extends StatelessWidget {
                 const SizedBox(height: 8),
                 AppTextFormField(
                   isRequired: false,
+                  keyboardType: TextInputType.phone,
                   initialValue: state.representative?.otherPhone,
                   hintText: 'Nhập số điện thoại khác',
                   onChanged: (p0) {
@@ -179,12 +181,12 @@ class Individual extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 AppTextFormField(
-                  initialValue: state.representative?.personalTaxCode,
+                  initialValue: state.representative?.taxCode,
                   isRequired: true,
                   hintText: 'Nhập mã số thuế cá nhân',
                   onChanged: (p0) {
                     bloc.setRepresentative(
-                      state.representative?.copyWith(personalTaxCode: p0),
+                      state.representative?.copyWith(taxCode: p0),
                     );
                   },
                 ),

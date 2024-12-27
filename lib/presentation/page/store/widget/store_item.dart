@@ -1,14 +1,11 @@
 import 'package:dotted_line/dotted_line.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
-import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
@@ -29,9 +26,19 @@ class StoreItem extends StatelessWidget {
       onTap: () {
         if (data.getButtonType() == EStoreButtonType.rejectAndContinueButton ||
             data.getButtonType() == EStoreButtonType.continueButton) {
-          Get.to(() => RegisterStorePage(idStore: data.id))?.then((value) {
+          Get.to(() => RegisterStorePage(
+                idStore: data.id,
+                isRegistered: false,
+              ))?.then((value) {
             Get.context?.read<StoreCubit>().getAll();
           });
+        }
+
+        if (data.getButtonType() == EStoreButtonType.pendingAndViewButton) {
+          Get.to(() => RegisterStorePage(
+                idStore: data.id,
+                isRegistered: true,
+              ));
         }
       },
       child: Container(
@@ -111,6 +118,7 @@ class StoreItem extends StatelessWidget {
                                     status: data.status ?? '',
                                     approvalStatus: data.approvalStatus ?? '',
                                     reason: data.rejectReason,
+                                    idStore: data.id,
                                   ),
                                 ],
                               )
@@ -118,6 +126,7 @@ class StoreItem extends StatelessWidget {
                                 status: data.status ?? '',
                                 approvalStatus: data.approvalStatus ?? '',
                                 reason: data.rejectReason,
+                                idStore: data.id,
                               ),
                       ],
                     ),

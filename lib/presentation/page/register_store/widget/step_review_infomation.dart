@@ -14,7 +14,6 @@ class StepReviewInfomation extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
         ),
-        margin: const EdgeInsets.only(top: 20),
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 50, top: 20),
           child: Column(
@@ -154,7 +153,7 @@ class StepReviewInfomation extends StatelessWidget {
                         ),
                         _info(
                           title: "Mã số thuế cá nhân",
-                          value: bloc.state.representative?.personalTaxCode,
+                          value: bloc.state.representative?.taxCode,
                         ),
                         _info(
                           title: "Mã số thuế",

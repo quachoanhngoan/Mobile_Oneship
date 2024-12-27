@@ -1,0 +1,43 @@
+Date : 2024-12-26 23:45:58
+Directory : /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store
+Total : 16 files,  4087 codes, 164 comments, 183 blanks, all 4434 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         16 |      4,087 |        164 |        183 |      4,434 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                         | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                            |         16 |      4,087 |        164 |        183 |      4,434 |
+| . (Files)                                                                                                                    |          1 |        152 |          0 |          9 |        161 |
+| cubit                                                                                                                        |          3 |        971 |         67 |         87 |      1,125 |
+| widget                                                                                                                       |         12 |      2,964 |         97 |         87 |      3,148 |
++------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                     | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/cubit/register_request.dart                | Dart     |        327 |         18 |         29 |        374 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/cubit/register_store_cubit.dart            | Dart     |        417 |         41 |         46 |        504 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/cubit/register_store_state.dart            | Dart     |        227 |          8 |         12 |        247 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/register_store_page.dart                   | Dart     |        152 |          0 |          9 |        161 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/app_text_form_field.dart            | Dart     |         87 |          2 |          3 |         92 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/app_text_form_field_date.dart       | Dart     |         89 |          2 |          4 |         95 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/app_text_form_field_select.dart     | Dart     |         94 |          3 |          5 |        102 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/form_upload_image.dart              | Dart     |          0 |          0 |          1 |          1 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/register_location_service.dart      | Dart     |         83 |          0 |          4 |         87 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/register_shop_info.dart             | Dart     |        451 |          1 |         12 |        464 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/register_type_service.dart          | Dart     |        239 |          8 |          7 |        254 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/step_BankInfomation.dart            | Dart     |        153 |         68 |          6 |        227 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/step_RepresentativeInformation.dart | Dart     |        689 |          7 |         13 |        709 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/step_image_store.dart               | Dart     |        265 |          3 |         12 |        280 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/step_review_infomation.dart         | Dart     |        530 |          0 |          8 |        538 |
+| /Users/mainhatbien/Project/Flutter/DPO/m_app/lib/presentation/page/register_store/widget/step_terms_conditions.dart          | Dart     |        284 |          3 |         12 |        299 |
+| Total                                                                                                                        |          |      4,087 |        164 |        183 |      4,434 |
++------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

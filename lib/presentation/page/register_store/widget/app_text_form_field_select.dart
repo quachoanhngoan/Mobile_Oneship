@@ -39,6 +39,7 @@ class AppTextFormFieldSelect extends StatelessWidget {
               color: AppColors.textColor,
             ),
         onTap: onTap,
+        canRequestFocus: enabled == true,
         readOnly: enabled == false,
         // enabled: enabled,
         decoration: InputDecoration(

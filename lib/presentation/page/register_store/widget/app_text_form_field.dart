@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/config.dart';
-import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 
 class AppTextFormField extends StatelessWidget {
   final bool isRequired;
@@ -13,6 +12,7 @@ class AppTextFormField extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final Widget? suffix;
+  final TextInputType? keyboardType;
   const AppTextFormField({
     super.key,
     required this.isRequired,
@@ -24,6 +24,7 @@ class AppTextFormField extends StatelessWidget {
     this.initialValue,
     this.suffix,
     this.onChanged,
+    this.keyboardType,
   });
 
   @override
@@ -33,6 +34,7 @@ class AppTextFormField extends StatelessWidget {
       initialValue: initialValue,
       onChanged: onChanged,
       cursorHeight: 20,
+      keyboardType: keyboardType,
       style: Theme.of(context).textTheme.bodySmall!.copyWith(
             fontSize: 14.sp,
             color: AppColors.textColor,

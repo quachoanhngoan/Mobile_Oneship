@@ -8,8 +8,6 @@ import 'package:oneship_merchant_app/presentation/page/register_store/cubit/regi
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 
-import '../../../data/model/register_store/provinces_model.dart';
-
 class RegisterShopInfo extends StatelessWidget {
   final RegisterStoreCubit bloc;
   const RegisterShopInfo({
@@ -47,7 +45,7 @@ class RegisterShopInfo extends StatelessWidget {
                       specialDish: p0,
                     ));
                   },
-                  isRequired: true,
+                  isRequired: false,
                 ),
                 const VSpacing(spacing: 16),
                 AppTextFormField(
@@ -75,6 +73,7 @@ class RegisterShopInfo extends StatelessWidget {
                 const VSpacing(spacing: 8),
                 AppTextFormField(
                     isRequired: true,
+                    keyboardType: TextInputType.phone,
                     hintText: "Số điện thoại liên hệ",
                     controller: bloc.phoneContactController,
                     onChanged: (value) {
@@ -83,15 +82,17 @@ class RegisterShopInfo extends StatelessWidget {
                         phoneNumber: value,
                       ));
                     },
-                    suffix: IconButton(
-                        onPressed: () {
-                          bloc.phoneContactController.clear();
-                        },
-                        icon: Icon(
-                          Icons.cancel_outlined,
-                          size: 16,
-                          color: AppColors.black.withOpacity(0.6),
-                        ))),
+                    suffix: bloc.phoneContactController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              bloc.phoneContactController.clear();
+                            },
+                            icon: Icon(
+                              Icons.cancel_outlined,
+                              size: 16,
+                              color: AppColors.black.withOpacity(0.6),
+                            ))
+                        : const SizedBox()),
                 const VSpacing(spacing: 16),
                 _GroupService(
                   bloc: bloc,
@@ -114,6 +115,7 @@ class RegisterShopInfo extends StatelessWidget {
                         homeAndStreet: '',
                       ),
                     );
+                    bloc.setWards([]);
                   },
                   itemChange: (district) {
                     bloc.changeDistrict(district.id!);
@@ -165,6 +167,7 @@ class RegisterShopInfo extends StatelessWidget {
                 AppTextFormField(
                   hintText: "Nhập phí gửi xe",
                   controller: bloc.parkingFeeController,
+                  keyboardType: TextInputType.number,
                   onChanged: (value) {
                     bloc.setInfomatinoStore(state.infomation?.copyWith(
                       parkingFee: value,
@@ -359,13 +362,15 @@ class _ProvicesWidget extends StatelessWidget {
                       streetName: '',
                       homeAndStreet: '',
                     ));
+                    bloc.setdistricts([]);
+                    bloc.setWards([]);
                   },
                   icon: Icon(
                     Icons.cancel_outlined,
                     size: 16,
                     color: AppColors.black.withOpacity(0.6),
                   ))
-              : Container(),
+              : const SizedBox(),
           const Icon(Icons.expand_more, color: AppColors.color2B3, size: 24),
         ],
       ),

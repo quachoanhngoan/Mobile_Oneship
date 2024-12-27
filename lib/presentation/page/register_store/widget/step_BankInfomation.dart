@@ -1,9 +1,7 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
-import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 
