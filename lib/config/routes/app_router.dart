@@ -9,6 +9,7 @@ import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_p
 import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/page/welcome/welcome_page.dart';
 
 import '../../presentation/page/register/register_page.dart';
@@ -24,7 +25,7 @@ class AppRoutes {
   static const String registerStorePage = '/registerStorePage';
   static const String store = '/store';
   static const String menuPage = '/menuPage';
-  // static const String menuCustomTopping = '/menuCustomTopping';
+  static const String menuCustomTopping = '/menuCustomTopping';
   static final routes = [
     GetPage(
       name: AppRoutes.welcome,
@@ -66,14 +67,14 @@ class AppRoutes {
         // transitionDuration: Duration.zero,
         // transition: Transition.noTransition,
         ),
-    // GetPage(
-    //     name: AppRoutes.menuPage,
-    //     page: () => const MenuDinerPage(),
-    //     transition: Transition.rightToLeft,
-    //     curve: Curves.easeOutExpo
-    //     // transitionDuration: Duration.zero,
-    //     // transition: Transition.noTransition,
-    //     ),
+    GetPage(
+        name: AppRoutes.menuCustomTopping,
+        page: () => const ToppingCustomPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo
+        // transitionDuration: Duration.zero,
+        // transition: Transition.noTransition,
+        ),
     GetPage(
         name: AppRoutes.loginWithSMS,
         page: () => const LoginSmsPage(),

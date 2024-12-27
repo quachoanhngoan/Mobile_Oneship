@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
-import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/topping_custom.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 
 import 'widgets/dashed_divider.dart';
@@ -265,13 +266,14 @@ class _GroupToppingWidgetState extends State<_GroupToppingWidget> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
             child: GestureDetector(
               onTap: () {
-                showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    builder: (_) {
-                      return const ToppingCustomPage();
-                    });
+                Get.toNamed(AppRoutes.menuCustomTopping);
+                // showModalBottomSheet(
+                //     context: context,
+                //     isScrollControlled: true,
+                //     useSafeArea: true,
+                //     builder: (_) {
+                //       return const ToppingCustomPage();
+                //     });
               },
               child: Container(
                 width: double.infinity,

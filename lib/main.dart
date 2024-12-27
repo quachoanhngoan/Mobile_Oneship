@@ -20,6 +20,7 @@ import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cub
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_cubit.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -45,11 +46,13 @@ Future<void> main() async {
         BlocProvider(create: (context) => injector<StoreCubit>()),
         BlocProvider(create: (context) => injector<BottomCubit>()),
         BlocProvider(create: (context) => injector<MenuDinerCubit>()),
+
         // BlocProvider(create: (context) => injector<RegisterStoreCubit>()),
         BlocProvider(
           create: (context) => RegisterCubit(),
           child: const RegisterPage(),
-        )
+        ),
+        // BlocProvider(create: (context) => injector<ToppingCustomCubit>()),
       ], child: const MerchantApp()),
     );
   }, (error, stackTrace) {

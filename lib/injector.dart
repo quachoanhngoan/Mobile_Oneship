@@ -17,6 +17,7 @@ import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
 import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 
 import 'presentation/data/validations/user_validation.dart';
+import 'presentation/page/topping_custom/topping_custom_cubit.dart';
 
 final injector = GetIt.instance;
 
@@ -81,6 +82,7 @@ void blocModule() {
     () => BottomCubit(),
   );
   injector.registerFactory<MenuDinerCubit>(() => MenuDinerCubit());
+  injector.registerFactory<ToppingCustomCubit>(() => ToppingCustomCubit());
 }
 
 PrefManager get prefManager => injector<PrefManager>();
