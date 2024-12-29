@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_cubit.dart';
@@ -41,10 +42,10 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
             appBar: AppBar(
               leading: IconButton(
                   onPressed: () {
-                    Get.back();
+                    bloc.previousStepPage();
                   },
                   icon: const Icon(Icons.arrow_back, color: AppColors.black)),
-              title: Text("Thêm nhóm topping",
+              title: Text(state.title,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -58,12 +59,12 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                   child: PageView(
                     controller: bloc.pageController,
                     onPageChanged: (value) {
-                      bloc.changeStepPage(value);
+                      bloc.pageChange(value);
                     },
                     physics: const NeverScrollableScrollPhysics(),
                     children: <Widget>[
-                      _AddGroupTopping(bloc: bloc),
-                      const _AddTopping(),
+                      _AddGroupTopping(bloc: bloc, state: state),
+                      _AddTopping(bloc: bloc, state: state),
                     ],
                   ),
                 )),
@@ -81,17 +82,27 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                   ),
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
-                  child: Container(
-                    width: double.infinity,
-                    height: 40,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: AppColors.color988,
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Text(
-                      "Lưu thông tin",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600, color: AppColors.white),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (state.isButtonNextEnable()) {}
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: state.isButtonNextEnable()
+                              ? AppColors.color988
+                              : AppColors.color8E8,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Text(
+                        "Lưu thông tin",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: state.isButtonNextEnable()
+                                ? AppColors.white
+                                : AppColors.colorA4A),
+                      ),
                     ),
                   ),
                 )
@@ -104,22 +115,24 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
 
 class _AddGroupTopping extends StatelessWidget {
   final ToppingCustomCubit bloc;
-  const _AddGroupTopping({super.key, required this.bloc});
+  final ToppingCustomState state;
+  const _AddGroupTopping({required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    var indexAlcoholSellect = 0;
     return Column(
       children: <Widget>[
         const VSpacing(spacing: 12),
         AppTextFormField(
             hintText: "Nhập tên nhóm topping của bạn",
-            // controller: ,
-            onChanged: (value) {},
+            controller: bloc.nameGroupToppingController,
+            onChanged: (value) {
+              bloc.checkFilledInfomation();
+            },
             isRequired: true,
             suffix: IconButton(
                 onPressed: () {
-                  // bloc.phoneContactController.clear();
+                  bloc.nameGroupToppingController.clear();
                 },
                 icon: Icon(
                   Icons.cancel_outlined,
@@ -132,7 +145,7 @@ class _AddGroupTopping extends StatelessWidget {
             children: List.generate(2, (index) {
               return GestureDetector(
                 onTap: () {
-                  // alcoholSellect(index == 0 ? true : false);
+                  bloc.changeTypeOptionTopping(index);
                 },
                 child: Container(
                   color: AppColors.transparent,
@@ -143,16 +156,16 @@ class _AddGroupTopping extends StatelessWidget {
                         height: 16,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: indexAlcoholSellect == index
+                            color: state.indexOptionTopping == index
                                 ? AppColors.colorFF9
                                 : AppColors.transparent,
                             border: Border.all(
-                                color: indexAlcoholSellect == index
+                                color: state.indexOptionTopping == index
                                     ? AppColors.color05C
                                     : AppColors.color5DD,
                                 width: 1)),
                         padding: const EdgeInsets.all(4),
-                        child: indexAlcoholSellect == index
+                        child: state.indexOptionTopping == index
                             ? Container(
                                 decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
@@ -175,10 +188,13 @@ class _AddGroupTopping extends StatelessWidget {
             })),
         const VSpacing(spacing: 24),
         AppTextFormFieldSelect(
+          controller: bloc.linkFoodController,
           enabled: false,
           isRequired: true,
           hintText: "Chọn món liên kết",
-          onChanged: (value) {},
+          onChanged: (value) {
+            bloc.checkFilledInfomation();
+          },
           onTap: () {
             showModalBottomSheet(
                 context: context,
@@ -250,10 +266,58 @@ class _LinkedFoodSheet extends StatelessWidget {
 }
 
 class _AddTopping extends StatelessWidget {
-  const _AddTopping({super.key});
+  final ToppingCustomCubit bloc;
+  final ToppingCustomState state;
+  const _AddTopping({required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Column(
+      children: <Widget>[
+        AppTextFormField(
+            hintText: "Tên topping",
+            controller: bloc.nameToppingController,
+            onChanged: (value) {
+              bloc.validateNameTopping(value);
+              bloc.checkFilledInfomation();
+            },
+            isRequired: true,
+            errorText: state.errorNameTopping,
+            suffix: state.isToppingClearButton
+                ? IconButton(
+                    onPressed: () {
+                      bloc.nameToppingController.clear();
+                    },
+                    icon: Icon(
+                      Icons.cancel_outlined,
+                      size: 16,
+                      color: AppColors.black.withOpacity(0.6),
+                    ))
+                : const SizedBox()),
+        AppTextFormField(
+            hintText: "Giá bán",
+            controller: bloc.priceController,
+            onChanged: (value) {
+              bloc.validatePriceTopping(value);
+              bloc.checkFilledInfomation();
+            },
+            isRequired: true,
+            inputFormatters: [
+              CurrencyInputFormatter(trailingSymbol: ' vnđ', mantissaLength: 0)
+            ],
+            keyboardType: TextInputType.number,
+            suffix: state.isPriceClearButton
+                ? IconButton(
+                    onPressed: () {
+                      bloc.priceController.clear();
+                    },
+                    icon: Icon(
+                      Icons.cancel_outlined,
+                      size: 16,
+                      color: AppColors.black.withOpacity(0.6),
+                    ))
+                : const SizedBox()),
+      ],
+    );
   }
 }

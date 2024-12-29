@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 
@@ -13,19 +14,22 @@ class AppTextFormField extends StatelessWidget {
   final void Function(String)? onChanged;
   final Widget? suffix;
   final TextInputType? keyboardType;
-  const AppTextFormField({
-    super.key,
-    required this.isRequired,
-    this.controller,
-    this.hintText,
-    this.filled,
-    this.enabled,
-    this.onTap,
-    this.initialValue,
-    this.suffix,
-    this.onChanged,
-    this.keyboardType,
-  });
+  final List<TextInputFormatter>? inputFormatters;
+  final String? errorText;
+  const AppTextFormField(
+      {super.key,
+      required this.isRequired,
+      this.controller,
+      this.hintText,
+      this.filled,
+      this.enabled,
+      this.onTap,
+      this.initialValue,
+      this.suffix,
+      this.onChanged,
+      this.keyboardType,
+      this.inputFormatters,
+      this.errorText});
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +46,12 @@ class AppTextFormField extends StatelessWidget {
       onTap: onTap,
       enabled: enabled,
       autocorrect: false,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         suffixIcon: suffix,
         // floatingLabelBehavior: FloatingLabelBehavior.always,
         isDense: false,
+        errorText: errorText == "" ? null : errorText,
         filled: filled,
         fillColor: const Color(0xffF9FAFB),
         enabledBorder: const UnderlineInputBorder(
