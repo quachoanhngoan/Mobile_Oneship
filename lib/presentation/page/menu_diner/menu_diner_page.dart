@@ -267,13 +267,6 @@ class _GroupToppingWidgetState extends State<_GroupToppingWidget> {
             child: GestureDetector(
               onTap: () {
                 Get.toNamed(AppRoutes.menuCustomTopping);
-                // showModalBottomSheet(
-                //     context: context,
-                //     isScrollControlled: true,
-                //     useSafeArea: true,
-                //     builder: (_) {
-                //       return const ToppingCustomPage();
-                //     });
               },
               child: Container(
                 width: double.infinity,

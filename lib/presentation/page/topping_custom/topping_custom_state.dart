@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 
 class ToppingCustomState extends Equatable {
   final bool isFilledInfo;
@@ -8,6 +9,7 @@ class ToppingCustomState extends Equatable {
   // final String? errorPriceTopping;
   final bool isToppingClearButton;
   final bool isPriceClearButton;
+  final List<ToppingItemDomain> listTopping;
 
   const ToppingCustomState(
       {this.isFilledInfo = false,
@@ -16,7 +18,8 @@ class ToppingCustomState extends Equatable {
       this.errorNameTopping,
       // this.errorPriceTopping,
       this.isToppingClearButton = false,
-      this.isPriceClearButton = false});
+      this.isPriceClearButton = false,
+      this.listTopping = const []});
 
   @override
   List<Object?> get props => [
@@ -26,6 +29,7 @@ class ToppingCustomState extends Equatable {
         errorNameTopping,
         isToppingClearButton,
         isPriceClearButton,
+        listTopping,
       ];
 
   ToppingCustomState copyWith({
@@ -36,6 +40,7 @@ class ToppingCustomState extends Equatable {
     // String? errorPriceTopping,
     bool? isToppingClearButton,
     bool? isPriceClearButton,
+    List<ToppingItemDomain>? listTopping,
   }) {
     return ToppingCustomState(
       title: title ?? this.title,
@@ -45,6 +50,7 @@ class ToppingCustomState extends Equatable {
       // errorPriceTopping: errorPriceTopping ?? this.errorPriceTopping,
       isToppingClearButton: isToppingClearButton ?? this.isToppingClearButton,
       isPriceClearButton: isPriceClearButton ?? this.isPriceClearButton,
+      listTopping: listTopping ?? this.listTopping,
     );
   }
 

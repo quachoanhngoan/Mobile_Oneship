@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_state.dart';
 
 class ToppingCustomCubit extends Cubit<ToppingCustomState> {
@@ -17,6 +18,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   final TextEditingController priceController = TextEditingController();
 
   final PageController pageController = PageController();
+
+  var _isEditTopping = false;
+  late ToppingItemDomain toppingEdit;
 
   pageChange(int value) {
     if (value > 0) {
@@ -31,12 +35,16 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     if (pageController.page != null && pageController.page!.round() > 0) {
       pageController.previousPage(
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      nameToppingController.clear();
+      priceController.clear();
     } else {
       Get.back();
     }
   }
 
   nextPage() {
+    // nameToppingController.clear();
+    // priceController.clear();
     pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
@@ -44,7 +52,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   checkFilledInfomation() {
     if (pageController.page != null && pageController.page!.round() > 0) {
       final isFilled = nameToppingController.text.isNotNullOrEmpty &&
-          priceController.text.isNotNullOrEmpty;
+          priceController.text.isNotNullOrEmpty &&
+          (state.errorNameTopping == null || state.errorNameTopping == "") &&
+          priceController.text != "0 vnđ";
       emit(state.copyWith(isFilledInfo: isFilled));
     } else {
       final isFilled = nameGroupToppingController.text.isNotNullOrEmpty
@@ -58,13 +68,18 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     emit(state.copyWith(indexOptionTopping: index));
   }
 
-  String nameToppingTest = "Nhiều đá";
-
   validateNameTopping(String value) {
     if (value.isNullOrEmpty) {
       emit(state.copyWith(errorNameTopping: null, isToppingClearButton: false));
     } else {
-      if (value == nameToppingTest) {
+      final listTopping = state.listTopping;
+      var isConflictName = false;
+      for (var item in listTopping) {
+        if (item.name?.toLowerCase() == value.toLowerCase()) {
+          isConflictName = true;
+        }
+      }
+      if (isConflictName) {
         emit(state.copyWith(
             errorNameTopping: AppErrorString.kNameToppingConflict,
             isToppingClearButton: true));
@@ -75,16 +90,63 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   }
 
   validatePriceTopping(String value) {
-    // if (value.isNullOrEmpty) {
-    //   emit(state.copyWith(errorPriceTopping: null));
-    // } else {
-    //   log("check price: $value");
-    //   if (value.length > 3) {
-    //     emit(state.copyWith(errorPriceTopping: null));
-    //   } else {
-    //     emit(state.copyWith(errorPriceTopping: AppErrorString.kPriceTopping));
-    //   }
-    // }
     emit(state.copyWith(isPriceClearButton: value.isNotNullOrEmpty));
+  }
+
+  saveInfoClick() {
+    if (pageController.page != null && pageController.page! > 0) {
+      if (!_isEditTopping) {
+        final listTopping = List.of(state.listTopping);
+        listTopping.add(ToppingItemDomain(
+            name: nameToppingController.text, price: priceController.text));
+        emit(state.copyWith(
+            listTopping: listTopping,
+            isPriceClearButton: false,
+            isToppingClearButton: false));
+      } else {
+        final listTopping = state.listTopping.map((e) {
+          if (e == toppingEdit) {
+            return e.copyWith(
+                name: nameToppingController.text, price: priceController.text);
+          }
+          return e;
+        }).toList();
+        emit(state.copyWith(listTopping: listTopping));
+      }
+      previousStepPage();
+    } else {
+      // to do code
+    }
+  }
+
+  changeStatusTopping(ToppingItemDomain item) {
+    final updateListTopping = state.listTopping.map((e) {
+      if (e.name == item.name) {
+        if (e.type == StatusToppingType.isUnused) {
+          return e.copyWith(type: StatusToppingType.isInUse);
+        } else {
+          return e.copyWith(type: StatusToppingType.isUnused);
+        }
+      }
+      return e;
+    }).toList();
+    emit(state.copyWith(listTopping: updateListTopping));
+  }
+
+  removeTopping(ToppingItemDomain item) {
+    final listTopping = List.of(state.listTopping);
+    listTopping.remove(item);
+    emit(state.copyWith(listTopping: listTopping));
+  }
+
+  setArgEditTopping(bool isEditToppinp) {
+    _isEditTopping = isEditToppinp;
+  }
+
+  editTopping(ToppingItemDomain item) {
+    nameToppingController.text = item.name ?? "";
+    priceController.text = item.price ?? "";
+    toppingEdit = item;
+    nextPage();
   }
 }
