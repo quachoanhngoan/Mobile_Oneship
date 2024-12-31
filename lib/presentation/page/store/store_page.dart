@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,99 +29,118 @@ class _StorePageState extends State<StorePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 5,
-                offset: const Offset(0, -4),
+    return Stack(
+      children: [
+        Scaffold(
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 0,
+                    blurRadius: 5,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: AppButton(
-            isEnable: true,
-            padding: EdgeInsets.symmetric(
-              vertical: 10.sp,
-              horizontal: 12.sp,
-            ),
-            onPressed: () {
-              Get.toNamed(AppRoutes.registerStorePage)?.then((value) {
-                Get.context?.read<StoreCubit>().getAll();
-              });
-            },
-            text: 'Đăng ký quán',
-          ),
-        ),
-        appBar: const AppBarAuth(
-          title: 'Quản lý quán',
-          isShowHelpButton: false,
-        ),
-        body: DefaultTabController(
-          length: 2,
-          initialIndex: 0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BlocBuilder<StoreCubit, StoreState>(
-                builder: (context, state) {
-                  return TabBar(
-                    padding: EdgeInsets.zero,
-                    labelPadding: EdgeInsets.zero,
-                    labelColor: AppColors.primary,
-                    labelStyle: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    unselectedLabelColor: AppColors.textGray,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    indicatorColor: AppColors.primary,
-                    indicator: const UnderlineTabIndicator(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(
-                          width: 3.0,
-                          color: AppColors.primary,
-                        ),
-                        insets: EdgeInsets.zero),
-                    tabs: <Widget>[
-                      Container(
-                        width: Get.width,
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          "Quán của tôi "
-                          "(${state.getStoresApproveCount})",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Container(
-                        width: Get.width,
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          "Đăng ký quán"
-                          " (${state.getStoresDontApproveCount})",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  );
+              child: AppButton(
+                isEnable: true,
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.sp,
+                  horizontal: 12.sp,
+                ),
+                onPressed: () {
+                  Get.toNamed(AppRoutes.registerStorePage)?.then((value) {
+                    Get.context?.read<StoreCubit>().getAll();
+                  });
                 },
+                text: 'Đăng ký quán',
               ),
-              const Flexible(
-                child: TabBarView(children: [
-                  StoresApprove(),
-                  StoresPending(),
-                ]),
+            ),
+            appBar: const AppBarAuth(
+              title: 'Quản lý quán',
+              isShowHelpButton: false,
+              isShowBackButton: false,
+            ),
+            body: DefaultTabController(
+              length: 2,
+              initialIndex: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BlocBuilder<StoreCubit, StoreState>(
+                    builder: (context, state) {
+                      return TabBar(
+                        onTap: (value) {
+                          Get.context?.read<StoreCubit>().getAll();
+                        },
+                        padding: EdgeInsets.zero,
+                        labelPadding: EdgeInsets.zero,
+                        labelColor: AppColors.primary,
+                        labelStyle: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        unselectedLabelColor: AppColors.textGray,
+                        unselectedLabelStyle: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        indicatorColor: AppColors.primary,
+                        indicator: const UnderlineTabIndicator(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide(
+                              width: 3.0,
+                              color: AppColors.primary,
+                            ),
+                            insets: EdgeInsets.zero),
+                        tabs: <Widget>[
+                          Container(
+                            width: Get.width,
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              "Quán của tôi "
+                              "(${state.getStoresApproveCount})",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Container(
+                            width: Get.width,
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              "Đăng ký quán"
+                              " (${state.getStoresDontApproveCount})",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const Flexible(
+                    child: TabBarView(children: [
+                      StoresApprove(),
+                      StoresPending(),
+                    ]),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            )),
+        BlocBuilder<StoreCubit, StoreState>(builder: (context, state) {
+          if (state.loginState.isLoading) {
+            return Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CupertinoActivityIndicator(),
+              ),
+            );
+          }
+          return const SizedBox();
+        }),
+      ],
+    );
   }
 }
 

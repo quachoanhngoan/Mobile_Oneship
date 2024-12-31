@@ -8,7 +8,6 @@ import 'package:oneship_merchant_app/app.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';
-import 'package:oneship_merchant_app/core/helper/device.helper.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/dto/request_login.dart';
 import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
@@ -241,7 +240,7 @@ class AuthCubit extends Cubit<AuthState> {
           prefManager.userName = "";
           prefManager.password = "";
 
-          Get.offAllNamed(AppRoutes.homepage);
+          Get.offAllNamed(AppRoutes.store);
         }, failure: (error) {
           emit(state.copyWith(
             loadingState: EState.failure,
