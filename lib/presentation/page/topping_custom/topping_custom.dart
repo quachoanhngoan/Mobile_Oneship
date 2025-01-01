@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
