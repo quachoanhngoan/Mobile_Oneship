@@ -98,7 +98,7 @@ class Themings {
         borderRadius: BorderRadius.circular(8),
       ),
     ),
-    fontFamily: "Mulish",
+    fontFamily: "SF Pro Display",
     listTileTheme: listTileTheme,
     // canvasColor: Colors.black,
     dividerTheme: DividerThemeData(
@@ -141,9 +141,9 @@ class Themings {
         ),
       ),
 
-      hintStyle: TextStyle(
+      hintStyle: const TextStyle(
         color: AppColors.placeHolderColor,
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
     ),

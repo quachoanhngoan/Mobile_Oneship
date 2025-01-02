@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,20 +18,29 @@ class TextFieldBase extends StatelessWidget {
   final double? height;
   final FocusNode? focusNode;
   final Function()? onEditingComplete;
-  const TextFieldBase(
-      {super.key,
-      this.label,
-      this.controller,
-      required this.hintText,
-      this.suffix,
-      this.onChanged,
-      this.obscureText = false,
-      this.errorText,
-      this.prefix,
-      this.onBorder = true,
-      this.height,
-      this.focusNode,
-      this.onEditingComplete});
+  final double? horizontalPadding;
+  final bool? isNumber;
+  final bool? readOnly;
+  // final Function? onTap;
+  const TextFieldBase({
+    super.key,
+    this.label,
+    this.controller,
+    required this.hintText,
+    this.suffix,
+    this.onChanged,
+    this.obscureText = false,
+    this.errorText,
+    this.prefix,
+    this.onBorder = true,
+    this.height,
+    this.focusNode,
+    this.onEditingComplete,
+    this.horizontalPadding,
+    this.isNumber = false,
+    this.readOnly = false,
+    // this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +61,17 @@ class TextFieldBase extends StatelessWidget {
             controller: controller,
             obscureText: obscureText!,
             textAlignVertical: TextAlignVertical.center,
+            keyboardType: isNumber == true ? TextInputType.number : null,
             onEditingComplete: () {
               focusNode?.unfocus();
               onEditingComplete?.call();
             },
+            readOnly: readOnly ?? false,
+            // onTap: () {
+            //   if (onTap != null) {
+            //     onTap!();
+            //   }
+            // },
             cursorColor: AppColors.black,
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
@@ -64,8 +82,8 @@ class TextFieldBase extends StatelessWidget {
                   fontWeight: FontWeight.w500),
               suffixIcon: suffix,
               prefixIcon: prefix,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: 10, horizontal: horizontalPadding ?? 10),
               focusedBorder: _border(onBorder: onBorder),
               enabledBorder: _border(onBorder: onBorder),
               border: _border(onBorder: onBorder),

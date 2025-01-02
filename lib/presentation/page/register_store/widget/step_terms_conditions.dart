@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 
 class TermsAndConditionsPage extends StatelessWidget {
   //onAcceptTermsAndConditions
-  final bool initialAcceptTermsAndConditions;
-  final ValueChanged<bool> onAcceptTermsAndConditions;
-  const TermsAndConditionsPage(
-      {super.key,
-      required this.onAcceptTermsAndConditions,
-      this.initialAcceptTermsAndConditions = false});
+  final RegisterStoreCubit bloc;
+  const TermsAndConditionsPage({super.key, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -74,11 +73,7 @@ class TermsAndConditionsPage extends StatelessWidget {
                       title: 'Vui lòng đọc kỹ điều khoản và điều kiện'),
                   const SizedBox(height: 5),
                   SectionAgreement(
-                    initialAcceptTermsAndConditions:
-                        initialAcceptTermsAndConditions,
-                    onAcceptTermsAndConditions: (value) {
-                      onAcceptTermsAndConditions(value);
-                    },
+                    bloc: bloc,
                   ),
                 ],
               ),
@@ -188,7 +183,7 @@ class _SectionList extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: ' trên OneShip.',
+                            text: ' trên GOO+.',
                             style: TextStyle(
                               fontFamily: 'Mulish',
                               fontSize: 14,
@@ -241,30 +236,13 @@ class _SectionList extends StatelessWidget {
   }
 }
 
-class SectionAgreement extends StatefulWidget {
+class SectionAgreement extends StatelessWidget {
   //onAcceptTermsAndConditionsVAlue
-  final bool initialAcceptTermsAndConditions;
-
-  final ValueChanged<bool> onAcceptTermsAndConditions;
-  const SectionAgreement(
-      {super.key,
-      required this.onAcceptTermsAndConditions,
-      this.initialAcceptTermsAndConditions = false});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _SectionAgreementState createState() => _SectionAgreementState();
-}
-
-class _SectionAgreementState extends State<SectionAgreement> {
-  bool isChecked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    isChecked = widget.initialAcceptTermsAndConditions;
-  }
-
+  final RegisterStoreCubit bloc;
+  const SectionAgreement({
+    super.key,
+    required this.bloc,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -273,25 +251,27 @@ class _SectionAgreementState extends State<SectionAgreement> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Checkbox(
-              checkColor: Colors.white,
-              side: const BorderSide(color: AppColors.primary),
-              activeColor: AppColors.primary,
-              visualDensity: VisualDensity.compact,
-              value: isChecked,
-              onChanged: (value) {
-                setState(() {
-                  isChecked = value ?? false;
-                });
-                print(isChecked);
-                widget.onAcceptTermsAndConditions(isChecked);
+            BlocBuilder<RegisterStoreCubit, RegisterStoreState>(
+              bloc: bloc,
+              builder: (context, state) {
+                return Checkbox(
+                  checkColor: Colors.white,
+                  side: const BorderSide(color: AppColors.primary),
+                  activeColor: AppColors.primary,
+                  visualDensity: VisualDensity.compact,
+                  value: state.isAcceptTermsAndConditions,
+                  onChanged: (value) {
+                    if (value == null) return;
+                    bloc.setAcceptTermsAndConditions(value);
+                  },
+                );
               },
             ),
             const Expanded(
               child: Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Tôi xác nhận rằng đã đọc tất cả điều khoản và điều kiện nêu trên và đồng ý ký hợp đồng với OneShip với các mục phí để trở thành đối tác chính thức của OneShip:',
+                  'Tôi xác nhận rằng đã đọc tất cả điều khoản và điều kiện nêu trên và đồng ý ký hợp đồng với GOO+ với các mục phí để trở thành đối tác chính thức của GOO+:',
                   style: TextStyle(
                     fontFamily: 'Mulish',
                     fontSize: 14,
@@ -307,9 +287,9 @@ class _SectionAgreementState extends State<SectionAgreement> {
         const _SectionList(
           padding: EdgeInsets.only(left: 34),
           items: [
-            'Phí hoa hồng 25% với mỗi đơn hàng được giao thành công, OneShip thu 25% phí hoa hồng và thanh toán cho Quý Đối Tác khoản còn lại.',
-            'Trong vòng 7 ngày kể từ khi đăng ký gian hàng thành công, OneShip thu 25% phí hoàn tất việc ký hợp đồng hợp tác với OneShip. Nếu quá thời hạn trên, yêu cầu đăng ký sẽ bị hủy.',
-            'Bằng việc tiếp tục đăng ký, Đối tác đồng ý sẽ chịu toàn bộ trách nhiệm pháp lý liên quan đến việc đăng bán các SẢN PHẨM BỊ CẤM trên OneShip.',
+            'Phí hoa hồng 25% với mỗi đơn hàng được giao thành công, GOO+ thu 25% phí hoa hồng và thanh toán cho Quý Đối Tác khoản còn lại.',
+            'Trong vòng 7 ngày kể từ khi đăng ký gian hàng thành công, GOO+ thu 25% phí hoàn tất việc ký hợp đồng hợp tác với GOO+. Nếu quá thời hạn trên, yêu cầu đăng ký sẽ bị hủy.',
+            'Bằng việc tiếp tục đăng ký, Đối tác đồng ý sẽ chịu toàn bộ trách nhiệm pháp lý liên quan đến việc đăng bán các SẢN PHẨM BỊ CẤM trên GOO+.',
           ],
         ),
       ],

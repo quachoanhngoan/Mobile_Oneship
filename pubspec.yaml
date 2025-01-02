@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.6+7
+version: 1.0.9+10
 
 environment:
   sdk: ^3.5.4
@@ -61,6 +61,12 @@ dependencies:
   dotted_line: ^3.2.3
   cached_network_image: ^3.4.1
   percent_indicator: ^4.2.4
+  image_picker: ^1.1.2
+  dropdown_button2: ^2.3.9
+  flutter_datetime_picker_plus: ^2.2.0
+  flutter_multi_formatter: ^2.13.0
+  flutter_slidable: ^3.1.0
+  # modal_bottom_sheet: ^3.0.0-pre
   # gradient_like_css: ^1.0.1
 
 dev_dependencies:
@@ -172,6 +178,39 @@ flutter:
     - family: MulishWgh
       fonts:
         - asset: assets/fonts/mulish_wght.ttf
+    - family: SF Pro Display
+      fonts:
+        - asset: assets/fonts/SF-Pro-Display-Bold.otf
+          weight: 700
+        - asset: assets/fonts/SF-Pro-Display-Heavy.otf
+          weight: 900
+        - asset: assets/fonts/SF-Pro-Display-Light.otf
+          weight: 300
+        - asset: assets/fonts/SF-Pro-Display-Medium.otf
+          weight: 500
+        - asset: assets/fonts/SF-Pro-Display-Regular.otf
+          weight: 400
+        - asset: assets/fonts/SF-Pro-Display-Semibold.otf
+          weight: 600
+        - asset: assets/fonts/SF-Pro-Display-Thin.otf
+          weight: 200
+        - asset: assets/fonts/SF-Pro-Display-Ultralight.otf
+          weight: 100
+        - asset: assets/fonts/SF-Pro-Display-Black.otf
+          weight: 900
+        - asset: assets/fonts/SF-Pro-Display-HeavyItalic.otf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/SF-Pro-Display-LightItalic.otf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SF-Pro-Display-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/SF-Pro-Display-RegularItalic.otf
+          weight: 400
+          style: italic
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

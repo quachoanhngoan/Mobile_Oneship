@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:oneship_merchant_app/core/execute/execute.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/data/model/banner/banner.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/slide_images.dart';
 
@@ -8,8 +12,45 @@ import '../../../config/config.dart';
 import '../../../core/core.dart';
 import '../../widget/common/logo_widget.dart';
 
-class OnBoardingPage extends StatelessWidget {
+class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
+
+  @override
+  State<OnBoardingPage> createState() => _OnBoardingPageState();
+}
+
+class _OnBoardingPageState extends State<OnBoardingPage> {
+  bool isLoading = false;
+  List<BannerM> banners = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBanners();
+  }
+
+  void getBanners() async {
+    isLoading = true;
+    setState(() {});
+    try {
+      final response = await execute(
+        () => injector<BannerRepository>().getBanner("onboarding"),
+        isShowFailDialog: true,
+      );
+      response.when(success: (data) {
+        isLoading = false;
+        banners = data;
+        // emit(state.copyWith(banners: data.items ?? []));
+      }, failure: (error) {
+        isLoading = false;
+      });
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {});
+      isLoading = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,12 +96,23 @@ class OnBoardingPage extends StatelessWidget {
             // ),
             SizedBox(
               height: 0.5.sh,
-              child: const SlideImage(
-                images: [
-                  AppAssets.imagesBgOnboarding,
-                  AppAssets.imagesBgOnboarding,
-                  AppAssets.imagesBgOnboarding,
-                ],
+              child: Builder(
+                builder: (context) {
+                  final List<String> images = [];
+                  if (banners.isNotEmpty &&
+                      banners[0].files?.isNotEmpty == true) {
+                    for (var i = 0; i < banners[0].files!.length; i++) {
+                      images.add(banners[0].files![i].fileId ?? "");
+                    }
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SlideImage(
+                      images: List<String>.from(images),
+                    ),
+                  );
+                },
               ),
             ),
             const Spacer(),

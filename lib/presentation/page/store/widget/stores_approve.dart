@@ -41,7 +41,7 @@ class StoresApprove extends StatelessWidget {
                 bottom: 100,
                 top: 12,
               ),
-              physics: const NeverScrollableScrollPhysics(),
+              // physics: const NeverScrollableScrollPhysics(),
               itemCount: state.getStoresApproveCount,
               itemBuilder: (context, index) {
                 final item = state.getStoresApprove[index];

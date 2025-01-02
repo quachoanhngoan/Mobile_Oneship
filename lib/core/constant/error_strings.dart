@@ -43,4 +43,7 @@ class AppErrorString {
   static const String kEmailNotFound = "Không tìm thấy email !";
   static const String kServerError = "Lỗi server !";
   static const String kUnauthorized = "Unauthorized";
+  static const String kNameToppingConflict =
+      "Tên topping đã tồn tại. Vui lòng đổi tên khác";
+  static const String kPriceTopping = "Vui lòng nhập giá topping !";
 }

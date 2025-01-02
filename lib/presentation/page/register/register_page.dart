@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -69,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       }
       if (state.titleFailedDialog != null) {
-        showErrorDialog(state.titleFailedDialog!);
+        context.showErrorDialog(state.titleFailedDialog!, context);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -289,57 +291,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ));
   }
-
-  showErrorDialog(String title) {
-    context.showDialogWidget(context,
-        child: Dialog(
-            backgroundColor: AppColors.transparent,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(14)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const VSpacing(spacing: 12),
-                  Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                    textAlign: TextAlign.center,
-                  ),
-                  const VSpacing(spacing: 6),
-                  Text(
-                    "Vui lòng thử lại",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp, fontWeight: FontWeight.w500),
-                  ),
-                  const VSpacing(spacing: 12),
-                  Divider(
-                    color: AppColors.color080.withOpacity(0.55),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                        onPressed: () {
-                          context.popScreen();
-                        },
-                        child: Text(
-                          "OK",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.color988),
-                        )),
-                  )
-                ],
-              ),
-            )));
-  }
 }
 
 class PhoneRegister extends StatelessWidget {
@@ -468,8 +419,9 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
           ),
           const VSpacing(spacing: 12),
           TextFieldPassRegister(
+              paddingHintext: 10,
               focusNode: widget.passNode,
-              suffixClick: () {
+              obscureChange: () {
                 setState(() {
                   obscureTextPass = !obscureTextPass;
                 });
@@ -486,8 +438,9 @@ class _CreatePasswordRegisterState extends State<CreatePasswordRegister> {
               iSHintTextVisible: widget.state.showHintTextPass == true),
           const VSpacing(spacing: 16),
           TextFieldPassRegister(
+              paddingHintext: 10,
               focusNode: widget.rePassNode,
-              suffixClick: () {
+              obscureChange: () {
                 setState(() {
                   obscureTextRePass = !obscureTextRePass;
                 });
@@ -513,41 +466,63 @@ class TextFieldPassRegister extends StatelessWidget {
   final bool iSHintTextVisible;
   final String hintText;
   final Function(String?) onChange;
-  final bool obscureText;
-  final Function suffixClick;
+  final bool? obscureText;
+  final Function? obscureChange;
   final String? errorText;
   final FocusNode? focusNode;
-  const TextFieldPassRegister(
-      {super.key,
-      this.focusNode,
-      required this.onChange,
-      required this.controller,
-      required this.hintText,
-      required this.iSHintTextVisible,
-      required this.obscureText,
-      required this.suffixClick,
-      this.errorText});
+  final Widget? suffix;
+  final double? paddingHintext;
+  final bool? isStarRed;
+  final Widget? specialPrefix;
+  final double? horizontalPadding;
+  final bool? isNumber;
+  final bool? readOnly;
+  final Function? onTap;
+  const TextFieldPassRegister({
+    super.key,
+    this.focusNode,
+    required this.onChange,
+    required this.controller,
+    required this.hintText,
+    required this.iSHintTextVisible,
+    this.obscureText = false,
+    this.obscureChange,
+    this.errorText,
+    this.suffix = const SizedBox(),
+    this.paddingHintext,
+    this.isStarRed = true,
+    this.specialPrefix = const SizedBox(),
+    this.horizontalPadding,
+    this.isNumber = false,
+    this.readOnly = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.centerLeft,
       children: <Widget>[
-        Visibility(
-          visible: iSHintTextVisible,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text.rich(
-              TextSpan(
-                text: hintText,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.color2B3, fontWeight: FontWeight.w500),
-                children: const [
-                  TextSpan(
-                      text: '*',
-                      style: TextStyle(fontSize: 14, color: AppColors.red)),
-                ],
-              ),
+        Padding(
+          padding: EdgeInsets.only(
+              left: paddingHintext ?? 0,
+              bottom: !iSHintTextVisible
+                  ? errorText == null
+                      ? 50
+                      : 65
+                  : 0),
+          child: Text.rich(
+            TextSpan(
+              text: hintText,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.color2B3,
+                  fontWeight: FontWeight.w500,
+                  fontSize: !iSHintTextVisible ? 12 : 14),
+              children: [
+                TextSpan(
+                    text: isStarRed == true ? '*' : "",
+                    style: const TextStyle(fontSize: 14, color: AppColors.red))
+              ],
             ),
           ),
         ),
@@ -555,23 +530,51 @@ class TextFieldPassRegister extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           focusNode: focusNode,
+          horizontalPadding: horizontalPadding,
           hintText: "",
           errorText: errorText,
           onChanged: (value) {
             onChange(value);
           },
-          suffix: IconButton(
-              onPressed: () {
-                suffixClick();
-              },
-              icon: Icon(
-                obscureText
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                color: AppColors.color2B3,
-                size: 18,
-              )),
+          // onTap: onTap,
+          readOnly: readOnly ?? false,
+          isNumber: isNumber,
+          suffix: suffix ??
+              IconButton(
+                  onPressed: () {
+                    if (obscureChange != null) {
+                      obscureChange!();
+                    }
+                  },
+                  icon: Icon(
+                    obscureText == true
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    color: AppColors.color2B3,
+                    size: 18,
+                  )),
         ),
+        readOnly == true
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (onTap != null) {
+                        onTap!();
+                      }
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 80),
+                      width: 200,
+                      height: 48,
+                      color: AppColors.transparent,
+                    ),
+                  ),
+                  specialPrefix ?? Container()
+                ],
+              )
+            : const SizedBox()
       ],
     );
   }

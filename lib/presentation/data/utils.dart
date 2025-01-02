@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' as getx;
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 
+import '../../config/config.dart';
 import '../../core/resources/env_manager.dart';
 
 class DioUtil {
@@ -32,11 +38,62 @@ class DioUtil {
     _dio.options.headers = {'Content-Type': 'application/json'};
   }
 
+  //checkToken
+  Future<bool> refreshToken() async {
+    log('refreshToken');
+    try {
+      final refreshToken = prefManager.refreshToken;
+
+      if (refreshToken != null && refreshToken.isEmpty) {
+        throw authException;
+      }
+      final response = await _dio.post(
+        "/api/v1/merchant/auth/refresh-token",
+        data: {
+          "refreshToken": _pref.refreshToken,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${prefManager.token}',
+          },
+        ),
+      );
+
+      if (response.data != null) {
+        prefManager.token = response.data['data']['accessToken'];
+        prefManager.refreshToken = response.data['data']['refreshToken'];
+        return true;
+      } else {
+        // await GetXXX.Get.offAllNamed(AppRoutes.onBoardingPage);
+
+        prefManager.logout();
+        dialogService.showAlertDialog(
+          title: "Lỗi",
+          description: "Phiên đăng nhập hết hạn",
+          buttonTitle: "OK",
+          onPressed: () => getx.Get.offAllNamed(AppRoutes.onBoardingPage),
+        );
+        return false;
+      }
+    } on DioException catch (e) {
+      prefManager.logout();
+      dialogService.showAlertDialog(
+        title: "Lỗi",
+        description: "Phiên đăng nhập hết hạn",
+        buttonTitle: "OK",
+        onPressed: () => getx.Get.offAllNamed(AppRoutes.onBoardingPage),
+      );
+      return false;
+    }
+  }
+
   Future<Response<dynamic>> _execute(
     Future<Response<dynamic>> Function() request, {
     // bool isShowError = false,
     bool isRetry = false,
+    bool isAuth = true,
     bool isTranformData = false,
+    bool refreshedToken = false,
   }) async {
     try {
       final response = await request();
@@ -81,6 +138,25 @@ class DioUtil {
 
       return response;
     } on DioException catch (e) {
+      if (prefManager.token != null &&
+          (e.response?.statusCode == 401 || e.response?.statusCode == 403) &&
+          refreshedToken == false) {
+        final checked = await refreshToken();
+        if (checked) {
+          return await _execute(
+            request,
+            isAuth: isAuth,
+            refreshedToken: true,
+            isRetry: isRetry,
+            isTranformData: isTranformData,
+          );
+        } else {
+          throw DioException(
+            requestOptions: e.requestOptions,
+            response: e.response,
+          );
+        }
+      }
       if (isRetry) {
         if (e.response?.statusCode == 401) {
           _retryCount = 0;
@@ -227,7 +303,10 @@ class DioUtil {
       if (apiToken == null) {
         throw authException;
       }
-
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
       queryParameters = {
         ...?queryParameters,
       };
@@ -279,9 +358,13 @@ class DioUtil {
       if (apiToken == null) {
         throw authException;
       }
-
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
       queryParameters = {
         ...?queryParameters,
+        // "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -329,9 +412,13 @@ class DioUtil {
       if (apiToken == null) {
         throw authException;
       }
-
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
       queryParameters = {
         ...?queryParameters,
+        // "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -385,9 +472,13 @@ class DioUtil {
         //     confirm: () => AppUtilities.instance.logoutAndDisposeBloc());
         return Future.error(authException);
       }
-
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
       queryParameters = {
         ...?queryParameters,
+        // "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -441,10 +532,14 @@ class DioUtil {
         //     confirm: () => AppUtilities.instance.logoutAndDisposeBloc());
         return Future.error(authException);
       }
-
+      headers = {
+        ...?headers,
+        "Authorization": "Bearer $apiToken",
+      };
       queryParameters = {
         ...?queryParameters,
         // token: apiToken,
+        // "Authorization": "Bearer $apiToken",
       };
     }
 
@@ -471,6 +566,7 @@ class DioUtil {
 
   String? handleErrorTranslate(DioException error) {
     try {
+      print('error.response?.data ${error.response?.data}');
       final data = BaseResponse.fromJson(error.response?.data ?? {});
       final customMessages = {
         DioExceptionType.connectionTimeout: 'Lỗi kết nối, vui lòng thử lại',
@@ -483,6 +579,8 @@ class DioUtil {
           ? customMessages[error.type] ?? 'Đã có lỗi xảy ra, vui lòng thử lại'
           : data.message;
     } catch (e) {
+      print('error.response?.data ${e}');
+
       return 'Đã có lỗi xảy ra, vui lòng thử lại';
     }
   }
