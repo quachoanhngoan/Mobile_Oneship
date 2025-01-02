@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'presentation/data/utils.dart';
 import 'presentation/data/validations/user_validation.dart';
+import 'presentation/page/home/cubit/home_cubit.dart';
 import 'presentation/page/login/cubit/auth_cubit.dart';
 import 'presentation/page/topping_custom/topping_custom_cubit.dart';
 
@@ -77,6 +78,7 @@ Future<void> repositoryModule() async {
 }
 
 void blocModule() {
+  injector.registerFactory<HomeCubit>(() => HomeCubit(injector()));
   injector.registerFactory<AuthCubit>(
     () => AuthCubit(injector()),
   );
