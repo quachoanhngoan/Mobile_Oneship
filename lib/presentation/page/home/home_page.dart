@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/page/home/cubit/home_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/home/widget/list_banner.dart';
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_category.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late HomeCubit bloc;
+  @override
+  void initState() {
+    bloc = injector<HomeCubit>();
+    getBanners();
+    super.initState();
+  }
+
+  void getBanners() async {
+    bloc.getBanners();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Stack(
+    return Stack(
       children: [
-        ImageAssetWidget(
+        const ImageAssetWidget(
           image: AppAssets.imagesBannerHome1,
           fit: BoxFit.contain,
         ),
@@ -22,28 +46,253 @@ class HomePage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(top: 10, bottom: 50),
                 child: Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    InfoHomePage(),
-                    SizedBox(
+                    const InfoHomePage(),
+                    const SizedBox(
                       height: 10,
                     ),
-                    RevenueWidget(),
-                    SizedBox(
+                    const RevenueWidget(),
+                    const SizedBox(
                       height: 10,
                     ),
-                    ListCategory(),
-                    SizedBox(
+                    const ListCategory(),
+                    const SizedBox(
                       height: 15,
                     ),
-                    ImageAssetWidget(
-                      image: AppAssets.imagesBannerr2,
-                      fit: BoxFit.contain,
+                    BlocBuilder<HomeCubit, HomeState>(
+                      bloc: bloc,
+                      builder: (context, state) {
+                        if (state.banners.isEmpty) {
+                          return const SizedBox();
+                        }
+
+                        return ListBanner(
+                          banners: state.getBannerHomePosition,
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Đề xuất cho bạn",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                            ),
+                            const Spacer(),
+                            Text("Xem tất cả",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: const Color(0xffEB8564),
+                                      fontSize: 14,
+                                    )),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 173,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.15),
+                                    spreadRadius: 0,
+                                    blurRadius: 15,
+                                    offset: const Offset(
+                                        0, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 148,
+                                    width: 173,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: const DecorationImage(
+                                        image: AssetImage(
+                                            AppAssets.imagesBannerr2),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    width: 173,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Chương trình siêu Sale 30% cho tất cả sản phẩm",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                fontSize: 14,
+                                                color: const Color(0xff2D2D2D),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      width: 160,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 20),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xffEB8564),
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text("Xem ngay",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                color: const Color(0xffEB8564),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              )),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Container(
+                              width: 173,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.15),
+                                    spreadRadius: 0,
+                                    blurRadius: 15,
+                                    offset: const Offset(
+                                        0, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 148,
+                                    width: 173,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: const DecorationImage(
+                                        image: AssetImage(
+                                            AppAssets.imagesBannerr2),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    width: 173,
+                                    child: const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Chương trình siêu Sale 30% cho tất cả sản phẩm",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: "SF Pro Display",
+                                            fontSize: 14,
+                                            color: Color(0xff2D2D2D),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      width: 160,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 20),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xffEB8564),
+                                          width: 1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text("Xem ngay",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                color: const Color(0xffEB8564),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              )),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -488,7 +737,17 @@ class InfoHomePage extends StatelessWidget {
         ),
         const Spacer(),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            dialogService.showAlertDialog(
+                title: "Thay đổi quán",
+                description: "Bạn có muốn thay đổi quán khác không ?",
+                buttonTitle: "Xác nhận",
+                buttonCancelTitle: "Hủy",
+                onCancel: () => Get.back(),
+                onPressed: () {
+                  Get.offAllNamed(AppRoutes.store);
+                });
+          },
           icon: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(

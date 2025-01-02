@@ -98,7 +98,7 @@ class Themings {
         borderRadius: BorderRadius.circular(8),
       ),
     ),
-    fontFamily: "Mulish",
+    fontFamily: "SF Pro Display",
     listTileTheme: listTileTheme,
     // canvasColor: Colors.black,
     dividerTheme: DividerThemeData(

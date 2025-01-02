@@ -38,6 +38,8 @@ class AppAssets {
 
   static const String fontsMulishWght = "assets/fonts/mulish_wght.ttf";
 
+  static const String imagesBanner2 = "assets/images/banner_2.png";
+
   static const String imagesBannerHome1 = "assets/images/Banner_home_1.png";
 
   static const String imagesBannerr2 = "assets/images/bannerr_2.png";
