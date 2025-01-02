@@ -10,6 +10,7 @@ import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.d
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'presentation/data/repository/menu_repository.dart';
 import 'presentation/data/utils.dart';
 import 'presentation/page/login/cubit/auth_cubit.dart';
 import 'package:injectable/injectable.dart';
@@ -66,6 +67,12 @@ Future<void> repositoryModule() async {
       injector(),
     ),
   );
+
+  injector.registerSingleton<MenuRepository>(
+    MenuRepositoryImp(
+      injector(),
+    ),
+  );
 }
 
 void blocModule() {
@@ -82,7 +89,8 @@ void blocModule() {
     () => BottomCubit(),
   );
   injector.registerFactory<MenuDinerCubit>(() => MenuDinerCubit());
-  injector.registerFactory<ToppingCustomCubit>(() => ToppingCustomCubit());
+  injector.registerFactory<ToppingCustomCubit>(
+      () => ToppingCustomCubit(injector()));
 }
 
 PrefManager get prefManager => injector<PrefManager>();

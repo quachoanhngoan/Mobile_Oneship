@@ -4,13 +4,17 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_state.dart';
 
 import '../../../config/theme/color.dart';
+import '../../data/model/menu/linkfood_response.dart';
+import '../login/widget/loading_widget.dart';
 import '../register_store/widget/app_text_form_field.dart';
 
 class ToppingCustomPage extends StatefulWidget {
@@ -26,6 +30,7 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
   @override
   void initState() {
     bloc = injector.get<ToppingCustomCubit>();
+    bloc.init();
     super.initState();
   }
 
@@ -37,8 +42,17 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ToppingCustomCubit, ToppingCustomState>(
+    return BlocConsumer<ToppingCustomCubit, ToppingCustomState>(
         bloc: bloc,
+        listener: (context, state) {
+          if (state.isCompleteSuccess == true) {
+            Get.back();
+            context.showToastDialog("Tạo topping thành công");
+          }
+          if (state.showErrorComplete != null) {
+            context.showErrorDialog(state.showErrorComplete!, context);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -53,63 +67,74 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                       .bodyMedium
                       ?.copyWith(fontWeight: FontWeight.w700)),
             ),
-            body: Column(
-              children: <Widget>[
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: PageView(
-                    controller: bloc.pageController,
-                    onPageChanged: (value) {
-                      FocusScope.of(context).unfocus();
-                      bloc.pageChange(value);
-                    },
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      _AddGroupTopping(bloc: bloc, state: state),
-                      _AddTopping(bloc: bloc, state: state),
-                    ],
-                  ),
-                )),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        spreadRadius: 0.3,
-                        offset: const Offset(0, -4),
+            body: Stack(
+              children: [
+                Column(
+                  children: <Widget>[
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: PageView(
+                        controller: bloc.pageController,
+                        onPageChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          bloc.pageChange(value);
+                        },
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: <Widget>[
+                          _AddGroupTopping(bloc: bloc, state: state),
+                          _AddTopping(bloc: bloc, state: state),
+                        ],
                       ),
-                    ],
-                  ),
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (state.isButtonNextEnable()) {
-                        bloc.saveInfoClick();
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 40,
-                      alignment: Alignment.center,
+                    )),
+                    Container(
                       decoration: BoxDecoration(
-                          color: state.isButtonNextEnable()
-                              ? AppColors.color988
-                              : AppColors.color8E8,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text(
-                        "Lưu thông tin",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: state.isButtonNextEnable()
-                                ? AppColors.white
-                                : AppColors.colorA4A),
+                        color: AppColors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            spreadRadius: 0.3,
+                            offset: const Offset(0, -4),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (state.isButtonNextEnable()) {
+                            bloc.saveInfoClick();
+                          }
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: state.isButtonNextEnable()
+                                  ? AppColors.color988
+                                  : AppColors.color8E8,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                            "Lưu thông tin",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: state.isButtonNextEnable()
+                                        ? AppColors.white
+                                        : AppColors.colorA4A),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Visibility(
+                  visible: state.isLoading,
+                  child: const LoadingWidget(),
                 )
               ],
             ),
@@ -204,11 +229,15 @@ class _AddGroupTopping extends StatelessWidget {
               bloc.checkFilledInfomation();
             },
             onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (_) {
-                    return const _LinkedFoodSheet();
-                  });
+              if (state.listLinkFood.isNotEmpty) {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (_) {
+                      return _LinkedFoodSheet(
+                        listItem: state.listLinkFood,
+                      );
+                    });
+              }
             },
             suffixIcon: const Icon(Icons.expand_more,
                 color: AppColors.color2B3, size: 24),
@@ -610,7 +639,8 @@ class DialogChangeStatus extends StatelessWidget {
 }
 
 class _LinkedFoodSheet extends StatelessWidget {
-  const _LinkedFoodSheet({super.key});
+  final List<ItemLinkFood> listItem;
+  const _LinkedFoodSheet({super.key, required this.listItem});
 
   @override
   Widget build(BuildContext context) {
@@ -620,6 +650,7 @@ class _LinkedFoodSheet extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
       child: Column(
         children: <Widget>[
+          const VSpacing(spacing: 12),
           Text(
             "Món liên kết",
             style: Theme.of(context)
@@ -627,13 +658,169 @@ class _LinkedFoodSheet extends StatelessWidget {
                 .bodyMedium
                 ?.copyWith(fontWeight: FontWeight.w700),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
+          const VSpacing(spacing: 12),
+          Expanded(
+            child: ListView.builder(
+                itemCount: listItem.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              width: 16,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                  color: AppColors.color988,
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: const Icon(
+                                Icons.check_outlined,
+                                color: AppColors.white,
+                                size: 12,
+                              ),
+                            ),
+                            const HSpacing(spacing: 8),
+                            Text(
+                              "${listItem[index].name}(${listItem[index].products.length})",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const Spacer(),
+                            Icon(
+                              listItem[index].products.isNotEmpty
+                                  ? Icons.keyboard_arrow_down_outlined
+                                  : Icons.keyboard_arrow_right_outlined,
+                              color: AppColors.color988,
+                              size: 30,
+                            )
+                          ],
+                        ),
+                        if (listItem[index].products.isNotEmpty) ...[
+                          ...List.generate(listItem[index].products.length,
+                              (inxChild) {
+                            final childItem =
+                                listItem[index].products[inxChild];
+                            return Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: 16,
+                                      height: 16,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.color988,
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
+                                      child: const Icon(
+                                        Icons.check_outlined,
+                                        color: AppColors.white,
+                                        size: 12,
+                                      ),
+                                    ),
+                                    const HSpacing(spacing: 8),
+                                    Text(
+                                      childItem.name,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                                listItem[index].products.length - 1 != inxChild
+                                    ? const Divider(
+                                        color: AppColors.textGray,
+                                        height: 1,
+                                        thickness: 1)
+                                    : Container()
+                              ],
+                            );
+                          })
+                        ]
+                      ],
+                    ),
+                  );
+                }),
           ),
-          const VSpacing(spacing: 8)
+          const VSpacing(spacing: 8),
+          Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    spreadRadius: 0.3,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+              ),
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: AppColors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                width: 1, color: AppColors.color988)),
+                        child: Text(
+                          "Huỷ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.color988),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const HSpacing(spacing: 20),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.back();
+                      },
+                      child: Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: AppColors.color988,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(
+                          "Xác nhận",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ))
         ],
       ),
     );

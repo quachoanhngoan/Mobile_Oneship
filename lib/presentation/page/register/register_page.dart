@@ -71,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       }
       if (state.titleFailedDialog != null) {
-        showErrorDialog(state.titleFailedDialog!);
+        context.showErrorDialog(state.titleFailedDialog!, context);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -290,57 +290,6 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ));
-  }
-
-  showErrorDialog(String title) {
-    context.showDialogWidget(context,
-        child: Dialog(
-            backgroundColor: AppColors.transparent,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(14)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const VSpacing(spacing: 12),
-                  Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                    textAlign: TextAlign.center,
-                  ),
-                  const VSpacing(spacing: 6),
-                  Text(
-                    "Vui lòng thử lại",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 12.sp, fontWeight: FontWeight.w500),
-                  ),
-                  const VSpacing(spacing: 12),
-                  Divider(
-                    color: AppColors.color080.withOpacity(0.55),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                        onPressed: () {
-                          context.popScreen();
-                        },
-                        child: Text(
-                          "OK",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.color988),
-                        )),
-                  )
-                ],
-              ),
-            )));
   }
 }
 
@@ -572,8 +521,7 @@ class TextFieldPassRegister extends StatelessWidget {
               children: [
                 TextSpan(
                     text: isStarRed == true ? '*' : "",
-                    style:
-                        const TextStyle(fontSize: 14, color: AppColors.red))
+                    style: const TextStyle(fontSize: 14, color: AppColors.red))
               ],
             ),
           ),

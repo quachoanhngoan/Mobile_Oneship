@@ -38,11 +38,23 @@ class AppAssets {
 
   static const String fontsMulishWght = "assets/fonts/mulish_wght.ttf";
 
+  static const String imagesBannerHome1 = "assets/images/Banner_home_1.png";
+
+  static const String imagesBannerr2 = "assets/images/bannerr_2.png";
+
   static const String imagesBgOnboarding = "assets/images/bg_onboarding.png";
+
+  static const String imagesFrameOrder = "assets/images/frame_order.png";
+
+  static const String imagesFrameRevenue = "assets/images/frame_revenue.png";
 
   static const String imagesIcPartyHorn = "assets/images/ic_party_horn.png";
 
   static const String imagesIcPerson = "assets/images/ic_person.png";
+
+  static const String imagesIconOrderChild = "assets/images/icon_order_child.png";
+
+  static const String imagesIconsBarChart = "assets/images/icons/bar-chart.png";
 
   static const String imagesIconsCalendar = "assets/images/icons/Calendar.png";
 
@@ -57,6 +69,7 @@ class AppAssets {
   static const String imagesIconsIcBasket = "assets/images/icons/ic_basket.png";
 
   static const String imagesIconsIcLike = "assets/images/icons/ic_like.png";
+  static const String imagesIconsHeadphones = "assets/images/icons/headphones.png";
 
   static const String imagesIconsIcTabAccount = "assets/images/icons/ic_tab_account.png";
 
@@ -66,9 +79,15 @@ class AppAssets {
 
   static const String imagesIconsIcTabNotification = "assets/images/icons/ic_tab_notification.png";
 
+  static const String imagesIconsIcnReload = "assets/images/icons/icn_reload.png";
+
   static const String imagesIconsIcon = "assets/images/icons/Icon.png";
 
   static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";
+
+  static const String imagesIconsMedal = "assets/images/icons/medal.png";
+
+  static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
 
@@ -77,6 +96,8 @@ class AppAssets {
   static const String imagesImgGrmenuEmpty = "assets/images/img_grmenu_empty.png";
 
   static const String imagesImgGrtopingEmpty = "assets/images/img_grtoping_empty.png";
+
+  static const String imagesIncreaseIcon = "assets/images/increase_icon.png";
 
   static const String imagesOneshipLogo = "assets/images/oneship_logo.png";
 

@@ -111,7 +111,6 @@ class RegisterShopInfo extends StatelessWidget {
                       state.infomation?.copyWith(
                         district: 0,
                         ward: 0,
-                        streetName: '',
                         homeAndStreet: '',
                       ),
                     );

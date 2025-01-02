@@ -1,9 +1,11 @@
-import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
+import 'dart:convert';
+
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/create_store.response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
-import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
 
 import '../model/register_store/provinces_model.dart';
@@ -17,6 +19,7 @@ mixin AuthUrl {
   static const String district = "/api/v1/districts";
   static const String ward = "/api/v1/wards";
   static const String register = "/api/v1/merchant/stores";
+  static const String loginStore = "/api/v1/merchant/auth/login-store";
 }
 
 abstract class StoreRepository {
@@ -37,6 +40,7 @@ abstract class StoreRepository {
       int id, StoreRequestModel request);
   Future<bool> deleteStore(int id);
   Future<CreateStoreResponse> getStoreById(int id);
+  Future<ResponseLoginStoreModel?> loginStore(int idStore);
 }
 
 class StoreImpl implements StoreRepository {
@@ -138,4 +142,53 @@ class StoreImpl implements StoreRepository {
     final result = await _clientDio.delete('${AuthUrl.base}/$id');
     return result.statusCode == 200;
   }
+
+  //login store
+  @override
+  Future<ResponseLoginStoreModel?> loginStore(int idStore) async {
+    final result = await _clientDio.post(
+      AuthUrl.loginStore,
+      data: {"storeId": idStore},
+      isTranformData: true,
+    );
+    return ResponseLoginStoreModel.fromMap(result.data ?? {});
+  }
+}
+
+class ResponseLoginStoreModel {
+  final String? accessToken;
+  final String? refreshToken;
+  ResponseLoginStoreModel({
+    this.accessToken,
+    this.refreshToken,
+  });
+
+  ResponseLoginStoreModel copyWith({
+    String? accessToken,
+    String? refreshToken,
+  }) {
+    return ResponseLoginStoreModel(
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
+    };
+  }
+
+  factory ResponseLoginStoreModel.fromMap(Map<String, dynamic> map) {
+    return ResponseLoginStoreModel(
+      accessToken: map['accessToken'],
+      refreshToken: map['refreshToken'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ResponseLoginStoreModel.fromJson(String source) =>
+      ResponseLoginStoreModel.fromMap(json.decode(source));
 }

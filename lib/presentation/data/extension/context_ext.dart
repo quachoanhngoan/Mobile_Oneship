@@ -74,4 +74,57 @@ extension ShowModalSheet on BuildContext {
           ),
         ));
   }
+
+  showErrorDialog(String title, BuildContext context) {
+    showDialogWidget(context,
+        child: Dialog(
+            backgroundColor: AppColors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(14)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const VSpacing(spacing: 12),
+                  Text(
+                    title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                  const VSpacing(spacing: 6),
+                  Text(
+                    "Vui lòng thử lại",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                  const VSpacing(spacing: 12),
+                  Divider(
+                    color: AppColors.color080.withOpacity(0.55),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                        onPressed: () {
+                          context.popScreen();
+                        },
+                        child: Text(
+                          "OK",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.color988),
+                        )),
+                  )
+                ],
+              ),
+            )));
+  }
 }

@@ -1,15 +1,22 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_state.dart';
 
+import '../../data/model/menu/linkfood_request.dart';
+
 class ToppingCustomCubit extends Cubit<ToppingCustomState> {
-  ToppingCustomCubit() : super(const ToppingCustomState());
+  final MenuRepository repository;
+  ToppingCustomCubit(this.repository) : super(const ToppingCustomState());
 
   final TextEditingController nameGroupToppingController =
       TextEditingController();
@@ -21,6 +28,10 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
 
   var _isEditTopping = false;
   late ToppingItemDomain toppingEdit;
+
+  init() {
+    getLinkFood();
+  }
 
   pageChange(int value) {
     if (value > 0) {
@@ -57,7 +68,8 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
           priceController.text != "0 vnđ";
       emit(state.copyWith(isFilledInfo: isFilled));
     } else {
-      final isFilled = nameGroupToppingController.text.isNotNullOrEmpty
+      final isFilled = nameGroupToppingController.text.isNotNullOrEmpty &&
+              state.listTopping.isNotEmpty
           // && linkFoodController.text.isNotNullOrEmpty
           ;
       emit(state.copyWith(isFilledInfo: isFilled));
@@ -93,8 +105,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     emit(state.copyWith(isPriceClearButton: value.isNotNullOrEmpty));
   }
 
-  saveInfoClick() {
+  saveInfoClick() async {
     if (pageController.page != null && pageController.page! > 0) {
+      //add or edit topping
       if (!_isEditTopping) {
         final listTopping = List.of(state.listTopping);
         listTopping.add(ToppingItemDomain(
@@ -115,7 +128,33 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
       }
       previousStepPage();
     } else {
-      // to do code
+      try {
+        //save all add topping
+        emit(state.copyWith(isLoading: true));
+        final listAddTopping = state.listTopping;
+        List<OptionAddTopping> convertListAddTopping = [];
+        for (ToppingItemDomain option in listAddTopping) {
+          if (option.convertAddTopping() != null) {
+            convertListAddTopping.add(option.convertAddTopping()!);
+          }
+        }
+        final request = GrToppingRequest(
+            name: nameGroupToppingController.text,
+            isMultiple: state.indexOptionTopping != 0,
+            status: "active",
+            options: convertListAddTopping);
+        final response = await repository.addGroupTopping(request);
+        if (response != null) {
+          emit(state.copyWith(isCompleteSuccess: true));
+        } else {
+          emit(state.copyWith(showErrorComplete: AppErrorString.kServerError));
+        }
+      } on DioException catch (e) {
+        log("check error: ${e.message}");
+        emit(state.copyWith(
+            showErrorComplete:
+                e.message == "NAME_EXISTED" ? "Tên đã tồn tại" : e.message));
+      }
     }
   }
 
@@ -148,5 +187,23 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     priceController.text = item.price ?? "";
     toppingEdit = item;
     nextPage();
+  }
+
+  getLinkFood() async {
+    try {
+      final request = LinkFoodRequest(
+        includeProducts: true,
+        productStatus: "active",
+        approvalStatus: "approved",
+      );
+      final response = await repository.getListMenu(request);
+      emit(state.copyWith(listLinkFood: response?.items));
+    } on DioException catch (e) {
+      log("error getLinkFood: ${e.message}");
+    }
+  }
+
+  listIdLinkFoodSellect(String id) {
+    
   }
 }

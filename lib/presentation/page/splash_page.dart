@@ -8,6 +8,7 @@ import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_view.dart';
 import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
+import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 
 class SplashPage extends StatefulWidget {
@@ -67,7 +68,7 @@ class _SplashPageState extends State<SplashPage> {
             if (value.data == null || value.data?.isEmpty == true) {
               return const OnBoardingPage();
             }
-            return const BottomView();
+            return const StorePage();
           }
           return const SizedBox();
         });

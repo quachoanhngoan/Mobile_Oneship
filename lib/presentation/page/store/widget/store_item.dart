@@ -39,7 +39,9 @@ class StoreItem extends StatelessWidget {
                 idStore: data.id,
                 isRegistered: true,
               ));
+          return;
         }
+        Get.context?.read<StoreCubit>().loginStore(data);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(
