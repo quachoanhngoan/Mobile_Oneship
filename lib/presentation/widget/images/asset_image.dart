@@ -22,6 +22,7 @@ class ImageAssetWidget extends StatelessWidget {
       height: height,
       fit: fit,
       color: color,
+      filterQuality: FilterQuality.medium,
     );
   }
 }
