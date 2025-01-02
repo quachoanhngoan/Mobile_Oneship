@@ -1,7 +1,11 @@
-import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
+import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
+import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/auth_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
@@ -10,14 +14,9 @@ import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.d
 import 'package:oneship_merchant_app/service/pref_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'presentation/data/repository/menu_repository.dart';
 import 'presentation/data/utils.dart';
-import 'presentation/page/login/cubit/auth_cubit.dart';
-import 'package:injectable/injectable.dart';
-import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
-import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
-
 import 'presentation/data/validations/user_validation.dart';
+import 'presentation/page/login/cubit/auth_cubit.dart';
 import 'presentation/page/topping_custom/topping_custom_cubit.dart';
 
 final injector = GetIt.instance;
@@ -68,8 +67,10 @@ Future<void> repositoryModule() async {
     ),
   );
 
-  injector.registerSingleton<MenuRepository>(
-    MenuRepositoryImp(
+  injector.registerSingleton<MenuRepository>(MenuRepositoryImp(injector()));
+
+  injector.registerSingleton<BannerRepository>(
+    BannerImpl(
       injector(),
     ),
   );
