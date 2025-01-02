@@ -170,7 +170,7 @@ class AuthCubit extends Cubit<AuthState> {
         prefManager.password = "";
       }
 
-      Get.offAllNamed(AppRoutes.homepage);
+      Get.offAllNamed(AppRoutes.store);
     }, failure: (error) {
       emit(state.copyWith(
         loadingState: EState.failure,

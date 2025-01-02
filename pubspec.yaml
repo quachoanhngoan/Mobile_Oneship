@@ -65,6 +65,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter_datetime_picker_plus: ^2.2.0
   flutter_multi_formatter: ^2.13.0
+  flutter_slidable: ^3.1.0
   # modal_bottom_sheet: ^3.0.0-pre
   # gradient_like_css: ^1.0.1
 

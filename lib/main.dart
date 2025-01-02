@@ -45,7 +45,7 @@ Future<void> main() async {
         BlocProvider(create: (context) => injector<AuthCubit>()),
         BlocProvider(create: (context) => injector<StoreCubit>()),
         BlocProvider(create: (context) => injector<BottomCubit>()),
-        BlocProvider(create: (context) => injector<MenuDinerCubit>()),
+        // BlocProvider(create: (context) => injector<MenuDinerCubit>()),
 
         // BlocProvider(create: (context) => injector<RegisterStoreCubit>()),
         BlocProvider(

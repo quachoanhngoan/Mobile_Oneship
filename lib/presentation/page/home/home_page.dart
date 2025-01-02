@@ -465,17 +465,19 @@ class InfoHomePage extends StatelessWidget {
                 child: SizedBox(
                   height: 32,
                   width: 32,
-                  child: NetworkImageWithLoader(
-                    currentStore!.storeAvatarId!,
-                    isAuth: true,
-                    isBaseUrl: true,
-                  ),
+                  child: currentStore?.storeAvatarId != null
+                      ? NetworkImageWithLoader(
+                          currentStore!.storeAvatarId!,
+                          isAuth: true,
+                          isBaseUrl: true,
+                        )
+                      : Container(),
                 )),
             const SizedBox(
               width: 8,
             ),
             Text(
-              currentStore!.name!,
+              currentStore?.name ?? "",
               style: GoogleFonts.roboto(
                 fontSize: 18,
                 color: Colors.white,

@@ -1,4 +1,6 @@
-import 'package:bloc/bloc.dart';
+import 'dart:developer';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/routes/routes.dart';
 import 'package:oneship_merchant_app/core/core.dart';
@@ -15,6 +17,8 @@ StoreModel? currentStore;
 class StoreCubit extends Cubit<StoreState> {
   final StoreRepository repository;
   StoreCubit(this.repository) : super(StoreState());
+
+  String tag = "StoreCubit";
 
   setStatusState(EState value) {
     emit(state.copyWith(status: value));
@@ -66,6 +70,7 @@ class StoreCubit extends Cubit<StoreState> {
   loginStore(StoreModel store) async {
     setLoginState(EState.loading);
     try {
+      log("store id login: ${store.id}", name: tag);
       final response = await execute(
         () => repository.loginStore(store.id!),
         isShowFailDialog: true,

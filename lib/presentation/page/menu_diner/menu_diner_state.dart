@@ -1,17 +1,28 @@
 import 'package:equatable/equatable.dart';
 
-class MenuDinerState extends Equatable {
-  final int indexPageTopping;
+import 'domain/menu_domain.dart';
 
-  const MenuDinerState({this.indexPageTopping = 0});
+class MenuDinerState extends Equatable {
+  final MenuMainType menuMainType;
+  final MenuType menuType;
+  final ToppingType toppingType;
+
+  const MenuDinerState(
+      {this.toppingType = ToppingType.active,
+      this.menuMainType = MenuMainType.menu,
+      this.menuType = MenuType.active});
 
   MenuDinerState copyWith({
-    int? indexPageTopping,
+    ToppingType? toppingType,
+    MenuMainType? menuMainType,
+    MenuType? menuType,
   }) {
     return MenuDinerState(
-        indexPageTopping: indexPageTopping ?? this.indexPageTopping);
+        toppingType: toppingType ?? this.toppingType,
+        menuMainType: menuMainType ?? this.menuMainType,
+        menuType: menuType ?? this.menuType);
   }
 
   @override
-  List<Object?> get props => [indexPageTopping];
+  List<Object?> get props => [toppingType, menuMainType, menuType];
 }

@@ -66,6 +66,9 @@ class AppAssets {
 
   static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
 
+  static const String imagesIconsIcBasket = "assets/images/icons/ic_basket.png";
+
+  static const String imagesIconsIcLike = "assets/images/icons/ic_like.png";
   static const String imagesIconsHeadphones = "assets/images/icons/headphones.png";
 
   static const String imagesIconsIcTabAccount = "assets/images/icons/ic_tab_account.png";
@@ -89,6 +92,8 @@ class AppAssets {
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
+
+  static const String imagesImgGrmenuEmpty = "assets/images/img_grmenu_empty.png";
 
   static const String imagesImgGrtopingEmpty = "assets/images/img_grtoping_empty.png";
 
