@@ -1,15 +1,15 @@
 class GrToppingRequest {
-  String name;
-  bool isMultiple;
-  String status;
-  List<OptionAddTopping> options;
+  String? name;
+  bool? isMultiple;
+  String? status;
+  List<OptionAddTopping>? options;
   List<ProductAddTopping>? products;
 
   GrToppingRequest({
-    required this.name,
-    required this.isMultiple,
-    required this.status,
-    required this.options,
+    this.name,
+    this.isMultiple,
+    this.status,
+    this.options,
     this.products,
   });
 
@@ -34,7 +34,7 @@ class GrToppingRequest {
       'name': name,
       'isMultiple': isMultiple,
       'status': status,
-      'options': options.map((e) => e.toJson()).toList(),
+      'options': options?.map((e) => e.toJson()).toList(),
       'products': products?.map((e) => e.toJson()).toList(),
     };
   }
@@ -125,5 +125,41 @@ class ProductAddTopping {
     return ProductAddTopping(
       id: id ?? this.id,
     );
+  }
+}
+
+class GetGroupToppingRequest {
+  int limit;
+  int page;
+  String? search;
+  String? status;
+
+  GetGroupToppingRequest({
+    this.limit = 10,
+    this.page = 1,
+    this.search,
+    this.status,
+  });
+
+  factory GetGroupToppingRequest.fromJson(Map<String, dynamic> json) {
+    return GetGroupToppingRequest(
+      limit: json['limit'],
+      page: json['page'],
+      search: json['search'],
+      status: json['status'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'limit': limit,
+      'page': page,
+      'search': search,
+      'status': status,
+    };
+  }
+
+  Map<String, dynamic> removeNullValues() {
+    return toJson()..removeWhere((key, value) => value == null);
   }
 }

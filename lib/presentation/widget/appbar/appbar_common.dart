@@ -38,10 +38,10 @@ class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
               ))
           : null,
       title: Text(title,
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(fontSize: 16.sp, color: AppColors.textColor)),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: 16.sp,
+              color: AppColors.textColor,
+              fontWeight: FontWeight.w600)),
       actions: [
         isShowHelpButton
             ? Center(

@@ -9,7 +9,6 @@ import 'package:oneship_merchant_app/presentation/page/home/cubit/home_cubit.dar
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_banner.dart';
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_category.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
-import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
@@ -318,11 +317,11 @@ class _HomePageState extends State<HomePage> {
     //                 routerName: AppRoutes.registerpage, arguments: true);
     //           },
     //           child: const Text("Đăng ký")),
-    //       ElevatedButton(
-    //           onPressed: () {
-    //             context.read<AuthCubit>().logout();
-    //           },
-    //           child: const Text("Đăng xuất")),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       context.read<AuthCubit>().logout();
+          //     },
+          //     child: const Text("Đăng xuất")),
     //       ElevatedButton(
     //           onPressed: () {
     //             context.pushWithNamed(context, routerName: AppRoutes.menuPage);

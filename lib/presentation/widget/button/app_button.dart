@@ -91,10 +91,9 @@ class AppButton extends StatelessWidget {
               );
             }
             return Text(text,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall!
-                    .copyWith(color: textColor ?? Colors.white));
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: textColor ?? Colors.white,
+                    fontWeight: FontWeight.w600));
           }),
         ),
       ),

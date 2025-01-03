@@ -1,15 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
+import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
+import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
+import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
 
 import '../../../injector.dart';
+import '../../data/model/menu/gr_topping_response.dart';
+import '../../data/model/menu/list_menu_food_response.dart';
 import 'widgets/dashed_divider.dart';
 
 class MenuDinerPage extends StatefulWidget {
@@ -51,7 +60,7 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
+                      ?.copyWith(fontWeight: FontWeight.w600)),
               actions: <Widget>[
                 IconButton(
                     onPressed: () {
@@ -87,8 +96,8 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                                               ? AppColors.color988
                                               : AppColors.textGray,
                                           fontWeight: state.menuMainType == item
-                                              ? FontWeight.w700
-                                              : FontWeight.w600),
+                                              ? FontWeight.w600
+                                              : FontWeight.w500),
                                 ),
                               ),
                               Container(
@@ -146,6 +155,13 @@ class _MenuWidget extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       final item = MenuType.values[index];
+                      final titleCount = state.listMenu
+                              ?.where((e) => e.type == item)
+                              .toList()
+                              .firstOrNull
+                              ?.data
+                              ?.length ??
+                          0;
                       return Row(
                         children: <Widget>[
                           GestureDetector(
@@ -157,8 +173,8 @@ class _MenuWidget extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
-                                  item.title
-                                      .replaceAll(RegExp(r'#VALUE'), '00'),
+                                  item.title.replaceAll(
+                                      RegExp(r'#VALUE'), '$titleCount'),
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
@@ -166,7 +182,8 @@ class _MenuWidget extends StatelessWidget {
                                       ?.copyWith(
                                           color: item == state.menuType
                                               ? AppColors.color988
-                                              : AppColors.textGray),
+                                              : AppColors.textGray,
+                                          fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -190,18 +207,29 @@ class _MenuWidget extends StatelessWidget {
                     controller: bloc.menuController,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      final type = MenuType.values[index];
-                      switch (type) {
-                        case MenuType.active:
-                          return const _MenuActiveBody();
-                        case MenuType.notRegistered:
-                          return const _MenuNotRegisteredBody();
-                        case MenuType.pendingApproval:
-                          return const _MenuPendingApprove();
-                        case MenuType.unsuccessful:
-                          return const _MenuItemUnSuccess();
+                      final item = MenuType.values[index];
+                      final data = state.listMenu
+                          ?.where((e) => e.type == item)
+                          .toList()
+                          .firstOrNull
+                          ?.data;
+                      if (data?.isNotEmpty == true) {
+                        switch (item) {
+                          case MenuType.active:
+                            return _MenuActiveBody(
+                                listItem: data!, bloc: bloc, state: state);
+                          case MenuType.notRegistered:
+                            return _MenuNotRegisteredBody(
+                                listItem: data!, state: state);
+                          case MenuType.pendingApproval:
+                            return _MenuPendingApprove(
+                                listItem: data!, state: state);
+                          case MenuType.unsuccessful:
+                            return _MenuItemUnSuccess(
+                                listItem: data!, state: state);
+                        }
                       }
-                      // return const _MenuEmptyBody();
+                      return const _MenuEmptyBody();
                     }),
               )
             ],
@@ -295,7 +323,7 @@ class _MenuEmptyBody extends StatelessWidget {
           const VSpacing(spacing: 16),
           Text("Quán của bạn chưa có món nào!",
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700, color: AppColors.colorD33),
+                  fontWeight: FontWeight.w600, color: AppColors.colorD33),
               textAlign: TextAlign.center),
           const VSpacing(spacing: 8),
           Text(
@@ -311,13 +339,23 @@ class _MenuEmptyBody extends StatelessWidget {
 }
 
 class _MenuActiveBody extends StatelessWidget {
-  const _MenuActiveBody({super.key});
+  final List<ItemLinkFood> listItem;
+  final MenuDinerState state;
+  final MenuDinerCubit bloc;
+  const _MenuActiveBody(
+      {required this.listItem, required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 9,
+        itemCount: listItem.length,
         itemBuilder: (context, index) {
+          final isShowDetail = state.listFoodByMenu != null &&
+              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+              state.listFoodByMenu?.type == MenuType.active &&
+              state.listFoodByMenu?.idSellected == listItem[index].id &&
+              !state.isHideListFoodByMenu;
+
           return Column(
             children: <Widget>[
               const Divider(
@@ -361,7 +399,11 @@ class _MenuActiveBody extends StatelessWidget {
                     ],
                   ),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      bloc.getListFoodByMenu(
+                          type: MenuType.active,
+                          productCategoryId: listItem[index].id);
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       color: AppColors.white,
@@ -370,22 +412,29 @@ class _MenuActiveBody extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Thạch dừa (01)",
+                              listItem[index].name,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                                  ?.copyWith(fontWeight: FontWeight.w600),
                             ),
                           ),
-                          const Icon(Icons.keyboard_arrow_right,
+                          Icon(
+                              isShowDetail
+                                  ? Icons.keyboard_arrow_down
+                                  : Icons.keyboard_arrow_right,
                               color: AppColors.black)
                         ],
                       ),
                     ),
                   )),
-              // ...List.generate(4, (inxDetail) {
-              //   return const _CardDetailMenu();
-              // })
+              if (isShowDetail) ...[
+                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
+                    (inxDetail) {
+                  final item = state.listFoodByMenu!.listFoodByMenu![inxDetail];
+                  return _CardDetailMenu(item: item);
+                })
+              ]
             ],
           );
         });
@@ -394,7 +443,8 @@ class _MenuActiveBody extends StatelessWidget {
 
 class _CardDetailMenu extends StatelessWidget {
   final Widget? actionWidget;
-  const _CardDetailMenu({super.key, this.actionWidget});
+  final MenuFoodResponseItem item;
+  const _CardDetailMenu({this.actionWidget, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -422,15 +472,17 @@ class _CardDetailMenu extends StatelessWidget {
                 width: 58,
                 height: 46,
                 decoration: BoxDecoration(
-                    color: AppColors.red,
+                    color: AppColors.transparent,
                     borderRadius: BorderRadius.circular(8)),
+                child: NetworkImageWithLoader(item.imageId,
+                    isBaseUrl: true, fit: BoxFit.fill),
               ),
               const HSpacing(spacing: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Cà phê pha máy siêu sạch",
+                    item.name,
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
@@ -440,22 +492,22 @@ class _CardDetailMenu extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text("35.000 vnđ ",
+                      Text("${item.price} vnđ",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   color: AppColors.colorD33)),
-                      Text("50.000 vnđ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 10,
-                                  color: AppColors.color373,
-                                  decoration: TextDecoration.lineThrough)),
+                      // Text("50.000 vnđ",
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .bodySmall
+                      //         ?.copyWith(
+                      //             fontWeight: FontWeight.w400,
+                      //             fontSize: 10,
+                      //             color: AppColors.color373,
+                      //             decoration: TextDecoration.lineThrough)),
                     ],
                   )
                 ],
@@ -470,7 +522,17 @@ class _CardDetailMenu extends StatelessWidget {
           IntrinsicHeight(
             child: Row(
               children: List.generate(StatisticMenuType.values.length, (index) {
-                final item = StatisticMenuType.values[index];
+                final itemAction = StatisticMenuType.values[index];
+                var valueAction = "";
+                switch (itemAction) {
+                  case StatisticMenuType.sold:
+                    valueAction = "${item.sold}";
+                  case StatisticMenuType.views:
+                    valueAction = "${item.viewed}";
+                  case StatisticMenuType.likes:
+                    valueAction = "${item.liked}";
+                }
+
                 return Expanded(
                   child: Row(
                     children: <Widget>[
@@ -486,7 +548,7 @@ class _CardDetailMenu extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 1),
                               child: ImageAssetWidget(
-                                  image: item.icon,
+                                  image: itemAction.icon,
                                   width: 14,
                                   height: 14,
                                   color: AppColors.color373),
@@ -496,7 +558,7 @@ class _CardDetailMenu extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  item.title,
+                                  itemAction.title,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -507,12 +569,12 @@ class _CardDetailMenu extends StatelessWidget {
                                 ),
                                 const VSpacing(spacing: 4),
                                 Text(
-                                  "1917",
+                                  valueAction,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
                                       ?.copyWith(
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.w600,
                                           color: AppColors.color373),
                                 )
                               ],
@@ -565,7 +627,7 @@ class _CardDetailMenu extends StatelessWidget {
                             alignment: Alignment.center,
                             height: double.infinity,
                             decoration: BoxDecoration(
-                                color: AppColors.color988,
+                                color: AppColors.transparent,
                                 border: Border.all(
                                     color: item.colorBorder, width: 1),
                                 borderRadius: BorderRadius.circular(8)),
@@ -576,7 +638,7 @@ class _CardDetailMenu extends StatelessWidget {
                                         .textTheme
                                         .bodySmall
                                         ?.copyWith(
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w600,
                                             fontSize: 12,
                                             color: item.colorText),
                                   )
@@ -599,13 +661,21 @@ class _CardDetailMenu extends StatelessWidget {
 }
 
 class _MenuNotRegisteredBody extends StatelessWidget {
-  const _MenuNotRegisteredBody({super.key});
+  final List<ItemLinkFood> listItem;
+  final MenuDinerState state;
+  const _MenuNotRegisteredBody({required this.listItem, required this.state});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 3,
+        itemCount: listItem.length,
         itemBuilder: (context, index) {
+          final isShowDetail = state.listFoodByMenu != null &&
+              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+              state.listFoodByMenu?.type == MenuType.notRegistered &&
+              state.listFoodByMenu?.idSellected == listItem[index].id &&
+              !state.isHideListFoodByMenu;
+
           return Column(
             children: <Widget>[
               const Divider(
@@ -664,23 +734,31 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            "Thạch dừa (01)",
+                            listItem[index].name,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w700),
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        const Icon(Icons.keyboard_arrow_right,
+                        Icon(
+                            isShowDetail
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_right,
                             color: AppColors.black)
                       ],
                     ),
                   ),
                 ),
               ),
-              // ...List.generate(1, (inxDetail) {
-              //   return const _CardDetailMenu();
-              // })
+              if (isShowDetail) ...[
+                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
+                    (inxDetail) {
+                  final itemDetail =
+                      state.listFoodByMenu!.listFoodByMenu![inxDetail];
+                  return _CardDetailMenu(item: itemDetail);
+                })
+              ]
             ],
           );
         });
@@ -688,13 +766,21 @@ class _MenuNotRegisteredBody extends StatelessWidget {
 }
 
 class _MenuPendingApprove extends StatelessWidget {
-  const _MenuPendingApprove({super.key});
+  final List<ItemLinkFood> listItem;
+  final MenuDinerState state;
+  const _MenuPendingApprove({required this.listItem, required this.state});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 3,
+        itemCount: listItem.length,
         itemBuilder: (context, index) {
+          final isShowDetail = state.listFoodByMenu != null &&
+              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+              state.listFoodByMenu?.type == MenuType.pendingApproval &&
+              state.listFoodByMenu?.idSellected == listItem[index].id &&
+              !state.isHideListFoodByMenu;
+
           return Column(
             children: <Widget>[
               const Divider(
@@ -711,30 +797,39 @@ class _MenuPendingApprove extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          "Thạch dừa (01)",
+                          listItem[index].name,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
-                      const Icon(Icons.keyboard_arrow_right,
+                      Icon(
+                          isShowDetail
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_right,
                           color: AppColors.black)
                     ],
                   ),
                 ),
               ),
-              // ...List.generate(1, (inxDetail) {
-              //   return _CardDetailMenu(
-              //     actionWidget: Text(
-              //       "*Sản phẩm đang chờ hệ thống duyệt",
-              //       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              //           fontSize: 12,
-              //           color: AppColors.colorDE6,
-              //           fontStyle: FontStyle.italic),
-              //     ),
-              //   );
-              // })
+              if (isShowDetail) ...[
+                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
+                    (inxDetail) {
+                  final itemDetail =
+                      state.listFoodByMenu!.listFoodByMenu![inxDetail];
+                  return _CardDetailMenu(
+                    item: itemDetail,
+                    actionWidget: Text(
+                      "*Sản phẩm đang chờ hệ thống duyệt",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 12,
+                          color: AppColors.colorDE6,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  );
+                })
+              ]
             ],
           );
         });
@@ -742,13 +837,21 @@ class _MenuPendingApprove extends StatelessWidget {
 }
 
 class _MenuItemUnSuccess extends StatelessWidget {
-  const _MenuItemUnSuccess({super.key});
+  final List<ItemLinkFood> listItem;
+  final MenuDinerState state;
+  const _MenuItemUnSuccess({required this.listItem, required this.state});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 3,
+        itemCount: listItem.length,
         itemBuilder: (context, index) {
+          final isShowDetail = state.listFoodByMenu != null &&
+              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+              state.listFoodByMenu?.type == MenuType.unsuccessful &&
+              state.listFoodByMenu?.idSellected == listItem[index].id &&
+              !state.isHideListFoodByMenu;
+
           return Column(
             children: <Widget>[
               const Divider(
@@ -795,150 +898,160 @@ class _MenuItemUnSuccess extends StatelessWidget {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            "Thạch dừa (01)",
+                            listItem[index].name,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w700),
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        const Icon(Icons.keyboard_arrow_right,
+                        Icon(
+                            isShowDetail
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_right,
                             color: AppColors.black)
                       ],
                     ),
                   ),
                 ),
               ),
-              // ...List.generate(1, (inxDetail) {
-              //   return Container(
-              //     decoration: BoxDecoration(
-              //       color: AppColors.white,
-              //       borderRadius: BorderRadius.circular(8),
-              //       boxShadow: [
-              //         BoxShadow(
-              //           color: Colors.black.withOpacity(0.1),
-              //           spreadRadius: 1,
-              //           blurRadius: 2,
-              //           offset: const Offset(0, 0),
-              //         ),
-              //       ],
-              //     ),
-              //     padding: const EdgeInsets.all(12),
-              //     margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: <Widget>[
-              //         Row(
-              //           children: <Widget>[
-              //             Container(
-              //               width: 58,
-              //               height: 46,
-              //               decoration: BoxDecoration(
-              //                   color: AppColors.red,
-              //                   borderRadius: BorderRadius.circular(8)),
-              //             ),
-              //             const HSpacing(spacing: 8),
-              //             Column(
-              //               crossAxisAlignment: CrossAxisAlignment.start,
-              //               children: <Widget>[
-              //                 Text(
-              //                   "Cà phê pha máy siêu sạch",
-              //                   style: Theme.of(context)
-              //                       .textTheme
-              //                       .bodySmall
-              //                       ?.copyWith(fontWeight: FontWeight.w600),
-              //                 ),
-              //                 const VSpacing(spacing: 4),
-              //                 Row(
-              //                   crossAxisAlignment: CrossAxisAlignment.center,
-              //                   children: <Widget>[
-              //                     Text("35.000 vnđ ",
-              //                         style: Theme.of(context)
-              //                             .textTheme
-              //                             .bodyMedium
-              //                             ?.copyWith(
-              //                                 fontWeight: FontWeight.w700,
-              //                                 color: AppColors.colorD33)),
-              //                     Text("50.000 vnđ",
-              //                         style: Theme.of(context)
-              //                             .textTheme
-              //                             .bodySmall
-              //                             ?.copyWith(
-              //                                 fontWeight: FontWeight.w400,
-              //                                 fontSize: 10,
-              //                                 color: AppColors.color373,
-              //                                 decoration:
-              //                                     TextDecoration.lineThrough)),
-              //                   ],
-              //                 )
-              //               ],
-              //             )
-              //           ],
-              //         ),
-              //         const VSpacing(spacing: 8),
-              //         const DashedDivider(
-              //           color: AppColors.color8E8,
-              //         ),
-              //         const VSpacing(spacing: 8),
-              //         SizedBox(
-              //           height: 40,
-              //           child: Row(
-              //             children: <Widget>[
-              //               Expanded(
-              //                 child: Container(
-              //                     alignment: Alignment.center,
-              //                     height: double.infinity,
-              //                     decoration: BoxDecoration(
-              //                         color: AppColors.color988,
-              //                         border: Border.all(
-              //                             color: AppColors.colorD33, width: 1),
-              //                         borderRadius: BorderRadius.circular(8)),
-              //                     child: Text(
-              //                       "Sửa",
-              //                       style: Theme.of(context)
-              //                           .textTheme
-              //                           .bodySmall
-              //                           ?.copyWith(
-              //                               fontWeight: FontWeight.w700,
-              //                               fontSize: 12,
-              //                               color: AppColors.colorD33),
-              //                     )),
-              //               ),
-              //               const HSpacing(spacing: 12),
-              //               Expanded(
-              //                 child: Container(
-              //                     alignment: Alignment.center,
-              //                     height: double.infinity,
-              //                     decoration: BoxDecoration(
-              //                         color: AppColors.color988,
-              //                         border: Border.all(
-              //                             color: AppColors.color8E8, width: 1),
-              //                         borderRadius: BorderRadius.circular(8)),
-              //                     child: Text(
-              //                       "Xoá",
-              //                       style: Theme.of(context)
-              //                           .textTheme
-              //                           .bodySmall
-              //                           ?.copyWith(
-              //                               fontWeight: FontWeight.w700,
-              //                               fontSize: 12),
-              //                     )),
-              //               )
-              //             ],
-              //           ),
-              //         ),
-              //         const VSpacing(spacing: 8),
-              //         Text(
-              //           "*Hình ảnh sản phẩm không hợp lệ",
-              //           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              //               fontSize: 12,
-              //               color: AppColors.colorB30,
-              //               fontStyle: FontStyle.italic),
-              //         )
-              //       ],
-              //     ),
-              //   );
-              // })
+              if (isShowDetail) ...[
+                ...List.generate(1, (inxDetail) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 2,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              width: 58,
+                              height: 46,
+                              decoration: BoxDecoration(
+                                  color: AppColors.red,
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            const HSpacing(spacing: 8),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Cà phê pha máy siêu sạch",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                                const VSpacing(spacing: 4),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text("35.000 vnđ ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.colorD33)),
+                                    Text("50.000 vnđ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 10,
+                                                color: AppColors.color373,
+                                                decoration: TextDecoration
+                                                    .lineThrough)),
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        const VSpacing(spacing: 8),
+                        const DashedDivider(
+                          color: AppColors.color8E8,
+                        ),
+                        const VSpacing(spacing: 8),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.color988,
+                                        border: Border.all(
+                                            color: AppColors.colorD33,
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "Sửa",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 12,
+                                              color: AppColors.colorD33),
+                                    )),
+                              ),
+                              const HSpacing(spacing: 12),
+                              Expanded(
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.color988,
+                                        border: Border.all(
+                                            color: AppColors.color8E8,
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "Xoá",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 12),
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
+                        const VSpacing(spacing: 8),
+                        Text(
+                          "*Hình ảnh sản phẩm không hợp lệ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontSize: 12,
+                                  color: AppColors.colorB30,
+                                  fontStyle: FontStyle.italic),
+                        )
+                      ],
+                    ),
+                  );
+                })
+              ]
             ],
           );
         });
@@ -965,13 +1078,20 @@ class _GroupToppingWidget extends StatelessWidget {
               Row(
                 children: List.generate(ToppingType.values.length, (index) {
                   final item = ToppingType.values[index];
+                  final titleCount = state.listTopping
+                          ?.where((e) => e.type == item)
+                          .toList()
+                          .firstOrNull
+                          ?.data
+                          ?.length ??
+                      0;
                   return Expanded(
                     child: GestureDetector(
                       onTap: () {
                         bloc.changeGroupTopping(index, item);
                       },
                       child: Text(
-                        item.title.replaceAll(RegExp(r'#VALUE'), '00'),
+                        item.title.replaceAll(RegExp(r'#VALUE'), '$titleCount'),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: item == state.toppingType
@@ -993,22 +1113,36 @@ class _GroupToppingWidget extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: PageView.builder(
-              itemCount: ToppingType.values.length,
-              controller: bloc.groupToppingController,
-              itemBuilder: (context, index) {
-                switch (index) {
-                  case 0:
-                    return const _ToppingActiveBody();
-                  case 1:
-                    return const _ToppingNotRegisteredBody();
-                }
-                return const _ToppingEmptyBody();
-              }),
-          //     child: Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: const _ToppingNotRegisteredBody(),
-          // ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: PageView.builder(
+                itemCount: ToppingType.values.length,
+                physics: const NeverScrollableScrollPhysics(),
+                controller: bloc.groupToppingController,
+                itemBuilder: (context, index) {
+                  final item = ToppingType.values[index];
+                  final data = state.listTopping
+                      ?.where((e) => e.type == item)
+                      .toList()
+                      .firstOrNull
+                      ?.data;
+                  if (data?.isNotEmpty == true) {
+                    switch (item) {
+                      case ToppingType.active:
+                        return _ToppingActiveBody(
+                          bloc: bloc,
+                          listItem: data!,
+                        );
+                      case ToppingType.notRegistered:
+                        return _ToppingNotRegisteredBody(
+                          bloc: bloc,
+                          listItem: data!,
+                        );
+                    }
+                  }
+                  return const _ToppingEmptyBody();
+                }),
+          ),
         ),
         Container(
           decoration: BoxDecoration(
@@ -1026,7 +1160,11 @@ class _GroupToppingWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
           child: GestureDetector(
             onTap: () {
-              Get.toNamed(AppRoutes.menuCustomTopping);
+              Get.toNamed(AppRoutes.menuCustomTopping)?.then((value) {
+                if (value) {
+                  bloc.getAllTopping();
+                }
+              });
             },
             child: Container(
               width: double.infinity,
@@ -1065,7 +1203,7 @@ class _ToppingEmptyBody extends StatelessWidget {
         ),
         Text("Quán của bạn chưa có nhóm topping nào!",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700, color: AppColors.colorD33),
+                fontWeight: FontWeight.w600, color: AppColors.colorD33),
             textAlign: TextAlign.center),
         const VSpacing(spacing: 8),
         Text(
@@ -1080,12 +1218,14 @@ class _ToppingEmptyBody extends StatelessWidget {
 }
 
 class _ToppingActiveBody extends StatelessWidget {
-  const _ToppingActiveBody({super.key});
+  final List<GrAddToppingResponse> listItem;
+  final MenuDinerCubit bloc;
+  const _ToppingActiveBody({required this.bloc, required this.listItem});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 2,
+        itemCount: listItem.length,
         padding: const EdgeInsets.only(top: 20),
         itemBuilder: (context, index) {
           return Container(
@@ -1100,11 +1240,11 @@ class _ToppingActiveBody extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      "Chọn size",
+                      listItem[index].name,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.w700),
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const Icon(
                       Icons.keyboard_arrow_right_outlined,
@@ -1120,37 +1260,71 @@ class _ToppingActiveBody extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.transparent,
-                              border: Border.all(color: AppColors.color8E8)),
-                          child: Text(
-                            "Hiện",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return DialogChangeStatus(
+                                    done: (isOk) {
+                                      if (isOk) {
+                                        bloc.hideOrShowTopping(listItem[index],
+                                            isHide: true);
+                                      }
+                                      Get.back();
+                                    },
+                                    title: "Thay đổi trạng thái",
+                                    listSubTitle: const [
+                                      "Bạn có chắc chắn muốn ẩn nhóm topping ",
+                                      "\"Lượng đường\"",
+                                      " trên ứng dụng khách hàng không"
+                                    ],
+                                  );
+                                });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.transparent,
+                                border: Border.all(color: AppColors.color8E8)),
+                            child: Text(
+                              "Ẩn",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
                       const HSpacing(spacing: 12),
                       Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.transparent,
-                              border: Border.all(color: AppColors.colorD33)),
-                          child: Text(
-                            "Sửa",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.colorD33),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.menuCustomTopping,
+                                    arguments: listItem[index])
+                                ?.then((value) {
+                              if (value) {
+                                bloc.getAllTopping();
+                              }
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.transparent,
+                                border: Border.all(color: AppColors.colorD33)),
+                            child: Text(
+                              "Sửa",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.colorD33),
+                            ),
                           ),
                         ),
                       )
@@ -1165,12 +1339,14 @@ class _ToppingActiveBody extends StatelessWidget {
 }
 
 class _ToppingNotRegisteredBody extends StatelessWidget {
-  const _ToppingNotRegisteredBody({super.key});
+  final List<GrAddToppingResponse> listItem;
+  final MenuDinerCubit bloc;
+  const _ToppingNotRegisteredBody({required this.bloc, required this.listItem});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 2,
+        itemCount: listItem.length,
         padding: const EdgeInsets.only(top: 20),
         itemBuilder: (context, index) {
           return Container(
@@ -1185,7 +1361,7 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      "Chọn size",
+                      listItem[index].name,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
@@ -1205,37 +1381,71 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.transparent,
-                              border: Border.all(color: AppColors.color8E8)),
-                          child: Text(
-                            "Hiện thị",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return DialogChangeStatus(
+                                    done: (isOk) {
+                                      if (isOk) {
+                                        bloc.hideOrShowTopping(listItem[index],
+                                            isHide: false);
+                                      }
+                                      Get.back();
+                                    },
+                                    title: "Thay đổi trạng thái",
+                                    listSubTitle: const [
+                                      "Bạn có chắc chắn muốn hiển thị nhóm topping ",
+                                      "\"Lượng đường\"",
+                                      " trên ứng dụng khách hàng không"
+                                    ],
+                                  );
+                                });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.transparent,
+                                border: Border.all(color: AppColors.color8E8)),
+                            child: Text(
+                              "Hiện thị",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
                       const HSpacing(spacing: 12),
                       Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.transparent,
-                              border: Border.all(color: AppColors.colorD33)),
-                          child: Text(
-                            "Sửa",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.colorD33),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.menuCustomTopping,
+                                    arguments: listItem[index])
+                                ?.then((value) {
+                              if (value) {
+                                bloc.getAllTopping();
+                              }
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.transparent,
+                                border: Border.all(color: AppColors.colorD33)),
+                            child: Text(
+                              "Sửa",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.colorD33),
+                            ),
                           ),
                         ),
                       ),

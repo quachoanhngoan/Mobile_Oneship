@@ -24,7 +24,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   List<BannerM> banners = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getBanners();
   }
@@ -70,8 +69,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 children: [
                   Text("Chào mừng bạn đến với GOO+ ĐỐI TÁC!",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                             letterSpacing: 0.3,
+                            fontSize: 16,
                           )),
                   SizedBox(
                     height: AppDimensions.paddingSmall,
@@ -80,8 +81,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       "Cùng bứt phá doanh thu và chinh phục mọi cơ hội kinh doanh ngay hôm nay!",
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: AppColors.description,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             letterSpacing: 0.3,
+                            fontSize: 14,
                           )),
                 ],
               ),

@@ -91,7 +91,7 @@ void blocModule() {
   injector.registerFactory<BottomCubit>(
     () => BottomCubit(),
   );
-  injector.registerFactory<MenuDinerCubit>(() => MenuDinerCubit());
+  injector.registerFactory<MenuDinerCubit>(() => MenuDinerCubit(injector()));
   injector.registerFactory<ToppingCustomCubit>(
       () => ToppingCustomCubit(injector()));
 }

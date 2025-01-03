@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -5,8 +7,8 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
-import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_cubit.dart';
@@ -30,7 +32,7 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
   @override
   void initState() {
     bloc = injector.get<ToppingCustomCubit>();
-    bloc.init();
+    bloc.init(topping: Get.arguments);
     super.initState();
   }
 
@@ -42,12 +44,15 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
 
   @override
   Widget build(BuildContext context) {
+    final arg = Get.arguments;
     return BlocConsumer<ToppingCustomCubit, ToppingCustomState>(
         bloc: bloc,
         listener: (context, state) {
           if (state.isCompleteSuccess == true) {
-            Get.back();
-            context.showToastDialog("Tạo topping thành công");
+            Get.back(result: true);
+            context.showToastDialog(arg != null
+                ? "Sửa topping thành công"
+                : "Tạo topping thành công");
           }
           if (state.showErrorComplete != null) {
             context.showErrorDialog(state.showErrorComplete!, context);
@@ -65,7 +70,7 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
+                      ?.copyWith(fontWeight: FontWeight.w600)),
             ),
             body: Stack(
               children: [
@@ -122,7 +127,7 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                                 .textTheme
                                 .bodySmall
                                 ?.copyWith(
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     color: state.isButtonNextEnable()
                                         ? AppColors.white
                                         : AppColors.colorA4A),
@@ -223,7 +228,7 @@ class _AddGroupTopping extends StatelessWidget {
           AppTextFormFieldSelect(
             controller: bloc.linkFoodController,
             enabled: false,
-            isRequired: true,
+            isRequired: false,
             hintText: "Chọn món liên kết",
             onChanged: (value) {
               bloc.checkFilledInfomation();
@@ -235,6 +240,7 @@ class _AddGroupTopping extends StatelessWidget {
                     builder: (_) {
                       return _LinkedFoodSheet(
                         listItem: state.listLinkFood,
+                        bloc: bloc,
                       );
                     });
               }
@@ -257,11 +263,12 @@ class _AddGroupTopping extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Icon(Icons.add_outlined, size: 20),
+                  const Icon(Icons.add_outlined,
+                      size: 20, color: AppColors.colorD33),
                   Text(
                     "Thêm topping",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600, color: AppColors.colorD33),
+                        fontWeight: FontWeight.w500, color: AppColors.colorD33),
                   )
                 ],
               ),
@@ -509,6 +516,7 @@ class _AddGroupTopping extends StatelessWidget {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
+                                        bloc.setArgEditTopping(true);
                                         bloc.editTopping(item);
                                       },
                                       child: Container(
@@ -638,192 +646,275 @@ class DialogChangeStatus extends StatelessWidget {
   }
 }
 
-class _LinkedFoodSheet extends StatelessWidget {
+class _LinkedFoodSheet extends StatefulWidget {
   final List<ItemLinkFood> listItem;
-  const _LinkedFoodSheet({super.key, required this.listItem});
+  // final List<int> listIdSellected;
+  final ToppingCustomCubit bloc;
+  const _LinkedFoodSheet({required this.listItem, required this.bloc});
+
+  @override
+  State<_LinkedFoodSheet> createState() => _LinkedFoodSheetState();
+}
+
+class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
+  late ToppingCustomCubit _bloc;
+
+  @override
+  initState() {
+    _bloc = widget.bloc;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          color: AppColors.color6F6,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-      child: Column(
-        children: <Widget>[
-          const VSpacing(spacing: 12),
-          Text(
-            "Món liên kết",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const VSpacing(spacing: 12),
-          Expanded(
-            child: ListView.builder(
-                itemCount: listItem.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    padding: const EdgeInsets.all(12),
+    return BlocBuilder<ToppingCustomCubit, ToppingCustomState>(
+        bloc: _bloc,
+        builder: (context, state) {
+          return Container(
+            decoration: const BoxDecoration(
+                color: AppColors.color6F6,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
+            child: Column(
+              children: <Widget>[
+                const VSpacing(spacing: 12),
+                Text(
+                  "Món liên kết",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const VSpacing(spacing: 12),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: widget.listItem.length,
+                      itemBuilder: (context, index) {
+                        final isSellectMainId = state.listIdLinkFoodSellected
+                                .firstWhereOrNull(
+                                    (e) => e.id == widget.listItem[index].id) !=
+                            null;
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {
+                                  _bloc.listIdLinkFoodSellect(
+                                      widget.listItem[index].id,
+                                      isAll: true);
+                                },
+                                child: Container(
+                                  color: AppColors.transparent,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                            color: isSellectMainId
+                                                ? AppColors.color988
+                                                : AppColors.transparent,
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            border: Border.all(
+                                                color: isSellectMainId
+                                                    ? AppColors.transparent
+                                                    : AppColors.textGray,
+                                                width: 1)),
+                                        child: const Icon(
+                                          Icons.check_outlined,
+                                          color: AppColors.white,
+                                          size: 12,
+                                        ),
+                                      ),
+                                      const HSpacing(spacing: 8),
+                                      Text(
+                                        "${widget.listItem[index].name}(${widget.listItem[index].products!.length})",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600),
+                                      ),
+                                      const Spacer(),
+                                      Icon(
+                                        widget.listItem[index].products
+                                                    ?.isNotEmpty ==
+                                                true
+                                            ? Icons.keyboard_arrow_down_outlined
+                                            : Icons
+                                                .keyboard_arrow_right_outlined,
+                                        color: AppColors.color988,
+                                        size: 30,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              widget.listItem[index].products?.isNotEmpty ==
+                                      true
+                                  ? const VSpacing(spacing: 12)
+                                  : Container(),
+                              if (widget.listItem[index].products?.isNotEmpty ==
+                                  true) ...[
+                                ...List.generate(
+                                    widget.listItem[index].products!.length,
+                                    (inxChild) {
+                                  final childItem = widget
+                                      .listItem[index].products![inxChild];
+                                  final isSellectChildId = state
+                                          .listIdLinkFoodSellected
+                                          .firstWhereOrNull(
+                                              (e) => e.id == childItem.id) !=
+                                      null;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 30),
+                                    child: Column(
+                                      children: <Widget>[
+                                        GestureDetector(
+                                          onTap: () {
+                                            _bloc.listIdLinkFoodSellect(
+                                                childItem.id);
+                                          },
+                                          child: Container(
+                                            color: AppColors.transparent,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Container(
+                                                  width: 16,
+                                                  height: 16,
+                                                  decoration: BoxDecoration(
+                                                      color: isSellectChildId
+                                                          ? AppColors.color988
+                                                          : AppColors
+                                                              .transparent,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      border: Border.all(
+                                                          color: isSellectChildId
+                                                              ? AppColors
+                                                                  .transparent
+                                                              : AppColors
+                                                                  .textGray,
+                                                          width: 1)),
+                                                  child: const Icon(
+                                                    Icons.check_outlined,
+                                                    color: AppColors.white,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                                const HSpacing(spacing: 8),
+                                                Text(
+                                                  childItem.name,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        widget.listItem[index].products!
+                                                        .length -
+                                                    1 !=
+                                                inxChild
+                                            ? const Divider(
+                                                color: AppColors.textGray,
+                                                height: 1,
+                                                thickness: 1)
+                                            : Container()
+                                      ],
+                                    ),
+                                  );
+                                })
+                              ]
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+                const VSpacing(spacing: 8),
+                Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                  color: AppColors.color988,
-                                  borderRadius: BorderRadius.circular(4)),
-                              child: const Icon(
-                                Icons.check_outlined,
-                                color: AppColors.white,
-                                size: 12,
-                              ),
-                            ),
-                            const HSpacing(spacing: 8),
-                            Text(
-                              "${listItem[index].name}(${listItem[index].products.length})",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                            const Spacer(),
-                            Icon(
-                              listItem[index].products.isNotEmpty
-                                  ? Icons.keyboard_arrow_down_outlined
-                                  : Icons.keyboard_arrow_right_outlined,
-                              color: AppColors.color988,
-                              size: 30,
-                            )
-                          ],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          spreadRadius: 0.3,
+                          offset: const Offset(0, -4),
                         ),
-                        if (listItem[index].products.isNotEmpty) ...[
-                          ...List.generate(listItem[index].products.length,
-                              (inxChild) {
-                            final childItem =
-                                listItem[index].products[inxChild];
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      width: 16,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                          color: AppColors.color988,
-                                          borderRadius:
-                                              BorderRadius.circular(4)),
-                                      child: const Icon(
-                                        Icons.check_outlined,
-                                        color: AppColors.white,
-                                        size: 12,
-                                      ),
-                                    ),
-                                    const HSpacing(spacing: 8),
-                                    Text(
-                                      childItem.name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                                listItem[index].products.length - 1 != inxChild
-                                    ? const Divider(
-                                        color: AppColors.textGray,
-                                        height: 1,
-                                        thickness: 1)
-                                    : Container()
-                              ],
-                            );
-                          })
-                        ]
                       ],
                     ),
-                  );
-                }),
-          ),
-          const VSpacing(spacing: 8),
-          Container(
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 0.3,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
-              ),
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: AppColors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                                width: 1, color: AppColors.color988)),
-                        child: Text(
-                          "Huỷ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.color988),
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              height: 40,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: AppColors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      width: 1, color: AppColors.color988)),
+                              child: Text(
+                                "Huỷ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.color988),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  const HSpacing(spacing: 20),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Container(
-                        height: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: AppColors.color988,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Text(
-                          "Xác nhận",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.white),
+                        const HSpacing(spacing: 20),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              height: 40,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: AppColors.color988,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: Text(
+                                "Xác nhận",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.white),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              ))
-        ],
-      ),
-    );
+                      ],
+                    ))
+              ],
+            ),
+          );
+        });
   }
 }
 
