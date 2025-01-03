@@ -49,7 +49,7 @@ class BottomView extends StatelessWidget {
                                           ? AppColors.colorFA6
                                           : AppColors.color390,
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w700))
+                                      fontWeight: FontWeight.w500))
                         ],
                       ),
                     ))

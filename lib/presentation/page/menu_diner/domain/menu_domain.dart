@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_response.dart';
 
 import '../../../../config/theme/color.dart';
 
@@ -37,15 +40,46 @@ extension MenuTypeExtension on MenuType {
         return "Không thành công (#VALUE)";
     }
   }
+
+  String get productStatus {
+    switch (this) {
+      case MenuType.active:
+        return "active";
+      default:
+        return "inactive";
+    }
+  }
+
+  String get approvalStatus {
+    switch (this) {
+      case MenuType.active:
+        return "approved";
+      case MenuType.notRegistered:
+        return "draft";
+      case MenuType.pendingApproval:
+        return "pending";
+      case MenuType.unsuccessful:
+        return "rejected";
+    }
+  }
 }
 
 extension ToppingTypeEx on ToppingType {
   String get title {
     switch (this) {
       case ToppingType.active:
-        return "Đang hoạt động (#VALUE)";
+        return "Đang sử dụng (#VALUE)";
       case ToppingType.notRegistered:
-        return "Chưa được đăng (#VALUE)";
+        return "Chưa sử dụng (#VALUE)";
+    }
+  }
+
+  String get status {
+    switch (this) {
+      case ToppingType.active:
+        return "active";
+      case ToppingType.notRegistered:
+        return "inactive";
     }
   }
 }
@@ -105,4 +139,24 @@ extension DetailMenuActionTypeEx on DetailMenuActionType {
         return AppColors.black;
     }
   }
+}
+
+class DataToppingTypeDomain {
+  final ToppingType type;
+  final List<GrAddToppingResponse>? data;
+  DataToppingTypeDomain(this.data, this.type);
+}
+
+class DataMenuTypeDomain {
+  final MenuType type;
+  final List<ItemLinkFood>? data;
+  DataMenuTypeDomain(this.data, this.type);
+}
+
+class ListFoodByMenuDomain {
+  final List<MenuFoodResponseItem>? listFoodByMenu;
+  final MenuType type;
+  final int idSellected;
+  ListFoodByMenuDomain(
+      {required this.idSellected, this.listFoodByMenu, required this.type});
 }

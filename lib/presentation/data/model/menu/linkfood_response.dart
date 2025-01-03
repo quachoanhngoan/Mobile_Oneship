@@ -27,7 +27,7 @@ class ItemLinkFood {
   int id;
   String name;
   int? storeId;
-  List<DetailLinkFood> products;
+  List<DetailLinkFood>? products;
   int totalProducts;
 
   ItemLinkFood({
@@ -39,9 +39,10 @@ class ItemLinkFood {
   });
 
   factory ItemLinkFood.fromJson(Map<String, dynamic> json) {
-    var productList = json['products'] as List;
-    List<DetailLinkFood> products =
-        productList.map((p) => DetailLinkFood.fromJson(p)).toList();
+    var productList =
+        json['products'] != null ? json['products'] as List : null;
+    List<DetailLinkFood>? products =
+        productList?.map((p) => DetailLinkFood.fromJson(p)).toList();
 
     return ItemLinkFood(
       id: json['id'],
@@ -57,7 +58,7 @@ class ItemLinkFood {
       'id': id,
       'name': name,
       'storeId': storeId,
-      'products': products.map((product) => product.toJson()).toList(),
+      'products': products?.map((product) => product.toJson()).toList(),
       'totalProducts': totalProducts,
     };
   }

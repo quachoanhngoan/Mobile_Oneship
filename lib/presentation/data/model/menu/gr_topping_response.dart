@@ -1,3 +1,5 @@
+import 'gr_topping_request.dart';
+
 class GrAddToppingResponse {
   String name;
   bool isMultiple;
@@ -25,7 +27,7 @@ class GrAddToppingResponse {
     return GrAddToppingResponse(
       name: json['name'] ?? '',
       isMultiple: json['isMultiple'] ?? false,
-      status: json['status'] ?? '',
+      status: json['status'] ?? 'active',
       options: (json['options'] as List<dynamic>?)
               ?.map((e) => OptionAddToppingResponse.fromJson(e))
               .toList() ??
@@ -50,6 +52,42 @@ class GrAddToppingResponse {
       'deletedAt': deletedAt,
       'updatedAt': updatedAt,
     };
+  }
+
+  GrAddToppingResponse copyWith({
+    String? name,
+    bool? isMultiple,
+    String? status,
+    List<OptionAddToppingResponse>? options,
+    int? storeId,
+    int? id,
+    String? createdAt,
+    String? deletedAt,
+    String? updatedAt,
+  }) {
+    return GrAddToppingResponse(
+      name: name ?? this.name,
+      isMultiple: isMultiple ?? this.isMultiple,
+      status: status ?? this.status,
+      options: options ?? this.options,
+      storeId: storeId ?? this.storeId,
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  GrToppingRequest responseToRequest() {
+    List<OptionAddTopping> listOption = [];
+    for (var item in options) {
+      listOption.add(item.convertOption());
+    }
+    return GrToppingRequest(
+        name: name,
+        isMultiple: isMultiple,
+        status: status,
+        options: listOption);
   }
 }
 
@@ -78,7 +116,7 @@ class OptionAddToppingResponse {
     return OptionAddToppingResponse(
       name: json['name'] ?? '',
       price: json['price'] ?? 0,
-      status: json['status'] ?? '',
+      status: json['status'] ?? 'active',
       optionGroupId: json['optionGroupId'] ?? 0,
       id: json['id'] ?? 0,
       createdAt: json['createdAt'] ?? '',
@@ -120,5 +158,34 @@ class OptionAddToppingResponse {
       deletedAt: deletedAt ?? this.deletedAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  OptionAddTopping convertOption() {
+    return OptionAddTopping(name: name, price: price, status: status);
+  }
+}
+
+class GetGrToppingResponse {
+  List<GrAddToppingResponse> items;
+  int total;
+
+  GetGrToppingResponse({required this.items, required this.total});
+
+  factory GetGrToppingResponse.fromJson(Map<String, dynamic> json) {
+    var itemList = json['items'] as List;
+    List<GrAddToppingResponse> items =
+        itemList.map((i) => GrAddToppingResponse.fromJson(i)).toList();
+
+    return GetGrToppingResponse(
+      items: items,
+      total: json['total'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'items': items.map((item) => item.toJson()).toList(),
+      'total': total,
+    };
   }
 }
