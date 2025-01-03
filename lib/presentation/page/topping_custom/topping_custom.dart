@@ -9,6 +9,7 @@ import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/domain/topping_item_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom_cubit.dart';
@@ -166,15 +167,17 @@ class _AddGroupTopping extends StatelessWidget {
                 bloc.checkFilledInfomation();
               },
               isRequired: true,
-              suffix: IconButton(
-                  onPressed: () {
-                    bloc.nameGroupToppingController.clear();
-                  },
-                  icon: Icon(
-                    Icons.cancel_outlined,
-                    size: 16,
-                    color: AppColors.black.withOpacity(0.6),
-                  ))),
+              suffix: state.isShowClearName
+                  ? IconButton(
+                      onPressed: () {
+                        bloc.nameGroupToppingController.clear();
+                      },
+                      icon: Icon(
+                        Icons.cancel_outlined,
+                        size: 16,
+                        color: AppColors.black.withOpacity(0.6),
+                      ))
+                  : const SizedBox.shrink()),
           const VSpacing(spacing: 20),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -225,28 +228,77 @@ class _AddGroupTopping extends StatelessWidget {
                 );
               })),
           const VSpacing(spacing: 24),
-          AppTextFormFieldSelect(
-            controller: bloc.linkFoodController,
-            enabled: false,
-            isRequired: false,
-            hintText: "Chọn món liên kết",
-            onChanged: (value) {
-              bloc.checkFilledInfomation();
-            },
-            onTap: () {
-              if (state.listLinkFood.isNotEmpty) {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (_) {
-                      return _LinkedFoodSheet(
-                        listItem: state.listLinkFood,
-                        bloc: bloc,
-                      );
-                    });
-              }
-            },
-            suffixIcon: const Icon(Icons.expand_more,
-                color: AppColors.color2B3, size: 24),
+          Stack(
+            alignment: Alignment.bottomLeft,
+            children: <Widget>[
+              SizedBox(
+                height: 36,
+                child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    itemCount: state.listIdLinkFoodSellected.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final item = state.listIdLinkFoodSellected[index];
+                      final nameItem = state.listLinkFood
+                          .firstWhereOrNull((e) => e.id == item.id)
+                          ?.name;
+                      if (nameItem != null) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                              color: AppColors.color880.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(6)),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                nameItem,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.color988,
+                                    ),
+                              ),
+                              const HSpacing(spacing: 4),
+                              const Icon(Icons.clear,
+                                  color: AppColors.color988, size: 16)
+                            ],
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+              ),
+              AppTextFormFieldSelect(
+                controller: bloc.linkFoodController,
+                enabled: false,
+                isRequired: false,
+                hintText: state.listIdLinkFoodSellected.isNotEmpty
+                    ? ""
+                    : "Chọn món liên kết",
+                onChanged: (value) {
+                  bloc.checkFilledInfomation();
+                },
+                onTap: () {
+                  if (state.listLinkFood.isNotEmpty) {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (_) {
+                          return _LinkedFoodSheet(
+                            listItem: state.listLinkFood,
+                            bloc: bloc,
+                          );
+                        });
+                  }
+                },
+                suffixIcon: state.listIdLinkFoodSellected.isNotEmpty
+                    ? const SizedBox.shrink()
+                    : const Icon(Icons.expand_more,
+                        color: AppColors.color2B3, size: 24),
+              ),
+            ],
           ),
           const VSpacing(spacing: 24),
           GestureDetector(

@@ -73,8 +73,6 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   }
 
   nextPage() {
-    // nameToppingController.clear();
-    // priceController.clear();
     pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
@@ -84,19 +82,18 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
       if (pageController.page != null && pageController.page!.round() > 0) {
         final isFilled = nameToppingController.text.isNotNullOrEmpty &&
             priceController.text.isNotNullOrEmpty &&
-            (state.errorNameTopping == null || state.errorNameTopping == "") &&
-            priceController.text != "0 vnđ";
-        emit(state.copyWith(isFilledInfo: isFilled));
+            (state.errorNameTopping == null || state.errorNameTopping == "");
+        emit(state.copyWith(isFilledInfo: isFilled, isShowClearName: true));
       } else {
         final isFilled = nameGroupToppingController.text.isNotNullOrEmpty &&
-                state.listTopping.isNotEmpty
-            // && linkFoodController.text.isNotNullOrEmpty
-            ;
-        emit(state.copyWith(isFilledInfo: isFilled));
+            state.listTopping.isNotEmpty;
+        emit(state.copyWith(
+            isFilledInfo: isFilled,
+            isShowClearName: nameGroupToppingController.text.isNotNullOrEmpty));
       }
     } else {
       final isFilled = nameGroupToppingController.text.isNotNullOrEmpty;
-      emit(state.copyWith(isFilledInfo: isFilled));
+      emit(state.copyWith(isFilledInfo: isFilled, isShowClearName: isFilled));
     }
   }
 
@@ -135,7 +132,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
       if (!_isEditTopping) {
         final listTopping = List.of(state.listTopping);
         listTopping.add(ToppingItemDomain(
-            name: nameToppingController.text, price: priceController.text));
+            name: nameToppingController.text,
+            price: priceController.text,
+            type: StatusToppingType.isInUse));
         emit(state.copyWith(
             listTopping: listTopping,
             isPriceClearButton: false,

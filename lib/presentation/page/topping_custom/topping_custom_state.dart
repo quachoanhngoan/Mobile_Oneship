@@ -14,6 +14,7 @@ class ToppingCustomState extends Equatable {
   final String? showErrorComplete;
   final bool? isCompleteSuccess;
   final bool isLoading;
+  final bool isShowClearName;
   final List<ItemLinkFood> listLinkFood;
   final List<ProductAddTopping> listIdLinkFoodSellected;
 
@@ -29,7 +30,8 @@ class ToppingCustomState extends Equatable {
       this.isCompleteSuccess,
       this.isLoading = false,
       this.listLinkFood = const [],
-      this.listIdLinkFoodSellected = const []});
+      this.listIdLinkFoodSellected = const [],
+      this.isShowClearName = false});
 
   @override
   List<Object?> get props => [
@@ -45,6 +47,7 @@ class ToppingCustomState extends Equatable {
         isLoading,
         listLinkFood,
         listIdLinkFoodSellected,
+        isShowClearName
       ];
 
   ToppingCustomState copyWith({
@@ -60,6 +63,7 @@ class ToppingCustomState extends Equatable {
     bool? isLoading,
     List<ItemLinkFood>? listLinkFood,
     List<ProductAddTopping>? listIdLinkFoodSellected,
+    bool? isShowClearName,
   }) {
     return ToppingCustomState(
       title: title ?? this.title,
@@ -75,6 +79,7 @@ class ToppingCustomState extends Equatable {
       listLinkFood: listLinkFood ?? this.listLinkFood,
       listIdLinkFoodSellected:
           listIdLinkFoodSellected ?? this.listIdLinkFoodSellected,
+      isShowClearName: isShowClearName ?? this.isShowClearName,
     );
   }
 

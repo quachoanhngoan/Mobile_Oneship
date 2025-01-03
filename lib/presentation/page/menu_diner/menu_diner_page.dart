@@ -61,13 +61,19 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(fontWeight: FontWeight.w600)),
-              actions: <Widget>[
-                IconButton(
-                    onPressed: () {
-                      //search continue code
-                    },
-                    icon: const Icon(Icons.search_outlined,
-                        color: AppColors.black))
+              actions: const <Widget>[
+                ImageAssetWidget(
+                  image: AppAssets.imagesIconsIcSearch,
+                  width: 24,
+                  height: 24,
+                ),
+                HSpacing(spacing: 8),
+                ImageAssetWidget(
+                  image: AppAssets.imagesIconsIcFile,
+                  width: 24,
+                  height: 24,
+                ),
+                HSpacing(spacing: 12),
               ],
             ),
             body: Column(
@@ -1274,10 +1280,10 @@ class _ToppingActiveBody extends StatelessWidget {
                                       Get.back();
                                     },
                                     title: "Thay đổi trạng thái",
-                                    listSubTitle: const [
-                                      "Bạn có chắc chắn muốn ẩn nhóm topping ",
-                                      "\"Lượng đường\"",
-                                      " trên ứng dụng khách hàng không"
+                                    listSubTitle: [
+                                      "Bạn có chắc chắn muốn ẩn topping ",
+                                      "\"${listItem[index].name}\"",
+                                      " trên ứng dụng khách hàng không?"
                                     ],
                                   );
                                 });
@@ -1396,9 +1402,9 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                                     },
                                     title: "Thay đổi trạng thái",
                                     listSubTitle: const [
-                                      "Bạn có chắc chắn muốn hiển thị nhóm topping ",
+                                      "Bạn có chắc chắn muốn hiển thị topping ",
                                       "\"Lượng đường\"",
-                                      " trên ứng dụng khách hàng không"
+                                      " trên ứng dụng khách hàng không?"
                                     ],
                                   );
                                 });
