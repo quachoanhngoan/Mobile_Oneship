@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -11,7 +9,6 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_respo
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
-import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
@@ -19,6 +16,7 @@ import 'package:oneship_merchant_app/presentation/widget/images/network_image_lo
 import '../../../injector.dart';
 import '../../data/model/menu/gr_topping_response.dart';
 import '../../data/model/menu/list_menu_food_response.dart';
+import '../login/widget/loading_widget.dart';
 import 'widgets/dashed_divider.dart';
 
 class MenuDinerPage extends StatefulWidget {
@@ -46,96 +44,112 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuDinerCubit, MenuDinerState>(
+    return BlocConsumer<MenuDinerCubit, MenuDinerState>(
         bloc: bloc,
+        listener: (context, state) {
+          if (state.errorEditTopping != null) {
+            context.showErrorDialog(state.errorEditTopping!, context);
+          }
+        },
         builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  icon: const Icon(Icons.arrow_back, color: AppColors.black)),
-              title: Text("Thực đơn",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w600)),
-              actions: const <Widget>[
-                ImageAssetWidget(
-                  image: AppAssets.imagesIconsIcSearch,
-                  width: 24,
-                  height: 24,
-                ),
-                HSpacing(spacing: 8),
-                ImageAssetWidget(
-                  image: AppAssets.imagesIconsIcFile,
-                  width: 24,
-                  height: 24,
-                ),
-                HSpacing(spacing: 12),
-              ],
-            ),
-            body: Column(
-              children: <Widget>[
-                Row(
-                  children: List.generate(MenuMainType.values.length, (index) {
-                    final item = MenuMainType.values[index];
-                    return Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          bloc.changeMainPage(index, item);
-                        },
-                        child: Container(
-                          color: AppColors.transparent,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 34,
-                                child: Text(
-                                  item.title,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                          color: state.menuMainType == item
-                                              ? AppColors.color988
-                                              : AppColors.textGray,
-                                          fontWeight: state.menuMainType == item
-                                              ? FontWeight.w600
-                                              : FontWeight.w500),
-                                ),
-                              ),
-                              Container(
-                                height: state.menuMainType == item ? 3 : 1,
-                                color: state.menuMainType == item
-                                    ? AppColors.color988
-                                    : AppColors.textGray,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-                Expanded(
-                    child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: bloc.mainController,
-                  children: <Widget>[
-                    _MenuWidget(
-                      bloc: bloc,
-                      state: state,
+          return Stack(
+            children: <Widget>[
+              Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon:
+                          const Icon(Icons.arrow_back, color: AppColors.black)),
+                  title: Text("Thực đơn",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600)),
+                  actions: const <Widget>[
+                    ImageAssetWidget(
+                      image: AppAssets.imagesIconsIcSearch,
+                      width: 24,
+                      height: 24,
                     ),
-                    _GroupToppingWidget(
-                      bloc: bloc,
-                      state: state,
+                    HSpacing(spacing: 8),
+                    ImageAssetWidget(
+                      image: AppAssets.imagesIconsIcFile,
+                      width: 24,
+                      height: 24,
                     ),
+                    HSpacing(spacing: 12),
                   ],
-                ))
-              ],
-            ),
+                ),
+                body: Column(
+                  children: <Widget>[
+                    Row(
+                      children:
+                          List.generate(MenuMainType.values.length, (index) {
+                        final item = MenuMainType.values[index];
+                        return Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              bloc.changeMainPage(index, item);
+                            },
+                            child: Container(
+                              color: AppColors.transparent,
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 34,
+                                    child: Text(
+                                      item.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              color: state.menuMainType == item
+                                                  ? AppColors.color988
+                                                  : AppColors.textGray,
+                                              fontWeight:
+                                                  state.menuMainType == item
+                                                      ? FontWeight.w600
+                                                      : FontWeight.w500),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: state.menuMainType == item ? 3 : 1,
+                                    color: state.menuMainType == item
+                                        ? AppColors.color988
+                                        : AppColors.textGray,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                    Expanded(
+                        child: PageView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: bloc.mainController,
+                      children: <Widget>[
+                        _MenuWidget(
+                          bloc: bloc,
+                          state: state,
+                        ),
+                        _GroupToppingWidget(
+                          bloc: bloc,
+                          state: state,
+                        ),
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: state.isLoading,
+                child: const LoadingWidget(),
+              )
+            ],
           );
         });
   }
@@ -1401,9 +1415,9 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                                       Get.back();
                                     },
                                     title: "Thay đổi trạng thái",
-                                    listSubTitle: const [
+                                    listSubTitle: [
                                       "Bạn có chắc chắn muốn hiển thị topping ",
-                                      "\"Lượng đường\"",
+                                      "\"${listItem[index].name}\"",
                                       " trên ứng dụng khách hàng không?"
                                     ],
                                   );
@@ -1416,7 +1430,7 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                                 color: AppColors.transparent,
                                 border: Border.all(color: AppColors.color8E8)),
                             child: Text(
-                              "Hiện thị",
+                              "Hiển thị",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -1457,18 +1471,41 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                       ),
                       const HSpacing(spacing: 12),
                       Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColors.transparent,
-                              border: Border.all(color: AppColors.color8E8)),
-                          child: Text(
-                            "Xoá",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return DialogChangeStatus(
+                                    done: (isOk) {
+                                      if (isOk) {
+                                        bloc.deleteGroupTopping(
+                                            listItem[index].id);
+                                      }
+                                      Get.back();
+                                    },
+                                    title: "Thay đổi trạng thái",
+                                    listSubTitle: [
+                                      "Bạn có muốn xoá nhóm topping ",
+                                      "\"${listItem[index].name}\"",
+                                      " trên ứng dụng khách hàng không?"
+                                    ],
+                                  );
+                                });
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: AppColors.transparent,
+                                border: Border.all(color: AppColors.color8E8)),
+                            child: Text(
+                              "Xoá",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),

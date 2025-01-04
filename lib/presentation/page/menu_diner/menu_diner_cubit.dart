@@ -10,8 +10,6 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
 
 import '../../data/model/menu/gr_topping_response.dart';
-import '../../data/model/menu/linkfood_response.dart';
-import '../../data/model/menu/list_menu_food_response.dart';
 import '../../data/repository/menu_repository.dart';
 import 'domain/menu_domain.dart';
 
@@ -23,12 +21,14 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   late PageController groupToppingController;
   late PageController menuController;
 
-  init() {
+  init() async {
+    emit(state.copyWith(isLoading: true));
     mainController = PageController();
     groupToppingController = PageController();
     menuController = PageController();
-    getAllTopping();
-    getAllMenu();
+    await getAllTopping();
+    await getAllMenu();
+    emit(state.copyWith(isLoading: false));
   }
 
   dispose() {
@@ -111,13 +111,35 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
 
   hideOrShowTopping(GrAddToppingResponse topping, {bool isHide = true}) async {
     try {
+      emit(state.copyWith(isLoading: true));
       final request = topping.responseToRequest();
       final response = await repository.addGroupTopping(request);
       if (response != null) {
-        getAllTopping();
-      } else {}
+        await getAllTopping();
+        emit(state.copyWith(isLoading: false));
+      } else {
+        emit(state.copyWith(
+            errorEditTopping: "Không thể thay đổi trạng thái topping"));
+      }
     } on DioException catch (e) {
       log("editTopping error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  deleteGroupTopping(int id) async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final response = await repository.removeGroupTopping(id);
+      if (response != null) {
+        await getAllTopping();
+        emit(state.copyWith(isLoading: false));
+      } else {
+        emit(state.copyWith(errorEditTopping: "Không thể xoá topping"));
+      }
+    } on DioException catch (e) {
+      log("deleteGroupTopping error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
     }
   }
 }

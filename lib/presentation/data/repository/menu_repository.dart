@@ -8,6 +8,7 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_respo
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
 
 import '../model/menu/list_menu_food_response.dart';
+import '../model/menu/remove_topping_request.dart';
 import '../utils.dart';
 
 mixin AuthUrl {
@@ -22,8 +23,7 @@ abstract class MenuRepository {
   Future<LinkfoodResponse?> getListMenu(LinkFoodRequest request);
   Future<GetGrToppingResponse?> getGroupTopping(GetGroupToppingRequest request);
   Future<ListMenuFoodResponse?> detailFoodByMenu(ListMenuFoodRequest request);
-  // Future<GrAddToppingResponse?> editGroupTopping(
-  //     {required GrToppingRequest request, required int id});
+  Future<RemoveToppingResponse?> removeGroupTopping(int id);
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -95,18 +95,16 @@ class MenuRepositoryImp implements MenuRepository {
     return null;
   }
 
-  // @override
-  // Future<GrAddToppingResponse?> editGroupTopping(
-  //     {required GrToppingRequest request, required int id}) async {
-  //   try {
-  //     final httpRequest = await _clientDio.patch("${AuthUrl.optionGroup}/$id",
-  //         data: request.removeNullValues());
-  //     return GrAddToppingResponse.fromJson(httpRequest.data ?? {});
-  //   } on DioException catch (_) {
-  //     rethrow;
-  //   } catch (e) {
-  //     log("editGroupTopping error: $e");
-  //   }
-  //   return null;
-  // }
+  @override
+  Future<RemoveToppingResponse?> removeGroupTopping(int id) async {
+    try {
+      final httpRequest = await _clientDio.delete("${AuthUrl.optionGroup}/$id");
+      return RemoveToppingResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
 }
