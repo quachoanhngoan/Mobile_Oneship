@@ -112,8 +112,10 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   hideOrShowTopping(GrAddToppingResponse topping, {bool isHide = true}) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final request = topping.responseToRequest();
-      final response = await repository.addGroupTopping(request);
+      final request =
+          topping.responseToRequest(newStatus: isHide ? "inactive" : "active");
+      final response =
+          await repository.addGroupTopping(request, id: topping.id);
       if (response != null) {
         await getAllTopping();
         emit(state.copyWith(isLoading: false));

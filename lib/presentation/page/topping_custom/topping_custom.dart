@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
@@ -53,7 +52,8 @@ class _ToppingCustomPageState extends State<ToppingCustomPage> {
                 : "Tạo topping thành công");
           }
           if (state.showErrorComplete != null) {
-            context.showErrorDialog(state.showErrorComplete!, context);
+            context.showErrorDialog(state.showErrorComplete!, context,
+                subtitle: "Vui lòng nhập tên khác.");
           }
         },
         builder: (context, state) {
@@ -420,7 +420,7 @@ class _AddGroupTopping extends StatelessWidget {
                                                 },
                                                 title: "Thay đổi trạng thái",
                                                 listSubTitle: [
-                                                  "Bạn có chắc chắn muốn hiển thị nhóm topping ",
+                                                  "Bạn có chắc chắn muốn hiển thị topping ",
                                                   "\"${item.name}\"",
                                                   " trên ứng dụng khách hàng không ?"
                                                 ],

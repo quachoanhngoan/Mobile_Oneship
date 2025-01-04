@@ -1295,7 +1295,7 @@ class _ToppingActiveBody extends StatelessWidget {
                                     },
                                     title: "Thay đổi trạng thái",
                                     listSubTitle: [
-                                      "Bạn có chắc chắn muốn ẩn topping ",
+                                      "Bạn có chắc chắn muốn ẩn nhóm topping ",
                                       "\"${listItem[index].name}\"",
                                       " trên ứng dụng khách hàng không?"
                                     ],
@@ -1416,7 +1416,7 @@ class _ToppingNotRegisteredBody extends StatelessWidget {
                                     },
                                     title: "Thay đổi trạng thái",
                                     listSubTitle: [
-                                      "Bạn có chắc chắn muốn hiển thị topping ",
+                                      "Bạn có chắc chắn muốn hiển thị nhóm topping ",
                                       "\"${listItem[index].name}\"",
                                       " trên ứng dụng khách hàng không?"
                                     ],

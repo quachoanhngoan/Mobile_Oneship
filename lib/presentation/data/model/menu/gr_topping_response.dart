@@ -34,9 +34,9 @@ class GrAddToppingResponse {
           [],
       storeId: json['storeId'] ?? 0,
       id: json['id'] ?? 0,
-      createdAt: json['createdAt'] ?? '',
+      createdAt: json['createdAt'],
       deletedAt: json['deletedAt'],
-      updatedAt: json['updatedAt'] ?? '',
+      updatedAt: json['updatedAt'],
     );
   }
 
@@ -78,7 +78,7 @@ class GrAddToppingResponse {
     );
   }
 
-  GrToppingRequest responseToRequest() {
+  GrToppingRequest responseToRequest({String? newStatus}) {
     List<OptionAddTopping> listOption = [];
     for (var item in options) {
       listOption.add(item.convertOption());
@@ -86,7 +86,7 @@ class GrAddToppingResponse {
     return GrToppingRequest(
         name: name,
         isMultiple: isMultiple,
-        status: status,
+        status: newStatus ?? status,
         options: listOption);
   }
 }

@@ -75,7 +75,7 @@ extension ShowModalSheet on BuildContext {
         ));
   }
 
-  showErrorDialog(String title, BuildContext context) {
+  showErrorDialog(String title, BuildContext context, {String? subtitle}) {
     showDialogWidget(context,
         child: Dialog(
             backgroundColor: AppColors.transparent,
@@ -97,7 +97,7 @@ extension ShowModalSheet on BuildContext {
                   ),
                   const VSpacing(spacing: 6),
                   Text(
-                    "Vui lòng thử lại",
+                    subtitle ?? "Vui lòng thử lại",
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
