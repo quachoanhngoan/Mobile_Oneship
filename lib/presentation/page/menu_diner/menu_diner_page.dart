@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -274,10 +276,15 @@ class _MenuWidget extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      // Get.toNamed(AppRoutes.menuCustomTopping);
+                      context.pushWithNamed(context,
+                          routerName: AppRoutes.menuCustomPage,
+                          complete: (result) {
+                        if (result) {
+                          bloc.getAllMenu();
+                        }
+                      });
                     },
                     child: Container(
-                      // width: double.infinity,
                       height: 40,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -288,7 +295,7 @@ class _MenuWidget extends StatelessWidget {
                       child: Text(
                         "Thêm danh mục",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: AppColors.color988),
                       ),
                     ),
@@ -310,7 +317,7 @@ class _MenuWidget extends StatelessWidget {
                       child: Text(
                         "Thêm món mới",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             color: AppColors.white),
                       ),
                     ),
@@ -324,7 +331,7 @@ class _MenuWidget extends StatelessWidget {
 }
 
 class _MenuEmptyBody extends StatelessWidget {
-  const _MenuEmptyBody({super.key});
+  const _MenuEmptyBody();
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +394,27 @@ class _MenuActiveBody extends StatelessWidget {
                     motion: const ScrollMotion(),
                     children: [
                       CustomSlidableAction(
-                        onPressed: (_) {},
+                        onPressed: (_) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return DialogChangeStatus(
+                                  done: (isOk) {
+                                    if (isOk) {
+                                      // bloc.hideOrShowTopping(listItem[index],
+                                      //     isHide: true);
+                                    }
+                                    Get.back();
+                                  },
+                                  title: "Thay đổi trạng thái",
+                                  listSubTitle: [
+                                    "Bạn có chắc chắn muốn ẩn nhóm ",
+                                    "\"${listItem[index].name}\"",
+                                    " trên ứng dụng khách hàng không?"
+                                  ],
+                                );
+                              });
+                        },
                         backgroundColor: AppColors.color373,
                         padding: EdgeInsets.zero,
                         child: Text(
@@ -542,9 +569,9 @@ class _CardDetailMenu extends StatelessWidget {
           IntrinsicHeight(
             child: Row(
               children: List.generate(StatisticMenuType.values.length, (index) {
-                final itemAction = StatisticMenuType.values[index];
+                final itemStatistic = StatisticMenuType.values[index];
                 var valueAction = "";
-                switch (itemAction) {
+                switch (itemStatistic) {
                   case StatisticMenuType.sold:
                     valueAction = "${item.sold}";
                   case StatisticMenuType.views:
@@ -568,7 +595,7 @@ class _CardDetailMenu extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 1),
                               child: ImageAssetWidget(
-                                  image: itemAction.icon,
+                                  image: itemStatistic.icon,
                                   width: 14,
                                   height: 14,
                                   color: AppColors.color373),
@@ -578,7 +605,7 @@ class _CardDetailMenu extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  itemAction.title,
+                                  itemStatistic.title,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -634,41 +661,71 @@ class _CardDetailMenu extends StatelessWidget {
                 child: Row(
                   children: List.generate(DetailMenuActionType.values.length,
                       (index) {
-                    final item = DetailMenuActionType.values[index];
+                    final itemAction = DetailMenuActionType.values[index];
                     return Expanded(
-                      flex: item == DetailMenuActionType.more ? 2 : 5,
+                      flex: itemAction == DetailMenuActionType.more ? 2 : 5,
                       child: Padding(
                         padding: EdgeInsets.only(
                             right:
                                 DetailMenuActionType.values.length - 1 != index
                                     ? 8
                                     : 0),
-                        child: Container(
-                            alignment: Alignment.center,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                                color: AppColors.transparent,
-                                border: Border.all(
-                                    color: item.colorBorder, width: 1),
-                                borderRadius: BorderRadius.circular(8)),
-                            child: item.title != null
-                                ? Text(
-                                    item.title!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 12,
-                                            color: item.colorText),
-                                  )
-                                : const Padding(
-                                    padding: EdgeInsets.only(top: 8),
-                                    child: Icon(
-                                      Icons.more_horiz_rounded,
-                                      size: 16,
-                                    ),
-                                  )),
+                        child: GestureDetector(
+                          onTap: () {
+                            switch (itemAction) {
+                              case DetailMenuActionType.advertisement:
+                                log("advertisement click");
+                              case DetailMenuActionType.hide:
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return DialogChangeStatus(
+                                        done: (isOk) {
+                                          if (isOk) {
+                                            // bloc.hideOrShowTopping(listItem[index],
+                                            //     isHide: true);
+                                          }
+                                          Get.back();
+                                        },
+                                        title: "Thay đổi trạng thái",
+                                        listSubTitle: [
+                                          "Bạn có chắc chắn muốn ẩn món ",
+                                          "\"${item.name}\"",
+                                          " trên ứng dụng khách hàng không?"
+                                        ],
+                                      );
+                                    });
+                              case DetailMenuActionType.edit:
+                              case DetailMenuActionType.more:
+                            }
+                          },
+                          child: Container(
+                              alignment: Alignment.center,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: AppColors.transparent,
+                                  border: Border.all(
+                                      color: itemAction.colorBorder, width: 1),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: itemAction.title != null
+                                  ? Text(
+                                      itemAction.title!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12,
+                                              color: itemAction.colorText),
+                                    )
+                                  : const Padding(
+                                      padding: EdgeInsets.only(top: 8),
+                                      child: Icon(
+                                        Icons.more_horiz_rounded,
+                                        size: 16,
+                                      ),
+                                    )),
+                        ),
                       ),
                     );
                   }),
@@ -707,7 +764,27 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                   motion: const ScrollMotion(),
                   children: [
                     CustomSlidableAction(
-                      onPressed: (_) {},
+                      onPressed: (_) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DialogChangeStatus(
+                                done: (isOk) {
+                                  if (isOk) {
+                                    // bloc.hideOrShowTopping(listItem[index],
+                                    //     isHide: true);
+                                  }
+                                  Get.back();
+                                },
+                                title: "Thay đổi trạng thái",
+                                listSubTitle: [
+                                  "Bạn có chắc chắn muốn hiển thị nhóm ",
+                                  "\"${listItem[index].name}\"",
+                                  " trên ứng dụng khách hàng không?"
+                                ],
+                              );
+                            });
+                      },
                       backgroundColor: AppColors.color373,
                       padding: EdgeInsets.zero,
                       child: Text(
@@ -719,7 +796,9 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                       ),
                     ),
                     CustomSlidableAction(
-                      onPressed: (_) {},
+                      onPressed: (_) {
+                        log("edit group menu not register");
+                      },
                       backgroundColor: AppColors.color988,
                       padding: EdgeInsets.zero,
                       child: Text(
@@ -731,7 +810,53 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                       ),
                     ),
                     CustomSlidableAction(
-                      onPressed: (_) {},
+                      onPressed: (_) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DialogChangeStatus(
+                                done: (isOk) {},
+                                title: "Xoá danh mục",
+                                listSubTitle: const [
+                                  "Danh mục chứa sản phẩm đang hoạt động. Bạn vui lòng kiểm tra lại!"
+                                ],
+                                action: SizedBox(
+                                  width: double.infinity,
+                                  child: TextButton(
+                                      onPressed: () {
+                                        context.popScreen();
+                                      },
+                                      child: Text(
+                                        "OK",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.color988),
+                                      )),
+                                ),
+                              );
+                            });
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return DialogChangeStatus(
+                        //         done: (isOk) {
+                        //           if (isOk) {
+                        //             // bloc.deleteGroupTopping(listItem[index].id);
+                        //           }
+                        //           Get.back();
+                        //         },
+                        //         title: "Xoá danh mục",
+                        //         listSubTitle: [
+                        //           "Bạn có muốn xoá sản phẩm ",
+                        //           "\"${listItem[index].name}\"",
+                        //           " không?"
+                        //         ],
+                        //       );
+                        //     });
+                      },
                       backgroundColor: AppColors.error,
                       padding: EdgeInsets.zero,
                       child: Text(
@@ -895,7 +1020,26 @@ class _MenuItemUnSuccess extends StatelessWidget {
                       ),
                     ),
                     CustomSlidableAction(
-                      onPressed: (_) {},
+                      onPressed: (_) {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return DialogChangeStatus(
+                                done: (isOk) {
+                                  if (isOk) {
+                                    // bloc.deleteGroupTopping(listItem[index].id);
+                                  }
+                                  Get.back();
+                                },
+                                title: "Xoá sản phẩm",
+                                listSubTitle: [
+                                  "Bạn có muốn xoá sản phẩm ",
+                                  "\"${listItem[index].name}\"",
+                                  " không?"
+                                ],
+                              );
+                            });
+                      },
                       backgroundColor: AppColors.error,
                       padding: EdgeInsets.zero,
                       child: Text(
@@ -1081,8 +1225,7 @@ class _MenuItemUnSuccess extends StatelessWidget {
 class _GroupToppingWidget extends StatelessWidget {
   final MenuDinerState state;
   final MenuDinerCubit bloc;
-  const _GroupToppingWidget(
-      {super.key, required this.bloc, required this.state});
+  const _GroupToppingWidget({required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -1207,7 +1350,7 @@ class _GroupToppingWidget extends StatelessWidget {
 }
 
 class _ToppingEmptyBody extends StatelessWidget {
-  const _ToppingEmptyBody({super.key});
+  const _ToppingEmptyBody();
 
   @override
   Widget build(BuildContext context) {

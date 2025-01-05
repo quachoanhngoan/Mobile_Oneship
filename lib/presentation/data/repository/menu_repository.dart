@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/gr_menu_register_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
 
+import '../model/menu/gr_menu_register_request.dart';
 import '../model/menu/list_menu_food_response.dart';
 import '../model/menu/remove_topping_request.dart';
 import '../utils.dart';
@@ -24,6 +26,8 @@ abstract class MenuRepository {
   Future<GetGrToppingResponse?> getGroupTopping(GetGroupToppingRequest request);
   Future<ListMenuFoodResponse?> detailFoodByMenu(ListMenuFoodRequest request);
   Future<RemoveToppingResponse?> removeGroupTopping(int id);
+  Future<GrMenuRegisterResponse?> registerGroupMenu(
+      GrMenuRegisterRequest request);
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -100,6 +104,21 @@ class MenuRepositoryImp implements MenuRepository {
     try {
       final httpRequest = await _clientDio.delete("${AuthUrl.optionGroup}/$id");
       return RemoveToppingResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<GrMenuRegisterResponse?> registerGroupMenu(
+      GrMenuRegisterRequest request) async {
+    try {
+      final httpRequest = await _clientDio.post(AuthUrl.productCategories,
+          data: request.toJson());
+      return GrMenuRegisterResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
     } catch (e) {

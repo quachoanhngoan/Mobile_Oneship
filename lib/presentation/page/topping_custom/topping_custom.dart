@@ -605,11 +605,13 @@ class DialogChangeStatus extends StatelessWidget {
   final String title;
   final List<String> listSubTitle;
   final Function(bool) done;
+  final Widget? action;
   const DialogChangeStatus(
       {super.key,
       required this.listSubTitle,
       required this.title,
-      required this.done});
+      required this.done,
+      this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -653,41 +655,45 @@ class DialogChangeStatus extends StatelessWidget {
             ),
             const VSpacing(spacing: 16),
             const Divider(thickness: 1.5, height: 1),
-            SizedBox(
-              height: 50,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      done(false);
-                    },
-                    child: Text(
-                      "Huỷ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                    ),
-                  )),
-                  const VerticalDivider(thickness: 1.5, width: 1),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      done(true);
-                    },
-                    child: Text(
-                      "OK",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.color988),
-                      textAlign: TextAlign.center,
-                    ),
-                  )),
-                ],
-              ),
-            )
+            action ??
+                SizedBox(
+                  height: 50,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: GestureDetector(
+                        onTap: () {
+                          done(false);
+                        },
+                        child: Text(
+                          "Huỷ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+                      const VerticalDivider(thickness: 1.5, width: 1),
+                      Expanded(
+                          child: GestureDetector(
+                        onTap: () {
+                          done(true);
+                        },
+                        child: Text(
+                          "OK",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.color988),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+                    ],
+                  ),
+                )
           ],
         ),
       ),

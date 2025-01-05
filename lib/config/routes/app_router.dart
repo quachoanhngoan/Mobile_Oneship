@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_view.dart';
-import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_sms_page.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_page.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_page.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
@@ -26,6 +26,7 @@ class AppRoutes {
   static const String store = '/store';
   static const String menuPage = '/menuPage';
   static const String menuCustomTopping = '/menuCustomTopping';
+  static const String menuCustomPage = '/menuCustomPage';
   static final routes = [
     GetPage(
       name: AppRoutes.welcome,
@@ -62,6 +63,14 @@ class AppRoutes {
     GetPage(
         name: AppRoutes.menuPage,
         page: () => const MenuDinerPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo
+        // transitionDuration: Duration.zero,
+        // transition: Transition.noTransition,
+        ),
+    GetPage(
+        name: AppRoutes.menuCustomPage,
+        page: () => const MenuCustomPage(),
         transition: Transition.rightToLeft,
         curve: Curves.easeOutExpo
         // transitionDuration: Duration.zero,

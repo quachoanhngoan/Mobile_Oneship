@@ -15,7 +15,7 @@ extension Router on BuildContext {
   pushWithNamed(BuildContext context,
       {required String routerName,
       Object? arguments,
-      Function(Object?)? complete,
+      Function(dynamic)? complete,
       bool? unfocusKeyboard = false}) {
     if (unfocusKeyboard == true) {
       FocusScope.of(context).unfocus();
@@ -27,14 +27,17 @@ extension Router on BuildContext {
     });
   }
 
-  popScreen() {
-    Get.back();
+  popScreen({dynamic result}) {
+    Get.back(result: result);
   }
 }
 
 extension ShowModalSheet on BuildContext {
   void showToastDialog(String value) {
-    Fluttertoast.showToast(msg: value, gravity: ToastGravity.BOTTOM);
+    Fluttertoast.showToast(
+        msg: value,
+        gravity: ToastGravity.BOTTOM,
+        toastLength: Toast.LENGTH_LONG);
   }
 
   Future<dynamic> showDialogWidget(BuildContext context,
@@ -119,7 +122,7 @@ extension ShowModalSheet on BuildContext {
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   color: AppColors.color988),
                         )),
                   )
