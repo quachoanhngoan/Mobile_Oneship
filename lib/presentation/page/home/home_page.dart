@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     bloc = injector<HomeCubit>();
-    // context.read<AuthCubit>().getProfile();
+    context.read<AuthCubit>().getProfile();
     getBanners();
     super.initState();
   }
