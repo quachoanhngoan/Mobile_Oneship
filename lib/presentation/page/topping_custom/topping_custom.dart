@@ -703,7 +703,6 @@ class DialogChangeStatus extends StatelessWidget {
 
 class _LinkedFoodSheet extends StatefulWidget {
   final List<ItemLinkFood> listItem;
-  // final List<int> listIdSellected;
   final ToppingCustomCubit bloc;
   const _LinkedFoodSheet({required this.listItem, required this.bloc});
 

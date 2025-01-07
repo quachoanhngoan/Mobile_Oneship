@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_sms_page.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_page.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_page.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_custom.dart';
 import 'package:oneship_merchant_app/presentation/page/on_boarding/on_boarding_page.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String menuPage = '/menuPage';
   static const String menuCustomTopping = '/menuCustomTopping';
   static const String menuCustomPage = '/menuCustomPage';
+  static const String menuDishsCustomPage = '/menuDishsCustomPage';
   static final routes = [
     GetPage(
       name: AppRoutes.welcome,
@@ -55,6 +57,15 @@ class AppRoutes {
     GetPage(
         name: AppRoutes.loginPage,
         page: () => const LoginPage(),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo
+        // transitionDuration: Duration.zero,
+        // transition: Transition.noTransition,
+        ),
+
+    GetPage(
+        name: AppRoutes.menuDishsCustomPage,
+        page: () => const MenuDishsCustomPage(),
         transition: Transition.rightToLeft,
         curve: Curves.easeOutExpo
         // transitionDuration: Duration.zero,

@@ -108,6 +108,8 @@ class AppAssets {
 
   static const String imagesIconsIcBasket = "assets/images/icons/ic_basket.png";
 
+  static const String imagesIconsIcBook = "assets/images/icons/ic_book.png";
+
   static const String imagesIconsIcFile = "assets/images/icons/ic_file.png";
 
   static const String imagesIconsIcLike = "assets/images/icons/ic_like.png";
