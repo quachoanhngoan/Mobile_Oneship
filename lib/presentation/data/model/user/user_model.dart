@@ -10,6 +10,7 @@ class UserM {
   // final DateTime? lastLogin;
   final String? deviceToken;
   final dynamic storeId;
+  final String? avatarId;
   final dynamic name;
   // final dynamic emailVerifiedAt;
   // final DateTime? updatedAt;
@@ -31,6 +32,7 @@ class UserM {
     this.stores,
     this.accessToken,
     this.refreshToken,
+    this.avatarId,
   });
 
   UserM copyWith({
@@ -41,12 +43,13 @@ class UserM {
     // DateTime? lastLogin,
     String? deviceToken,
     dynamic? storeId,
-    dynamic? name,
+    String? name,
     // dynamic? emailVerifiedAt,
     DateTime? updatedAt,
     List<dynamic>? stores,
     String? accessToken,
     String? refreshToken,
+    String? avatarId,
   }) {
     return UserM(
       id: id ?? this.id,
@@ -62,6 +65,7 @@ class UserM {
       stores: stores ?? this.stores,
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
+      avatarId: avatarId ?? this.avatarId,
     );
   }
 
@@ -80,6 +84,7 @@ class UserM {
       'stores': stores,
       'accessToken': accessToken,
       'refreshToken': refreshToken,
+      'avatarId': avatarId,
     };
   }
 
@@ -102,6 +107,7 @@ class UserM {
       // stores: List<dynamic>.from(map['stores']),
       accessToken: map['accessToken'],
       refreshToken: map['refreshToken'],
+      avatarId: map['avatarId'],
     );
   }
 

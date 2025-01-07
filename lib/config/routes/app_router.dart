@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:oneship_merchant_app/presentation/page/account/edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_view.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_page.dart';
 import 'package:oneship_merchant_app/presentation/page/login/login_sms_page.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String menuPage = '/menuPage';
   static const String menuCustomTopping = '/menuCustomTopping';
   static const String menuCustomPage = '/menuCustomPage';
+  static const String editProfile = '/editProfile';
   static final routes = [
     GetPage(
       name: AppRoutes.welcome,
@@ -102,6 +104,12 @@ class AppRoutes {
     GetPage(
         name: AppRoutes.registerStorePage,
         page: () => const RegisterStorePage(),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo),
+    GetPage(
+        name: AppRoutes.editProfile,
+        page: () => const EditProfilePage(),
         transitionDuration: const Duration(milliseconds: 300),
         transition: Transition.rightToLeft,
         curve: Curves.easeOutExpo),

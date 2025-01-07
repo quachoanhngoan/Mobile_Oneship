@@ -42,6 +42,7 @@ class StoreCubit extends Cubit<StoreState> {
         setStatusState(EState.failure);
       });
     } catch (e) {
+      print(e);
       setStatusState(EState.failure);
     }
   }

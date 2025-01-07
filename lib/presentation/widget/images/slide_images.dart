@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
-import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
 class SlideImage extends StatefulWidget {
   const SlideImage({

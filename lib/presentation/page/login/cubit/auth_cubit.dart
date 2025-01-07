@@ -18,7 +18,7 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repository;
-  AuthCubit(this.repository) : super(AuthState());
+  AuthCubit(this.repository) : super(AuthState(userData: prefManager.user));
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController otpController = TextEditingController();
   String _verificationId = "";

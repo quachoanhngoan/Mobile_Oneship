@@ -78,6 +78,8 @@ class AppAssets {
 
   static const String imagesBannerHome1 = "assets/images/Banner_home_1.png";
 
+  static const String imagesBannerProfile = "assets/images/banner_profile.png";
+
   static const String imagesBannerr2 = "assets/images/bannerr_2.png";
 
   static const String imagesBgOnboarding = "assets/images/bg_onboarding.png";
@@ -92,11 +94,19 @@ class AppAssets {
 
   static const String imagesIconOrderChild = "assets/images/icon_order_child.png";
 
+  static const String imagesIconsArrowLeft02Round = "assets/images/icons/arrow-left-02-round.png";
+
+  static const String imagesIconsArrowRight01 = "assets/images/icons/arrow-right-01.png";
+
   static const String imagesIconsBarChart = "assets/images/icons/bar-chart.png";
+
+  static const String imagesIconsBook = "assets/images/icons/book.png";
 
   static const String imagesIconsCalendar = "assets/images/icons/Calendar.png";
 
   static const String imagesIconsCamera = "assets/images/icons/camera.png";
+
+  static const String imagesIconsCircleInformation = "assets/images/icons/circle-information.png";
 
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";
 
@@ -104,7 +114,13 @@ class AppAssets {
 
   static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
 
+  static const String imagesIconsGearAlt = "assets/images/icons/gear-alt.png";
+
+  static const String imagesIconsGearAltIcon = "assets/images/icons/gear-alt-icon.png";
+
   static const String imagesIconsHeadphones = "assets/images/icons/headphones.png";
+
+  static const String imagesIconsHunggingface = "assets/images/icons/hunggingface.png";
 
   static const String imagesIconsIcBasket = "assets/images/icons/ic_basket.png";
 
@@ -133,6 +149,14 @@ class AppAssets {
   static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
+
+  static const String imagesIconsSquareUser = "assets/images/icons/square-user.png";
+
+  static const String imagesIconsSquareUserCheckAlt = "assets/images/icons/square-user-check-alt.png";
+
+  static const String imagesIconsStar = "assets/images/icons/star.png";
+
+  static const String imagesIconsStarCopy = "assets/images/icons/star-copy.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
 
