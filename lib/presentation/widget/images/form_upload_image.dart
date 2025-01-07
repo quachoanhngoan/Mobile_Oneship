@@ -17,11 +17,13 @@ import 'package:oneship_merchant_app/service/dialog.dart';
 class FormUploadImage extends StatefulWidget {
   final ValueChanged<String> onUploadedImage;
   final String title;
+  final double? height;
   final String? initialImage;
   const FormUploadImage(
       {super.key,
       required this.onUploadedImage,
       required this.title,
+      this.height,
       this.initialImage});
 
   @override
@@ -142,14 +144,14 @@ class _FormUploadImageState extends State<FormUploadImage> {
       child: isLoading
           ? SizedBox(
               width: Get.width,
-              height: 100.sp,
+              height: widget.height ?? 100.sp,
               child: const CupertinoActivityIndicator(
                 color: AppColors.primary,
               ),
             )
           : image.isNotEmpty
               ? SizedBox(
-                  height: 100.sp,
+                  height: widget.height ?? 100.sp,
                   width: Get.width,
                   child: NetworkImageWithLoader(
                     image,
@@ -158,7 +160,7 @@ class _FormUploadImageState extends State<FormUploadImage> {
                   ),
                 )
               : Container(
-                  height: 100.sp,
+                  height: widget.height ?? 100.sp,
                   padding: const EdgeInsets.all(12),
                   width: Get.width,
                   decoration: BoxDecoration(

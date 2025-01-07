@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 
 class MenuCustomState extends Equatable {
-  final List<String>? listCategoryGlobal;
+  final List<ItemLinkFood>? listCategoryGlobal;
   final bool isShowGooCategoryClear;
   final bool isShowStoreCategorClear;
   final bool isSellectCheckBox;
   final bool isFilledInfo;
-  final String? categorySellectGlobal;
+  final ItemLinkFood? categorySellectGlobal;
   final bool isLoading;
   final bool isCompleteSuccess;
   final String? isCompleteError;
@@ -24,14 +25,14 @@ class MenuCustomState extends Equatable {
   });
 
   MenuCustomState copyWith({
-    List<String>? listCategoryGlobal,
+    List<ItemLinkFood>? listCategoryGlobal,
     String? errorNameGooCategory,
     String? errorNameStoreCategory,
     bool? isFilledInfo,
     bool? isSellectCheckBox,
     bool? isShowGooCategoryClear,
     bool? isShowStoreCategorClear,
-    String? categorySellectGlobal,
+    ItemLinkFood? categorySellectGlobal,
     bool? isCompleteSuccess,
     String? isCompleteError,
     bool? isLoading,

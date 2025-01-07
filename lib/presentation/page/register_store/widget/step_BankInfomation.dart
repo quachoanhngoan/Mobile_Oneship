@@ -194,7 +194,7 @@ class StepBankInformation extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 8),
-                  AppTextFormField(
+                  RegisterStoreFormField(
                     isRequired: true,
                     initialValue: state.bankRequest?.bankAccountName,
                     hintText: 'Nhập tên chủ tài khoản',
@@ -204,7 +204,7 @@ class StepBankInformation extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 8),
-                  AppTextFormField(
+                  RegisterStoreFormField(
                     isRequired: true,
                     initialValue: state.bankRequest?.bankAccountNumber,
                     hintText: 'Nhập số tài khoản',

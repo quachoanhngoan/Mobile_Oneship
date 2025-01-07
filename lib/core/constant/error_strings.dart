@@ -46,4 +46,7 @@ class AppErrorString {
   static const String kNameToppingConflict =
       "Tên topping đã tồn tại. Vui lòng đổi tên khác";
   static const String kPriceTopping = "Vui lòng nhập giá topping !";
+  static const String kNameFoodConflict = "Tên món đã tồn tại. Vui lòng nhập tên khác.";
+  static const String kPriceFoodEmpty = "Vui lòng nhập giá món của bạn.";
+
 }

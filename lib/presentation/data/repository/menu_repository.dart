@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/food_register_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_menu_register_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
@@ -22,12 +23,19 @@ mixin AuthUrl {
 abstract class MenuRepository {
   Future<GrAddToppingResponse?> addGroupTopping(GrToppingRequest request,
       {int? id});
+
   Future<LinkfoodResponse?> getListMenu(LinkFoodRequest request);
+
   Future<GetGrToppingResponse?> getGroupTopping(GetGroupToppingRequest request);
+
   Future<ListMenuFoodResponse?> detailFoodByMenu(ListMenuFoodRequest request);
+
   Future<RemoveToppingResponse?> removeGroupTopping(int id);
+
   Future<GrMenuRegisterResponse?> registerGroupMenu(
       GrMenuRegisterRequest request);
+
+  Future registerFoodInMenu(FoodRegisterMenuRequest request);
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -64,7 +72,6 @@ class MenuRepositoryImp implements MenuRepository {
       rethrow;
     } catch (e) {
       log("getListMenu error: $e");
-      // throw Exception('Unknown error');
     }
     return null;
   }
@@ -119,6 +126,21 @@ class MenuRepositoryImp implements MenuRepository {
       final httpRequest = await _clientDio.post(AuthUrl.productCategories,
           data: request.toJson());
       return GrMenuRegisterResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future registerFoodInMenu(FoodRegisterMenuRequest request) async {
+    try {
+      final httpRequest = await _clientDio.post(AuthUrl.products,
+          data: request.removeNullValues());
+      log("check data: ${httpRequest.data}");
+      // return GrMenuRegisterResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
     } catch (e) {

@@ -305,7 +305,8 @@ class _MenuWidget extends StatelessWidget {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      // Get.toNamed(AppRoutes.menuCustomTopping);
+                      context.pushWithNamed(context,
+                          routerName: AppRoutes.menuDishsCustomPage);
                     },
                     child: Container(
                       // width: double.infinity,

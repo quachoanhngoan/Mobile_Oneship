@@ -276,6 +276,19 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  getProfile() async {
+    final response = await execute(() => repository.profile());
+    response.when(
+        success: (data) {
+          if (data == null) {
+            return;
+          }
+          prefManager.user = data;
+          emit(state.copyWith(userData: data));
+        },
+        failure: (error) {});
+  }
+
   logout() {
     prefManager.logout();
     Get.offAllNamed(AppRoutes.onBoardingPage);

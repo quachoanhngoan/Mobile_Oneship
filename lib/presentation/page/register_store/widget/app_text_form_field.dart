@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 
-class AppTextFormField extends StatelessWidget {
+class RegisterStoreFormField extends StatelessWidget {
   final bool isRequired;
   final bool? filled;
   final TextEditingController? controller;
@@ -16,7 +16,7 @@ class AppTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? errorText;
-  const AppTextFormField(
+  const RegisterStoreFormField(
       {super.key,
       required this.isRequired,
       this.controller,

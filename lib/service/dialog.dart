@@ -14,6 +14,7 @@ class DialogService {
     required Function() onPressed,
     String? buttonCancelTitle,
     Function()? onCancel,
+    Color? buttonColor,
   }) async {
     if (Get.isDialogOpen!) {
       return;
@@ -43,7 +44,7 @@ class DialogService {
               CupertinoDialogAction(
                 isDefaultAction: true,
                 onPressed: onPressed,
-                child: Text(buttonTitle),
+                child: Text(buttonTitle, style: TextStyle(color: buttonColor)),
               ),
             ],
           );

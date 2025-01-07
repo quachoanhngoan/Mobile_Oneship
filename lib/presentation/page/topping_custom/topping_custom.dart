@@ -157,7 +157,7 @@ class _AddGroupTopping extends StatelessWidget {
       child: Column(
         children: <Widget>[
           const VSpacing(spacing: 12),
-          AppTextFormField(
+          RegisterStoreFormField(
               hintText: "Nhập tên nhóm topping của bạn",
               controller: bloc.nameGroupToppingController,
               onChanged: (value) {
@@ -703,7 +703,6 @@ class DialogChangeStatus extends StatelessWidget {
 
 class _LinkedFoodSheet extends StatefulWidget {
   final List<ItemLinkFood> listItem;
-  // final List<int> listIdSellected;
   final ToppingCustomCubit bloc;
   const _LinkedFoodSheet({required this.listItem, required this.bloc});
 
@@ -982,7 +981,7 @@ class _AddTopping extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        AppTextFormField(
+        RegisterStoreFormField(
             hintText: "Tên topping",
             controller: bloc.nameToppingController,
             onChanged: (value) {
@@ -1002,7 +1001,7 @@ class _AddTopping extends StatelessWidget {
                       color: AppColors.black.withOpacity(0.6),
                     ))
                 : const SizedBox()),
-        AppTextFormField(
+        RegisterStoreFormField(
             hintText: "Giá bán",
             controller: bloc.priceController,
             onChanged: (value) {

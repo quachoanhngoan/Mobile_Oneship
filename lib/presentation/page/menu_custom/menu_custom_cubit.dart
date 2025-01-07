@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_menu_register_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_state.dart';
 
@@ -19,15 +21,21 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
   init() {
     gooCategoryController = TextEditingController();
     storeCategorController = TextEditingController();
-    emit(state.copyWith(listCategoryGlobal: listCategoryTest));
+    getListCategory();
   }
 
-  final List<String> listCategoryTest = [
-    "Nước tăng lực",
-    "Nước có gas",
-    "Trà đá",
-    "Nhân trần"
-  ];
+  getListCategory() async {
+    try {
+      final request = LinkFoodRequest(
+        productStatus: "active",
+        approvalStatus: "approved",
+      );
+      final response = await repository.getListMenu(request);
+      emit(state.copyWith(listCategoryGlobal: response?.items));
+    } on DioException catch (e) {
+      log("error getLinkFood: ${e.message}");
+    }
+  }
 
   sellectCommonGooMenu() {
     emit(state.copyWith(isSellectCheckBox: !state.isSellectCheckBox));
@@ -43,12 +51,12 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
     ));
   }
 
-  sellectCategoryGoo(String value) {
+  sellectCategoryGoo(ItemLinkFood value) {
     emit(state.copyWith(categorySellectGlobal: value));
   }
 
   confirmSellectCategoryGoo() {
-    gooCategoryController.text = state.categorySellectGlobal ?? "";
+    gooCategoryController.text = state.categorySellectGlobal?.name ?? "";
     checkFilledInfo();
   }
 

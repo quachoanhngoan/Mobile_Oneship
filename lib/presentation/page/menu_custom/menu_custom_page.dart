@@ -1,10 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_cubit.dart';
@@ -151,7 +148,7 @@ class _MenuCustomPageState extends State<MenuCustomPage> {
                     const VSpacing(spacing: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: AppTextFormField(
+                      child: RegisterStoreFormField(
                           isRequired: true,
                           hintText: "Danh mục quán",
                           controller: bloc.storeCategorController,
@@ -310,7 +307,7 @@ class __ListCategoryGooState extends State<_ListCategoryGoo> {
                                           ),
                                           const HSpacing(spacing: 8),
                                           Text(
-                                            item,
+                                            item.name,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium

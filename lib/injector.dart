@@ -10,6 +10,7 @@ import 'package:oneship_merchant_app/presentation/data/repository/store_reposito
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
@@ -98,6 +99,8 @@ void blocModule() {
       () => ToppingCustomCubit(injector()));
 
   injector.registerFactory<MenuCustomCubit>(() => MenuCustomCubit(injector()));
+
+  injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
 }
 
 PrefManager get prefManager => injector<PrefManager>();
