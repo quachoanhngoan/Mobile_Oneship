@@ -8,6 +8,7 @@ class AuthState {
   final bool isLoginWithPhone;
   final EState loadingState;
   final EState getSmsState;
+  final EState updateProfileState;
   final UserM? userData;
   final int timeCount;
 
@@ -19,6 +20,7 @@ class AuthState {
     this.isLoginWithPhone = false,
     this.loadingState = EState.initial,
     this.getSmsState = EState.initial,
+    this.updateProfileState = EState.initial,
     this.userData,
     this.timeCount = 60,
   });
@@ -33,6 +35,7 @@ class AuthState {
     EState? getSmsState,
     UserM? userData,
     int? timeCount,
+    EState? updateProfileState,
   }) {
     return AuthState(
       email: email ?? this.email,
@@ -44,6 +47,7 @@ class AuthState {
       getSmsState: getSmsState ?? this.getSmsState,
       userData: userData ?? this.userData,
       timeCount: timeCount ?? this.timeCount,
+      updateProfileState: updateProfileState ?? this.updateProfileState,
     );
   }
 }

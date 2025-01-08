@@ -43,7 +43,9 @@ class _ListCategoryPersonWidgetState extends State<ListCategoryPersonWidget> {
         icon: AppAssets.imagesIconsSquareUser,
       ),
       _Category(
-        onTap: () {},
+        onTap: () {
+          Get.toNamed(AppRoutes.addressStore);
+        },
         title: "Địa chỉ nhận / trả hàng",
         icon: AppAssets.imagesIconsGearAltIcon,
       ),

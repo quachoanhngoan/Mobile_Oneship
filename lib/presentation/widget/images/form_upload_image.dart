@@ -100,7 +100,7 @@ class _FormUploadImageState extends State<FormUploadImage> {
         int sizeInBytes = file.lengthSync();
         double sizeInMb = sizeInBytes / (1024 * 1024);
         if (sizeInMb > 1) {
-          throw Exception('Dung lượng ảnh không được lớn hơn 5MB');
+          throw Exception('Dung lượng không được lớn hơn 1MB');
         }
         final url = '${EnvManager.shared.api}/api/v1/uploads';
         final httpResponse = await uploadFileHTTP(
@@ -112,13 +112,9 @@ class _FormUploadImageState extends State<FormUploadImage> {
         print('httpResponse: $httpResponse');
         widget.onUploadedImage(httpResponse);
       } catch (e) {
-        dialogService.showAlertDialog(
-            title: "Lỗi",
-            description: e.toString(),
-            buttonTitle: "Đóng",
-            onPressed: () {
-              Get.back();
-            });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          dialogService.showNotificationError(e.toString());
+        });
       } finally {
         isLoading = false;
 

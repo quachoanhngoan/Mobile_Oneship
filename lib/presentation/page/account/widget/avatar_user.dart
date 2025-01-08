@@ -9,8 +9,12 @@ import 'package:oneship_merchant_app/presentation/widget/images/network_image_lo
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 class AvatarUser extends StatelessWidget {
+  final ValueChanged<String> avatarId;
+  final String? imageUrl;
   const AvatarUser({
     super.key,
+    required this.avatarId,
+    this.imageUrl,
   });
 
   @override
@@ -87,10 +91,19 @@ class AvatarUser extends StatelessWidget {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                FormUploadImage(
-                                  height: 300,
-                                  onUploadedImage: (String url) {},
-                                  title: 'Chọn ảnh đại diện',
+                                Stack(
+                                  children: [
+                                    FormUploadImage(
+                                      height: 300,
+                                      initialImage:
+                                          BlocProvider.of<AuthCubit>(context)
+                                              .state
+                                              .userData
+                                              ?.avatarId,
+                                      onUploadedImage: avatarId,
+                                      title: 'Chọn ảnh đại diện',
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -124,6 +137,7 @@ class AvatarUser extends StatelessWidget {
                         title: "Xoá ảnh",
                         description: "Bạn có chắc chắn muốn xóa ảnh đại diện?",
                         onPressed: () {
+                          avatarId("");
                           Get.back();
                         },
                         onCancel: () => Get.back(),
@@ -152,14 +166,15 @@ class AvatarUser extends StatelessWidget {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(75),
                     child: Builder(builder: (context) {
-                      if (state.userData?.avatarId == null) {
+                      if (imageUrl == null &&
+                          state.userData?.avatarId == null) {
                         return Image.network(
                           "https://i.pinimg.com/736x/89/90/48/899048ab0cc455154006fdb9676964b3.jpg",
                           fit: BoxFit.cover,
                         );
                       }
                       return NetworkImageWithLoader(
-                        state.userData?.avatarId ?? "",
+                        imageUrl ?? state.userData?.avatarId ?? "",
                         isBaseUrl: true,
                         fit: BoxFit.cover,
                       );

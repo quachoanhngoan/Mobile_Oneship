@@ -289,6 +289,33 @@ class AuthCubit extends Cubit<AuthState> {
         failure: (error) {});
   }
 
+  updateProfile(
+    String? name,
+    String? avatarId,
+  ) async {
+    if (name == "") {
+      dialogService.showNotificationError("Vui lòng nhập tên");
+      return;
+    }
+    emit(state.copyWith(updateProfileState: EState.loading));
+    final response = await execute(() => repository.updateProfile(
+          name,
+          avatarId,
+        ));
+    response.when(success: (data) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        dialogService.showNotificationSuccess("Đã lưu thông tin thành công");
+      });
+      getProfile();
+    }, failure: (error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        dialogService.showNotificationError(error);
+      });
+    });
+
+    emit(state.copyWith(updateProfileState: EState.success));
+  }
+
   logout() {
     prefManager.logout();
     Get.offAllNamed(AppRoutes.onBoardingPage);
