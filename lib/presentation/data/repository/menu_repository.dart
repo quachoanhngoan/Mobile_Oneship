@@ -12,6 +12,7 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_reque
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
 
+import '../model/menu/category_global_response.dart';
 import '../model/menu/gr_menu_register_request.dart';
 import '../model/menu/list_menu_food_response.dart';
 import '../model/menu/remove_topping_request.dart';
@@ -28,6 +29,8 @@ abstract class MenuRepository {
       {int? id});
 
   Future<LinkfoodResponse?> getListMenu(LinkFoodRequest request);
+
+  Future<CategoryGlobalResponse?> getCategoryGlobal();
 
   Future<GetGrToppingResponse?> getGroupTopping(GetGroupToppingRequest request);
 
@@ -182,6 +185,20 @@ class MenuRepositoryImp implements MenuRepository {
       final httpRequest =
           await _clientDio.patch("${AuthUrl.productCategories}/$id/$pathUrl");
       return HideMenuResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<CategoryGlobalResponse?> getCategoryGlobal() async {
+    try {
+      final httpRequest =
+          await _clientDio.get("${AuthUrl.productCategories}/global");
+      return CategoryGlobalResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
     } catch (e) {

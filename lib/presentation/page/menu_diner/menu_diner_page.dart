@@ -492,10 +492,87 @@ class _MenuActiveBody extends StatelessWidget {
                   final item = state.listFoodByMenu!.listFoodByMenu![inxDetail];
                   return _CardDetailMenu(
                     item: item,
-                    hideClick: (value) {
-                      bloc.hideOrShowMenuFood(value,
-                          isHide: true, productCategoryId: listItem[index].id);
-                    },
+                    actionWidget: SizedBox(
+                      height: 40,
+                      child: Row(
+                        children: List.generate(
+                            DetailMenuActionType.values.length, (index) {
+                          final itemAction = DetailMenuActionType.values[index];
+                          return Expanded(
+                            flex:
+                                itemAction == DetailMenuActionType.more ? 2 : 5,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right:
+                                      DetailMenuActionType.values.length - 1 !=
+                                              index
+                                          ? 8
+                                          : 0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  switch (itemAction) {
+                                    case DetailMenuActionType.advertisement:
+                                      log("advertisement click");
+                                    case DetailMenuActionType.hide:
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DialogChangeStatus(
+                                              done: (isOk) {
+                                                if (isOk) {
+                                                  bloc.hideOrShowMenuFood(item,
+                                                      isHide: true,
+                                                      productCategoryId:
+                                                          listItem[index].id);
+                                                }
+                                                Get.back();
+                                              },
+                                              title: "Thay đổi trạng thái",
+                                              listSubTitle: [
+                                                "Bạn có chắc chắn muốn ẩn món ",
+                                                "\"${item.name}\"",
+                                                " trên ứng dụng khách hàng không?"
+                                              ],
+                                            );
+                                          });
+                                    case DetailMenuActionType.edit:
+                                    case DetailMenuActionType.more:
+                                  }
+                                },
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.transparent,
+                                        border: Border.all(
+                                            color: itemAction.colorBorder,
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: itemAction.title != null
+                                        ? Text(
+                                            itemAction.title!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12,
+                                                    color:
+                                                        itemAction.colorText),
+                                          )
+                                        : const Padding(
+                                            padding: EdgeInsets.only(top: 8),
+                                            child: Icon(
+                                              Icons.more_horiz_rounded,
+                                              size: 16,
+                                            ),
+                                          )),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
                   );
                 })
               ]
@@ -506,16 +583,12 @@ class _MenuActiveBody extends StatelessWidget {
 }
 
 class _CardDetailMenu extends StatelessWidget {
-  final Widget? actionWidget;
+  final Widget actionWidget;
   final bool isActive;
-  final Function(MenuFoodResponseItem)? hideClick;
   final MenuFoodResponseItem item;
 
   const _CardDetailMenu(
-      {this.actionWidget,
-      required this.item,
-      this.hideClick,
-      this.isActive = true});
+      {required this.actionWidget, required this.item, this.isActive = true});
 
   @override
   Widget build(BuildContext context) {
@@ -678,87 +751,7 @@ class _CardDetailMenu extends StatelessWidget {
             color: AppColors.color8E8,
           ),
           const VSpacing(spacing: 8),
-          actionWidget ??
-              SizedBox(
-                height: 40,
-                child: Row(
-                  children: List.generate(DetailMenuActionType.values.length,
-                      (index) {
-                    final itemAction = DetailMenuActionType.values[index];
-                    return Expanded(
-                      flex: itemAction == DetailMenuActionType.more ? 2 : 5,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            right:
-                                DetailMenuActionType.values.length - 1 != index
-                                    ? 8
-                                    : 0),
-                        child: GestureDetector(
-                          onTap: () {
-                            switch (itemAction) {
-                              case DetailMenuActionType.advertisement:
-                                log("advertisement click");
-                              case DetailMenuActionType.hide:
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return DialogChangeStatus(
-                                        done: (isOk) {
-                                          if (isOk) {
-                                            if (hideClick != null) {
-                                              hideClick!(item);
-                                            }
-                                          }
-                                          Get.back();
-                                        },
-                                        title: "Thay đổi trạng thái",
-                                        listSubTitle: [
-                                          "Bạn có chắc chắn muốn ${isActive ? "ẩn" : "hiển thị"} món ",
-                                          "\"${item.name}\"",
-                                          " trên ứng dụng khách hàng không?"
-                                        ],
-                                      );
-                                    });
-                              case DetailMenuActionType.edit:
-                              case DetailMenuActionType.more:
-                            }
-                          },
-                          child: Container(
-                              alignment: Alignment.center,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: AppColors.transparent,
-                                  border: Border.all(
-                                      color: itemAction.colorBorder, width: 1),
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: itemAction.title != null
-                                  ? Text(
-                                      itemAction != DetailMenuActionType.hide
-                                          ? itemAction.title!
-                                          : isActive
-                                              ? itemAction.title!
-                                              : "Hiển thị",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 12,
-                                              color: itemAction.colorText),
-                                    )
-                                  : const Padding(
-                                      padding: EdgeInsets.only(top: 8),
-                                      child: Icon(
-                                        Icons.more_horiz_rounded,
-                                        size: 16,
-                                      ),
-                                    )),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              )
+          actionWidget
         ],
       ),
     );
@@ -938,10 +931,90 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                   return _CardDetailMenu(
                     item: itemDetail,
                     isActive: false,
-                    hideClick: (value) {
-                      bloc.hideOrShowMenuFood(value,
-                          productCategoryId: listItem[index].id, isHide: false);
-                    },
+                    actionWidget: SizedBox(
+                      height: 40,
+                      child: Row(
+                        children: List.generate(
+                            ActionNotRegisterType.values.length, (index) {
+                          final itemAction =
+                              ActionNotRegisterType.values[index];
+                          return Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right:
+                                      ActionNotRegisterType.values.length - 1 !=
+                                              index
+                                          ? 8
+                                          : 0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  switch (itemAction) {
+                                    case ActionNotRegisterType.advertisement:
+                                      log("advertisement click");
+                                      break;
+                                    case ActionNotRegisterType.show:
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DialogChangeStatus(
+                                              done: (isOk) {
+                                                if (isOk) {
+                                                  bloc.hideOrShowMenuFood(
+                                                      itemDetail,
+                                                      productCategoryId:
+                                                          listItem[index].id,
+                                                      isHide: false);
+                                                }
+                                                Get.back();
+                                              },
+                                              title: "Thay đổi trạng thái",
+                                              listSubTitle: [
+                                                "Bạn có chắc chắn muốn hiển thị món ",
+                                                "\"${itemDetail.name}\"",
+                                                " trên ứng dụng khách hàng không?"
+                                              ],
+                                            );
+                                          });
+                                      break;
+                                    case ActionNotRegisterType.edit:
+                                      break;
+                                    case ActionNotRegisterType.delete:
+
+                                      break;
+                                  }
+                                },
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    height: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.transparent,
+                                        border: Border.all(
+                                            color: itemAction ==
+                                                    ActionNotRegisterType.edit
+                                                ? AppColors.colorD33
+                                                : AppColors.color8E8,
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      itemAction.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12,
+                                              color: itemAction ==
+                                                      ActionNotRegisterType.edit
+                                                  ? AppColors.colorD33
+                                                  : AppColors.color8E8),
+                                    )),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
                   );
                 })
               ]

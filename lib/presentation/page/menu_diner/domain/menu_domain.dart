@@ -16,6 +16,8 @@ enum StatisticMenuType { sold, views, likes }
 
 enum DetailMenuActionType { advertisement, hide, edit, more }
 
+enum ActionNotRegisterType { advertisement, show, edit, delete }
+
 extension MenuMainExtension on MenuMainType {
   String get title {
     switch (this) {
@@ -103,6 +105,21 @@ extension StatisticMenuTypeEx on StatisticMenuType {
         return "Lượt xem";
       case StatisticMenuType.likes:
         return "Lượt thích";
+    }
+  }
+}
+
+extension ActionNotRegisterTypeEx on ActionNotRegisterType {
+  String get title {
+    switch (this) {
+      case ActionNotRegisterType.advertisement:
+        return "Quảng cáo";
+      case ActionNotRegisterType.show:
+        return "Hiển thị";
+      case ActionNotRegisterType.edit:
+        return "Sửa";
+      case ActionNotRegisterType.delete:
+        return "Xoá";
     }
   }
 }

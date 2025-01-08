@@ -227,6 +227,7 @@ class _MenuCustomPageState extends State<MenuCustomPage> {
 
 class _ListCategoryGoo extends StatefulWidget {
   final MenuCustomCubit bloc;
+
   const _ListCategoryGoo({super.key, required this.bloc});
 
   @override
@@ -307,7 +308,7 @@ class __ListCategoryGooState extends State<_ListCategoryGoo> {
                                           ),
                                           const HSpacing(spacing: 8),
                                           Text(
-                                            item.name,
+                                            item.name ?? "",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium

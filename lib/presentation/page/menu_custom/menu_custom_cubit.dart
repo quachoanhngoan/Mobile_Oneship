@@ -11,6 +11,8 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_respo
 import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_state.dart';
 
+import '../../data/model/menu/category_global_response.dart';
+
 class MenuCustomCubit extends Cubit<MenuCustomState> {
   final MenuRepository repository;
   MenuCustomCubit(this.repository) : super(const MenuCustomState());
@@ -26,12 +28,7 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
 
   getListCategory() async {
     try {
-      final request = LinkFoodRequest(
-        productStatus: "active",
-        status: "active",
-        approvalStatus: "approved",
-      );
-      final response = await repository.getListMenu(request);
+      final response = await repository.getCategoryGlobal();
       emit(state.copyWith(listCategoryGlobal: response?.items));
     } on DioException catch (e) {
       log("error getLinkFood: ${e.message}");
@@ -52,7 +49,7 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
     ));
   }
 
-  sellectCategoryGoo(ItemLinkFood value) {
+  sellectCategoryGoo(ItemCategoryGlobal value) {
     emit(state.copyWith(categorySellectGlobal: value));
   }
 
