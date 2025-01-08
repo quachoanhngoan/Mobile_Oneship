@@ -1,11 +1,11 @@
 enum DateTimeSellectType {
+  sunday,
   monday,
   tuesday,
   wednesday,
   thursday,
   friday,
-  saturday,
-  sunday
+  saturday
 }
 
 extension DateTimeSellectTypeExt on DateTimeSellectType {

@@ -28,14 +28,14 @@ class ItemLinkFood {
   String name;
   int? storeId;
   List<DetailLinkFood>? products;
-  int totalProducts;
+  int? totalProducts;
 
   ItemLinkFood({
     required this.id,
     required this.name,
     this.storeId,
-    required this.products,
-    required this.totalProducts,
+    this.products,
+    this.totalProducts,
   });
 
   factory ItemLinkFood.fromJson(Map<String, dynamic> json) {

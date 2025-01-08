@@ -20,6 +20,8 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
 
   MenuDinerCubit(this.repository) : super(const MenuDinerState());
 
+  final String tag = "MenuDinerCubit";
+
   late PageController mainController;
   late PageController groupToppingController;
   late PageController menuController;
@@ -160,6 +162,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   hideOrShowMenuFood(MenuFoodResponseItem item,
       {bool isHide = true, required int productCategoryId}) async {
     try {
+      emit(state.copyWith(isLoading: true));
       final request = FoodRegisterMenuRequest(
         status: isHide ? "inactive" : "active",
         name: item.name,
@@ -185,6 +188,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
 
   hideShowMenuGroup(int id, {bool isHide = false}) async {
     try {
+      emit(state.copyWith(isLoading: true));
       final httpRequest =
           await repository.hideOrShowMenuGroup(id, isHide: isHide);
       if (httpRequest != null) {
@@ -195,6 +199,56 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       } else {
         emit(state.copyWith(
             errorEditTopping: "Không thể thay đổi trạng thái topping"));
+      }
+    } on DioException catch (e) {
+      log("hideOrShowMenuFood error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  deleteMenuFood({required int id}) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final httpRequest = await repository.deleteFood(id);
+      if (httpRequest != null) {
+        await getAllMenu();
+        emit(state.copyWith(textErrorToast: "Xoá món thành công"));
+      } else {
+        emit(state.copyWith(errorEditTopping: "Không thể xoá món"));
+      }
+    } on DioException catch (e) {
+      log("hideOrShowMenuFood error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  deleteGroupMenu(int id) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final httpRequest = await repository.removeGroupMenu(id);
+      if (httpRequest != null) {
+        await getAllMenu();
+        emit(state.copyWith(textErrorToast: "Xoá món thành công"));
+      } else {
+        // emit(state.copyWith(errorEditTopping: "Không thể xoá món"));
+        emit(state.copyWith(errorRemoveGroup: true));
+      }
+    } on DioException catch (e) {
+      log("hideOrShowMenuFood error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  getDetailFoodById(int id) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final httpRequest = await repository.getDetailFoodById(id);
+      if (httpRequest != null) {
+        // emit(state.copyWith(textErrorToast: "Xoá món thành công"));
+        log("get detail topping success: $httpRequest", name: tag);
+        emit(state.copyWith(detailFoodData: httpRequest));
+      } else {
+        emit(state.copyWith(errorRemoveGroup: true));
       }
     } on DioException catch (e) {
       log("hideOrShowMenuFood error: ${e.message}");

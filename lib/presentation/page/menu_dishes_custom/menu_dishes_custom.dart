@@ -11,6 +11,7 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/detail_food_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_state.dart';
@@ -24,6 +25,7 @@ import 'package:oneship_merchant_app/service/dialog.dart';
 
 import '../../widget/images/form_upload_image.dart';
 import '../../widget/images/network_image_loader.dart';
+import '../login/widget/loading_widget.dart';
 import 'model/time_sell_type.dart';
 
 class MenuDishsCustomPage extends StatefulWidget {
@@ -39,18 +41,22 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
   @override
   void initState() {
     bloc = injector.get<MenuDishesCubit>();
-    bloc.init();
+    bloc.init(Get.arguments);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final arg = Get.arguments;
+
     return BlocConsumer<MenuDishesCubit, MenuDishesState>(
         bloc: bloc,
         listener: (context, state) {
           if (state.isCompleteSuccess) {
             context.popScreen(result: true);
-            context.showToastDialog("Thêm món ăn thành công");
+            context.showToastDialog(arg != null
+                ? "Cập nhật món ăn thành công"
+                : "Thêm món ăn thành công");
           }
           if (state.isCompleteError != null) {
             context.showErrorDialog(state.isCompleteError!, context);
@@ -149,8 +155,10 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                                     ),
                                   ),
                                   _ImageFood(
+                                    imageDefault: arg != null
+                                        ? (arg as DetailFoodResponse).imageId
+                                        : null,
                                     onUploadedImage: (value) {
-                                      log("check image: $value");
                                       bloc.updateImage(value);
                                     },
                                   )
@@ -455,6 +463,10 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                     )
                   ],
                 ),
+              ),
+              Visibility(
+                visible: state.isLoading,
+                child: const LoadingWidget(),
               )
             ],
           );
@@ -564,8 +576,8 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                             ? Icons.keyboard_arrow_down_outlined
                                             : Icons
                                                 .keyboard_arrow_right_outlined,
-                                        color: AppColors.color988,
-                                        size: 30,
+                                        color: AppColors.textGray,
+                                        size: 20,
                                       )
                                     ],
                                   ),
@@ -573,7 +585,15 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                               ),
                               state.listLinkFood[index].options.isNotEmpty ==
                                       true
-                                  ? const VSpacing(spacing: 12)
+                                  ? const VSpacing(spacing: 6)
+                                  : Container(),
+                              state.listLinkFood[index].options.isNotEmpty ==
+                                      true
+                                  ? Divider(
+                                      color:
+                                          AppColors.textGray.withOpacity(0.3),
+                                      height: 16,
+                                      thickness: 1.2)
                                   : Container(),
                               if (state
                                       .listLinkFood[index].options.isNotEmpty ==
@@ -588,68 +608,68 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                           .firstWhereOrNull(
                                               (e) => e.id == childItem.id) !=
                                       null;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(left: 30),
-                                    child: Column(
-                                      children: <Widget>[
-                                        GestureDetector(
-                                          onTap: () {
-                                            _bloc.listIdLinkFoodSellect(
-                                                childItem.id);
-                                          },
-                                          child: Container(
-                                            color: AppColors.transparent,
-                                            child: Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  width: 16,
-                                                  height: 16,
-                                                  decoration: BoxDecoration(
-                                                      color: isSellectChildId
-                                                          ? AppColors.color988
-                                                          : AppColors
-                                                              .transparent,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                      border: Border.all(
-                                                          color: isSellectChildId
-                                                              ? AppColors
-                                                                  .transparent
-                                                              : AppColors
-                                                                  .textGray,
-                                                          width: 1)),
-                                                  child: const Icon(
-                                                    Icons.check_outlined,
-                                                    color: AppColors.white,
-                                                    size: 12,
-                                                  ),
+                                  return Column(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          _bloc.listIdLinkFoodSellect(
+                                              childItem.id);
+                                        },
+                                        child: Container(
+                                          color: AppColors.transparent,
+                                          margin:
+                                              const EdgeInsets.only(left: 30),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Container(
+                                                width: 16,
+                                                height: 16,
+                                                decoration: BoxDecoration(
+                                                    color: isSellectChildId
+                                                        ? AppColors.color988
+                                                        : AppColors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    border: Border.all(
+                                                        color: isSellectChildId
+                                                            ? AppColors
+                                                                .transparent
+                                                            : AppColors
+                                                                .textGray,
+                                                        width: 1)),
+                                                child: const Icon(
+                                                  Icons.check_outlined,
+                                                  color: AppColors.white,
+                                                  size: 12,
                                                 ),
-                                                const HSpacing(spacing: 8),
-                                                Text(
-                                                  childItem.name,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                              const HSpacing(spacing: 8),
+                                              Text(
+                                                childItem.name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        state.listLinkFood[index].options
-                                                        .length -
-                                                    1 !=
-                                                inxChild
-                                            ? const Divider(
-                                                color: AppColors.textGray,
-                                                height: 1,
-                                                thickness: 1)
-                                            : Container()
-                                      ],
-                                    ),
+                                      ),
+                                      state.listLinkFood[index].options.length -
+                                                  1 !=
+                                              inxChild
+                                          ? Divider(
+                                              color: AppColors.textGray
+                                                  .withOpacity(0.3),
+                                              height: 16,
+                                              thickness: 1.2)
+                                          : Container()
+                                    ],
                                   );
                                 })
                               ]
@@ -737,7 +757,8 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
 
 class _ImageFood extends StatefulWidget {
   final ValueChanged<String> onUploadedImage;
-  const _ImageFood({required this.onUploadedImage});
+  final String? imageDefault;
+  const _ImageFood({required this.onUploadedImage, this.imageDefault});
 
   @override
   State<_ImageFood> createState() => _ImageFoodState();
@@ -880,58 +901,92 @@ class _ImageFoodState extends State<_ImageFood> {
                     ],
                   ),
                 )
-              : Container(
-                  height: 85,
-                  padding: const EdgeInsets.all(12),
-                  width: 85,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: AppColors.borderColor,
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 0,
-                        blurRadius: 5,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Builder(builder: (context) {
-                        if (isLoading) {
-                          return const SizedBox(
-                            width: 36,
-                            height: 36,
-                            child: CupertinoActivityIndicator(
-                              color: AppColors.primary,
+              : widget.imageDefault?.isNotEmpty == true
+                  ? SizedBox(
+                      height: 85,
+                      width: 85,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: <Widget>[
+                          NetworkImageWithLoader(
+                            widget.imageDefault!,
+                            isBaseUrl: true,
+                            fit: BoxFit.cover,
+                          ),
+                          IntrinsicHeight(
+                            child: Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              decoration: BoxDecoration(
+                                  color: AppColors.black.withOpacity(0.5),
+                                  borderRadius: const BorderRadius.vertical(
+                                      bottom: Radius.circular(8))),
+                              child: Text(
+                                "Sửa",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        fontSize: 12, color: AppColors.white),
+                              ),
                             ),
-                          );
-                        }
-                        return const ImageAssetWidget(
-                          image: AppAssets.imagesIconsCamera,
-                          width: 36,
-                          height: 36,
-                        );
-                      }),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Tối đa 1MB",
-                        textAlign: TextAlign.center,
-                        style: Get.textTheme.bodySmall!.copyWith(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xff9B9B9B),
-                        ),
+                          )
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    )
+                  : Container(
+                      height: 85,
+                      padding: const EdgeInsets.all(12),
+                      width: 85,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: AppColors.borderColor,
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.1),
+                            spreadRadius: 0,
+                            blurRadius: 5,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Builder(builder: (context) {
+                            if (isLoading) {
+                              return const SizedBox(
+                                width: 36,
+                                height: 36,
+                                child: CupertinoActivityIndicator(
+                                  color: AppColors.primary,
+                                ),
+                              );
+                            }
+                            return const ImageAssetWidget(
+                              image: AppAssets.imagesIconsCamera,
+                              width: 36,
+                              height: 36,
+                            );
+                          }),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Tối đa 1MB",
+                            textAlign: TextAlign.center,
+                            style: Get.textTheme.bodySmall!.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xff9B9B9B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'linkfood_response.dart';
+
 class CategoryGlobalResponse {
   final List<ItemCategoryGlobal>? items;
   final int? total;
@@ -9,7 +11,9 @@ class CategoryGlobalResponse {
 
   factory CategoryGlobalResponse.fromJson(Map<String, dynamic> json) {
     return CategoryGlobalResponse(
-      items: (json['items'] as List?)?.map((e) => ItemCategoryGlobal.fromJson(e)).toList(),
+      items: (json['items'] as List?)
+          ?.map((e) => ItemCategoryGlobal.fromJson(e))
+          .toList(),
       total: json['total'],
     );
   }
@@ -43,5 +47,12 @@ class ItemCategoryGlobal {
       'id': id,
       'name': name,
     };
+  }
+
+  ItemLinkFood? convertToLinkFood() {
+    if (id != null) {
+      return ItemLinkFood(id: id!, name: name ?? "");
+    }
+    return null;
   }
 }

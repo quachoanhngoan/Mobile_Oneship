@@ -10,6 +10,7 @@ import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_d
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/model/time_sell_type.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/model/time_sellect_type.dart';
 
+import '../../data/model/menu/detail_food_response.dart';
 import '../../data/model/menu/food_register_request.dart';
 import '../../data/model/menu/gr_topping_request.dart';
 import '../../data/model/menu/linkfood_request.dart';
@@ -41,8 +42,9 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
   late TextEditingController sundayTimeEndController;
 
   final List<ProductWorkingTime> _listTimeSellect = [];
+  int? _idFoodUpdate;
 
-  init() {
+  init(DetailFoodResponse? detailFood) async {
     nameFoodController = TextEditingController();
     priceController = TextEditingController();
     categoryController = TextEditingController();
@@ -63,8 +65,69 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
     sundayTimeEndController = TextEditingController();
     sundayTimeStartController = TextEditingController();
 
-    getLinkFood();
-    getListCategory();
+    await getLinkFood();
+    await getListCategory();
+
+    if (detailFood != null) {
+      _idFoodUpdate = detailFood.id;
+      nameFoodController.text = detailFood.name ?? "";
+      priceController.text =
+          detailFood.price != null ? "${detailFood.price} vnđ" : "";
+      categoryController.text = detailFood.productCategory?.name ?? "";
+      descriptionController.text = detailFood.description ?? "";
+
+      if (detailFood.productWorkingTimes != null &&
+          detailFood.productWorkingTimes!.isNotEmpty) {
+        for (var workingTime in detailFood.productWorkingTimes!) {
+          if (workingTime.dayOfWeek != null &&
+              workingTime.dayOfWeek! < DateTimeSellectType.values.length &&
+              workingTime.openTime != null &&
+              workingTime.closeTime != null) {
+            final typeDateOfWeek =
+                DateTimeSellectType.values[workingTime.dayOfWeek!];
+            _sellectTimeStart(typeDateOfWeek,
+                time: _convertMinuteToDateTime(workingTime.openTime!));
+            _sellectTimeEnd(typeDateOfWeek,
+                time: _convertMinuteToDateTime(workingTime.openTime!));
+          }
+        }
+      }
+
+      List<ProductAddTopping> listIdLinkFoodSellected = [];
+
+      if (detailFood.productOptionGroups != null &&
+          detailFood.productOptionGroups!.isNotEmpty) {
+        for (var productOptionGroup in detailFood.productOptionGroups!) {
+          if (productOptionGroup.id != null) {
+            listIdLinkFoodSellected
+                .add(ProductAddTopping(id: productOptionGroup.id!));
+          }
+          if (productOptionGroup.options != null &&
+              productOptionGroup.options!.isNotEmpty) {
+            for (var options in productOptionGroup.options!) {
+              if (options.id != null) {
+                listIdLinkFoodSellected.add(ProductAddTopping(id: options.id!));
+              }
+            }
+          }
+        }
+      }
+
+      emit(state.copyWith(
+          categoryStoreSellect: detailFood.productCategory?.convertToLinkFood(),
+          imageId: detailFood.imageId,
+          typeTime: detailFood.isNormalTime == true
+              ? TimeSellType.timeStore
+              : TimeSellType.timeOption,
+          listIdLinkFoodSellected: listIdLinkFoodSellected));
+
+      _checkFilledAllInfo();
+      checkFilledChooseTime();
+
+      if (listIdLinkFoodSellected.isNotEmpty) {
+        listIdLinkFoodSellectConfirm();
+      }
+    }
   }
 
   TextEditingController getControllerStartByType(DateTimeSellectType type) {
@@ -394,11 +457,21 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
           productWorkingTimes: _listTimeSellect,
           description: descriptionController.text,
           optionIds: listIdSellected);
-      final httpRequest = await repository.registerFoodInMenu(request);
-      if (httpRequest != null) {
-        emit(state.copyWith(isCompleteSuccess: true));
+      if (_idFoodUpdate == null) {
+        final httpRequest = await repository.registerFoodInMenu(request);
+        if (httpRequest != null) {
+          emit(state.copyWith(isCompleteSuccess: true));
+        } else {
+          emit(state.copyWith(isCompleteError: "Không thể tạo món"));
+        }
       } else {
-        emit(state.copyWith(isCompleteError: "Không thể tạo món"));
+        final httpRequest =
+            await repository.updateFoodInMenu(request, id: _idFoodUpdate!);
+        if (httpRequest != null) {
+          emit(state.copyWith(isCompleteSuccess: true));
+        } else {
+          emit(state.copyWith(isCompleteError: "Không thể cập nhật món"));
+        }
       }
     } on DioException catch (e) {
       log("saveInfoClick error: ${e.message}");
@@ -486,5 +559,20 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
   int _convertTimeStringToMinute(String time) {
     final dateTime = _convertStringToDateTime(time);
     return dateTime.hour * 60 + dateTime.minute;
+  }
+
+  DateTime _convertMinuteToDateTime(int minute) {
+    Duration duration = Duration(minutes: minute);
+    DateTime now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      duration.inHours,
+      duration.inMinutes % 60,
+    );
+    // int hours = duration.inHours;
+    // int minutes = duration.inMinutes % 60;
+    // return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
   }
 }

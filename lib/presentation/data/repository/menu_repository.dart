@@ -11,8 +11,10 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/hide_menu_resp
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/remove_menu_response.dart';
 
 import '../model/menu/category_global_response.dart';
+import '../model/menu/detail_food_response.dart';
 import '../model/menu/gr_menu_register_request.dart';
 import '../model/menu/list_menu_food_response.dart';
 import '../model/menu/remove_topping_request.dart';
@@ -48,6 +50,12 @@ abstract class MenuRepository {
       {required int id});
 
   Future<HideMenuResponse?> hideOrShowMenuGroup(int id, {bool isHide = false});
+
+  Future<FoodRegisterMenuResponse?> deleteFood(int id);
+
+  Future<RemoveMenuResponse?> removeGroupMenu(int id);
+
+  Future<DetailFoodResponse?> getDetailFoodById(int id);
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -201,6 +209,40 @@ class MenuRepositoryImp implements MenuRepository {
       return CategoryGlobalResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<FoodRegisterMenuResponse?> deleteFood(int id) async {
+    try {
+      final httpRequest = await _clientDio.delete("${AuthUrl.products}/$id");
+      return FoodRegisterMenuResponse.fromJson(httpRequest.data ?? {});
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<RemoveMenuResponse?> removeGroupMenu(int id) async {
+    try {
+      final httpRequest =
+          await _clientDio.delete("${AuthUrl.productCategories}/$id");
+      return RemoveMenuResponse.fromJson(httpRequest.data ?? {});
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<DetailFoodResponse?> getDetailFoodById(int id) async {
+    try {
+      final httpRequest = await _clientDio.get("${AuthUrl.products}/$id");
+      return DetailFoodResponse.fromJson(httpRequest.data ?? {});
     } catch (e) {
       log("detailFoodByMenu error: $e");
     }

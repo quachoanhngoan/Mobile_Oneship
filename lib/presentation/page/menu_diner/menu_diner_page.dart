@@ -55,6 +55,44 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
           if (state.textErrorToast != null) {
             context.showToastDialog(state.textErrorToast!);
           }
+          if (state.errorRemoveGroup) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return DialogChangeStatus(
+                    done: (isOk) {},
+                    title: "Xoá danh mục",
+                    listSubTitle: const [
+                      "Danh mục chứa sản phẩm đang hoạt động. Bạn vui lòng kiểm tra lại!"
+                    ],
+                    action: SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                          onPressed: () {
+                            context.popScreen();
+                          },
+                          child: Text(
+                            "OK",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.color988),
+                          )),
+                    ),
+                  );
+                });
+          }
+          if (state.detailFoodData != null) {
+            context.pushWithNamed(context,
+                routerName: AppRoutes.menuDishsCustomPage,
+                arguments: state.detailFoodData, complete: (value) {
+              if (value) {
+                bloc.getAllMenu();
+              }
+            });
+          }
         },
         builder: (context, state) {
           return Stack(
@@ -536,7 +574,10 @@ class _MenuActiveBody extends StatelessWidget {
                                             );
                                           });
                                     case DetailMenuActionType.edit:
+                                      bloc.getDetailFoodById(item.id);
+                                      break;
                                     case DetailMenuActionType.more:
+                                      break;
                                   }
                                 },
                                 child: Container(
@@ -838,47 +879,20 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return DialogChangeStatus(
-                                done: (isOk) {},
+                                done: (isOk) {
+                                  if (isOk) {
+                                    bloc.deleteGroupMenu(listItem[index].id);
+                                  }
+                                  Get.back();
+                                },
                                 title: "Xoá danh mục",
-                                listSubTitle: const [
-                                  "Danh mục chứa sản phẩm đang hoạt động. Bạn vui lòng kiểm tra lại!"
+                                listSubTitle: [
+                                  "Bạn có muốn xoá sản phẩm ",
+                                  "\"${listItem[index].name}\"",
+                                  " không?"
                                 ],
-                                action: SizedBox(
-                                  width: double.infinity,
-                                  child: TextButton(
-                                      onPressed: () {
-                                        context.popScreen();
-                                      },
-                                      child: Text(
-                                        "OK",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.color988),
-                                      )),
-                                ),
                               );
                             });
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) {
-                        //       return DialogChangeStatus(
-                        //         done: (isOk) {
-                        //           if (isOk) {
-                        //             // bloc.deleteGroupTopping(listItem[index].id);
-                        //           }
-                        //           Get.back();
-                        //         },
-                        //         title: "Xoá danh mục",
-                        //         listSubTitle: [
-                        //           "Bạn có muốn xoá sản phẩm ",
-                        //           "\"${listItem[index].name}\"",
-                        //           " không?"
-                        //         ],
-                        //       );
-                        //     });
                       },
                       backgroundColor: AppColors.error,
                       padding: EdgeInsets.zero,
@@ -978,9 +992,28 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                                           });
                                       break;
                                     case ActionNotRegisterType.edit:
+                                      bloc.getDetailFoodById(itemDetail.id);
                                       break;
                                     case ActionNotRegisterType.delete:
-
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return DialogChangeStatus(
+                                              done: (isOk) {
+                                                if (isOk) {
+                                                  bloc.deleteMenuFood(
+                                                      id: itemDetail.id);
+                                                }
+                                                Get.back();
+                                              },
+                                              title: "Xoá sản phẩm",
+                                              listSubTitle: [
+                                                "Bạn có muốn xoá sản phẩm ",
+                                                "\"${itemDetail.name}\"",
+                                                " không?"
+                                              ],
+                                            );
+                                          });
                                       break;
                                   }
                                 },
@@ -1007,7 +1040,7 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                                               color: itemAction ==
                                                       ActionNotRegisterType.edit
                                                   ? AppColors.colorD33
-                                                  : AppColors.color8E8),
+                                                  : AppColors.black),
                                     )),
                               ),
                             ),
@@ -1151,7 +1184,7 @@ class _MenuItemUnSuccess extends StatelessWidget {
                               return DialogChangeStatus(
                                 done: (isOk) {
                                   if (isOk) {
-                                    // bloc.deleteGroupTopping(listItem[index].id);
+                                    bloc.deleteGroupMenu(listItem[index].id);
                                   }
                                   Get.back();
                                 },
@@ -1208,7 +1241,10 @@ class _MenuItemUnSuccess extends StatelessWidget {
                 ),
               ),
               if (isShowDetail) ...[
-                ...List.generate(1, (inxDetail) {
+                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
+                    (inxDetail) {
+                  final itemDetail =
+                      state.listFoodByMenu!.listFoodByMenu![inxDetail];
                   return Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
@@ -1233,15 +1269,17 @@ class _MenuItemUnSuccess extends StatelessWidget {
                               width: 58,
                               height: 46,
                               decoration: BoxDecoration(
-                                  color: AppColors.red,
+                                  color: AppColors.transparent,
                                   borderRadius: BorderRadius.circular(8)),
+                              child: NetworkImageWithLoader(itemDetail.imageId,
+                                  isBaseUrl: true, fit: BoxFit.fill),
                             ),
                             const HSpacing(spacing: 8),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "Cà phê pha máy siêu sạch",
+                                  itemDetail.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -1251,23 +1289,23 @@ class _MenuItemUnSuccess extends StatelessWidget {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text("35.000 vnđ ",
+                                    Text("${itemDetail.price} vnđ",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium
                                             ?.copyWith(
                                                 fontWeight: FontWeight.w600,
                                                 color: AppColors.colorD33)),
-                                    Text("50.000 vnđ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 10,
-                                                color: AppColors.color373,
-                                                decoration: TextDecoration
-                                                    .lineThrough)),
+                                    // Text("50.000 vnđ",
+                                    //     style: Theme.of(context)
+                                    //         .textTheme
+                                    //         .bodySmall
+                                    //         ?.copyWith(
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontSize: 10,
+                                    //             color: AppColors.color373,
+                                    //             decoration: TextDecoration
+                                    //                 .lineThrough)),
                                   ],
                                 )
                               ],
@@ -1284,46 +1322,76 @@ class _MenuItemUnSuccess extends StatelessWidget {
                           child: Row(
                             children: <Widget>[
                               Expanded(
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: AppColors.color988,
-                                        border: Border.all(
-                                            color: AppColors.colorD33,
-                                            width: 1),
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Text(
-                                      "Sửa",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 12,
-                                              color: AppColors.colorD33),
-                                    )),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    bloc.getDetailFoodById(itemDetail.id);
+                                  },
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.transparent,
+                                          border: Border.all(
+                                              color: AppColors.colorD33,
+                                              width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Text(
+                                        "Sửa",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                color: AppColors.colorD33),
+                                      )),
+                                ),
                               ),
                               const HSpacing(spacing: 12),
                               Expanded(
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: AppColors.color988,
-                                        border: Border.all(
-                                            color: AppColors.color8E8,
-                                            width: 1),
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Text(
-                                      "Xoá",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 12),
-                                    )),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return DialogChangeStatus(
+                                            done: (isOk) {
+                                              if (isOk) {
+                                                bloc.deleteMenuFood(
+                                                    id: itemDetail.id);
+                                              }
+                                              Get.back();
+                                            },
+                                            title: "Xoá sản phẩm",
+                                            listSubTitle: [
+                                              "Bạn có muốn xoá sản phẩm ",
+                                              "\"${itemDetail.name}\"",
+                                              " không?"
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.transparent,
+                                          border: Border.all(
+                                              color: AppColors.color8E8,
+                                              width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Text(
+                                        "Xoá",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12),
+                                      )),
+                                ),
                               )
                             ],
                           ),
