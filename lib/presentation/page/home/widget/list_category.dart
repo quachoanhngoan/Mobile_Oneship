@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
-import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/constant/app_assets.dart';
-import 'package:oneship_merchant_app/presentation/page/home/home_page.dart';
-import 'package:oneship_merchant_app/presentation/page/register/register_page.dart';
 import 'package:oneship_merchant_app/presentation/widget/page_indicator_widgets/expend_dot/expanding_dots_effect.dart';
 import 'package:oneship_merchant_app/presentation/widget/page_indicator_widgets/smooth_page_indicator.dart';
 

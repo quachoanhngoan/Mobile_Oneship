@@ -148,7 +148,7 @@ class _MenuCustomPageState extends State<MenuCustomPage> {
                     const VSpacing(spacing: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: AppTextFormField(
+                      child: RegisterStoreFormField(
                           isRequired: true,
                           hintText: "Danh mục quán",
                           controller: bloc.storeCategorController,

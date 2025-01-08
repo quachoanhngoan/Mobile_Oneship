@@ -38,12 +38,17 @@ class _ListBannerState extends State<ListBanner> {
     if (widget.banners?.files?.isEmpty ?? true) {
       return const SizedBox();
     }
+    const aspectRatio = 2 / 1;
+    final height = MediaQuery.of(context).size.width / aspectRatio;
+    final width = MediaQuery.of(context).size.width;
     return SizedBox(
+      height: height,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
           SizedBox(
-            height: 0.2.sh,
+            height: height,
+            width: width,
             child: PageView.builder(
               controller: controller,
               itemCount: widget.banners?.files?.length ?? 0,
@@ -56,6 +61,30 @@ class _ListBannerState extends State<ListBanner> {
               },
             ),
           ),
+          Positioned(
+              bottom: 0,
+              width: MediaQuery.of(context).size.width,
+              height: 20,
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.1),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              )),
           if ((widget.banners?.files?.length ?? 0) > 1)
             Positioned(
               bottom: 0,
@@ -65,9 +94,9 @@ class _ListBannerState extends State<ListBanner> {
               child: Center(
                 child: SmoothPageIndicator(
                   effect: const ExpandingDotsEffect(
-                    dotHeight: 6,
+                    dotHeight: 8,
                     dotWidth: 8,
-                    dotColor: AppColors.borderColor2,
+                    dotColor: Color(0xffFBCABB),
                     activeDotColor: Color(0xffEB8564),
                     expansionFactor: 3,
                     spacing: 2,

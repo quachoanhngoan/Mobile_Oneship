@@ -18,7 +18,7 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repository;
-  AuthCubit(this.repository) : super(AuthState());
+  AuthCubit(this.repository) : super(AuthState(userData: prefManager.user));
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController otpController = TextEditingController();
   String _verificationId = "";
@@ -274,6 +274,19 @@ class AuthCubit extends Cubit<AuthState> {
             Get.back();
           });
     }
+  }
+
+  getProfile() async {
+    final response = await execute(() => repository.profile());
+    response.when(
+        success: (data) {
+          if (data == null) {
+            return;
+          }
+          prefManager.user = data;
+          emit(state.copyWith(userData: data));
+        },
+        failure: (error) {});
   }
 
   logout() {

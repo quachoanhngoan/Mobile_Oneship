@@ -26,7 +26,7 @@ class RegisterShopInfo extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 const VSpacing(spacing: 20),
-                AppTextFormField(
+                RegisterStoreFormField(
                   hintText: "Nhập tên cửa hàng",
                   controller: bloc.nameStoreController,
                   onChanged: (value) {
@@ -37,7 +37,7 @@ class RegisterShopInfo extends StatelessWidget {
                   isRequired: true,
                 ),
                 const VSpacing(spacing: 16),
-                AppTextFormField(
+                RegisterStoreFormField(
                   controller: bloc.specialDishController,
                   hintText: "Nhập món đặc trưng của quán",
                   onChanged: (p0) {
@@ -48,7 +48,7 @@ class RegisterShopInfo extends StatelessWidget {
                   isRequired: false,
                 ),
                 const VSpacing(spacing: 16),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: "Nhập tên đường",
                   controller: bloc.streetNameController,
@@ -71,7 +71,7 @@ class RegisterShopInfo extends StatelessWidget {
                   ),
                 ),
                 const VSpacing(spacing: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                     isRequired: true,
                     keyboardType: TextInputType.phone,
                     hintText: "Số điện thoại liên hệ",
@@ -152,7 +152,7 @@ class RegisterShopInfo extends StatelessWidget {
                   listDistrict: state.listWard,
                 ),
                 const VSpacing(spacing: 16),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   hintText: "Nhập số nhà và đường/Phố",
                   controller: bloc.streetAddressController,
@@ -163,7 +163,7 @@ class RegisterShopInfo extends StatelessWidget {
                   },
                 ),
                 const VSpacing(spacing: 16),
-                AppTextFormField(
+                RegisterStoreFormField(
                   hintText: "Nhập phí gửi xe",
                   controller: bloc.parkingFeeController,
                   keyboardType: TextInputType.number,

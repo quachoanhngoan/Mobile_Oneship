@@ -134,7 +134,7 @@ class Individual extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   hintText: 'Nhập Họ và tên người đại diện',
                   initialValue: state.representative?.name,
@@ -145,7 +145,7 @@ class Individual extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   keyboardType: TextInputType.phone,
                   initialValue: state.representative?.phone,
@@ -157,7 +157,7 @@ class Individual extends StatelessWidget {
                   hintText: 'Nhập số điện thoại',
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   keyboardType: TextInputType.phone,
                   initialValue: state.representative?.otherPhone,
@@ -169,7 +169,7 @@ class Individual extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: 'Nhập email',
                   initialValue: state.representative?.email,
@@ -180,7 +180,7 @@ class Individual extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   initialValue: state.representative?.taxCode,
                   isRequired: true,
                   hintText: 'Nhập mã số thuế cá nhân',
@@ -243,7 +243,7 @@ class Individual extends StatelessWidget {
                 const SizedBox(
                   height: 15,
                 ),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   filled: true,
                   initialValue: state.representative?.identityCard,
@@ -291,7 +291,7 @@ class Individual extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   filled: true,
                   isRequired: true,
                   hintText: 'Nhập nơi cấp',
@@ -332,7 +332,7 @@ class BusinessHousehold extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.name,
                   onChanged: (p0) {
@@ -343,7 +343,7 @@ class BusinessHousehold extends StatelessWidget {
                   hintText: 'Nhập họ và tên người đại diện',
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   hintText: 'Nhập số điện thoại',
                   initialValue: state.representative?.phone,
@@ -354,7 +354,7 @@ class BusinessHousehold extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: 'Nhập số điện thoại khác',
                   initialValue: state.representative?.otherPhone,
@@ -365,7 +365,7 @@ class BusinessHousehold extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: 'Nhập email',
                   initialValue: state.representative?.email,
@@ -376,7 +376,7 @@ class BusinessHousehold extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.address,
                   hintText: 'Nhập địa chỉ kinh doanh',
@@ -387,7 +387,7 @@ class BusinessHousehold extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.businessName,
                   hintText: 'Nhập tên hộ kinh doanh',
@@ -398,7 +398,7 @@ class BusinessHousehold extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.taxCode,
                   onChanged: (p0) {
@@ -530,7 +530,7 @@ class Business extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.name,
                   onChanged: (p0) {
@@ -541,7 +541,7 @@ class Business extends StatelessWidget {
                   hintText: 'Nhập họ và tên người đại diện',
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   hintText: 'Nhập số điện thoại',
                   initialValue: state.representative?.phone,
@@ -552,7 +552,7 @@ class Business extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: 'Nhập số điện thoại khác',
                   initialValue: state.representative?.otherPhone,
@@ -563,7 +563,7 @@ class Business extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: false,
                   hintText: 'Nhập email',
                   onChanged: (p0) {
@@ -573,7 +573,7 @@ class Business extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   initialValue: state.representative?.address,
                   isRequired: true,
                   hintText: 'Nhập địa chỉ công ty',
@@ -584,7 +584,7 @@ class Business extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.businessName,
                   hintText: 'Nhập tên công ty',
@@ -595,7 +595,7 @@ class Business extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                AppTextFormField(
+                RegisterStoreFormField(
                   isRequired: true,
                   initialValue: state.representative?.taxCode,
                   onChanged: (p0) {

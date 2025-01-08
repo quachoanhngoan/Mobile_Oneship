@@ -160,7 +160,7 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                               DashedDivider(
                                   color: AppColors.textGray.withOpacity(0.3)),
                               const VSpacing(spacing: 12),
-                              AppTextFormField(
+                              RegisterStoreFormField(
                                 controller: bloc.nameFoodController,
                                 isRequired: true,
                                 hintText: "Tên món ăn",
@@ -182,7 +182,7 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                                     : const SizedBox.shrink(),
                               ),
                               const VSpacing(spacing: 8),
-                              AppTextFormField(
+                              RegisterStoreFormField(
                                 controller: bloc.priceController,
                                 isRequired: true,
                                 hintText: "Giá bán",

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/presentation/data/model/banner/banner.dart';
-import 'package:oneship_merchant_app/presentation/data/repository/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
 
 part 'home_state.dart';

@@ -205,7 +205,6 @@ class DioUtil {
   //     return;
   //   }
 
-  //   //TODO show dialog error
   // }
 
   Future<Response<dynamic>> _retryableRequest(
@@ -566,7 +565,6 @@ class DioUtil {
 
   String? handleErrorTranslate(DioException error) {
     try {
-      print('error.response?.data ${error.response?.data}');
       final data = BaseResponse.fromJson(error.response?.data ?? {});
       final customMessages = {
         DioExceptionType.connectionTimeout: 'Lỗi kết nối, vui lòng thử lại',
@@ -579,8 +577,6 @@ class DioUtil {
           ? customMessages[error.type] ?? 'Đã có lỗi xảy ra, vui lòng thử lại'
           : data.message;
     } catch (e) {
-      print('error.response?.data ${e}');
-
       return 'Đã có lỗi xảy ra, vui lòng thử lại';
     }
   }

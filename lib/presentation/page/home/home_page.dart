@@ -8,6 +8,7 @@ import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/page/home/cubit/home_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_banner.dart';
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_category.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     bloc = injector<HomeCubit>();
+    context.read<AuthCubit>().getProfile();
     getBanners();
     super.initState();
   }
@@ -317,11 +319,11 @@ class _HomePageState extends State<HomePage> {
     //                 routerName: AppRoutes.registerpage, arguments: true);
     //           },
     //           child: const Text("Đăng ký")),
-          // ElevatedButton(
-          //     onPressed: () {
-          //       context.read<AuthCubit>().logout();
-          //     },
-          //     child: const Text("Đăng xuất")),
+    // ElevatedButton(
+    //     onPressed: () {
+    //       context.read<AuthCubit>().logout();
+    //     },
+    //     child: const Text("Đăng xuất")),
     //       ElevatedButton(
     //           onPressed: () {
     //             context.pushWithNamed(context, routerName: AppRoutes.menuPage);
