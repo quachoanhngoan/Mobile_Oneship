@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/theme_config.dart';
@@ -77,15 +79,7 @@ class _MerchantAppState extends State<MerchantApp> {
       theme: Themings.lightTheme,
       title: 'Merchant',
       initialRoute: AppRoutes.splash,
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-              textScaler: const TextScaler.linear(
-            1.0,
-          )),
-          child: child!,
-        );
-      },
+      builder: FToastBuilder(),
       getPages: AppRoutes.routes,
     );
   }

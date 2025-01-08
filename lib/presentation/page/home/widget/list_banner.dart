@@ -1,6 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/presentation/data/model/banner/banner.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
 import 'package:oneship_merchant_app/presentation/widget/page_indicator_widgets/expend_dot/expanding_dots_effect.dart';
@@ -18,18 +17,17 @@ class ListBanner extends StatefulWidget {
 }
 
 class _ListBannerState extends State<ListBanner> {
-  late final PageController controller;
+  final CarouselSliderController _controller = CarouselSliderController();
+  int _current = 0;
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     // assert(widget.categories.isNotEmpty);
-    controller = PageController(viewportFraction: 1, keepPage: true);
     super.initState();
   }
 
@@ -38,29 +36,59 @@ class _ListBannerState extends State<ListBanner> {
     if (widget.banners?.files?.isEmpty ?? true) {
       return const SizedBox();
     }
-    const aspectRatio = 2 / 1;
-    final height = MediaQuery.of(context).size.width / aspectRatio;
-    final width = MediaQuery.of(context).size.width;
+    // const aspectRatio = 2 / 1;
+    // final height = MediaQuery.of(context).size.width / aspectRatio;
     return SizedBox(
-      height: height,
+      // height: height,
       width: MediaQuery.of(context).size.width,
       child: Stack(
         children: [
-          SizedBox(
-            height: height,
-            width: width,
-            child: PageView.builder(
-              controller: controller,
-              itemCount: widget.banners?.files?.length ?? 0,
-              itemBuilder: (context, index) {
-                return NetworkImageWithLoader(
-                  widget.banners?.files?[index].fileId ?? "",
-                  isBaseUrl: true,
-                  fit: BoxFit.cover,
-                );
+          CarouselSlider(
+            carouselController: _controller,
+            options: CarouselOptions(
+              viewportFraction: 1,
+              aspectRatio: 2 / 1,
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 3),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              autoPlayCurve: Curves.fastOutSlowIn,
+              pauseAutoPlayOnTouch: true,
+              enlargeCenterPage: true,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
               },
             ),
+            items: widget.banners?.files?.map((i) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: NetworkImageWithLoader(
+                        i.fileId ?? "",
+                        isBaseUrl: true,
+                        fit: BoxFit.cover,
+                      ));
+                },
+              );
+            }).toList(),
           ),
+          // SizedBox(
+          //   height: height,
+          //   width: width,
+          //   child: PageView.builder(
+          //     controller: controller,
+          //     itemCount: widget.banners?.files?.length ?? 0,
+          //     itemBuilder: (context, index) {
+          //       return NetworkImageWithLoader(
+          //         widget.banners?.files?[index].fileId ?? "",
+          //         isBaseUrl: true,
+          //         fit: BoxFit.cover,
+          //       );
+          //     },
+          //   ),
+          // ),
           Positioned(
               bottom: 0,
               width: MediaQuery.of(context).size.width,
@@ -85,6 +113,32 @@ class _ListBannerState extends State<ListBanner> {
                   ),
                 ),
               )),
+          // if (widget.banners?.files != null &&
+          //     widget.banners!.files!.length > 1)
+          //   Positioned(
+          //     bottom: 0,
+          //     left: 0,
+          //     right: 0,
+          //     child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: widget.banners!.files!.asMap().entries.map((entry) {
+          //         return GestureDetector(
+          //           onTap: () => _controller.animateToPage(entry.key),
+          //           child: Container(
+          //             width: _current == entry.key ? 30.0 : 9.0,
+          //             height: 9.0,
+          //             margin: const EdgeInsets.symmetric(
+          //                 vertical: 8.0, horizontal: 2.0),
+          //             decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(12),
+          //                 color: _current == entry.key
+          //                     ? const Color(0xffEB8564)
+          //                     : Color(0xffFBCABB)),
+          //           ),
+          //         );
+          //       }).toList(),
+          //     ),
+          //   ),
           if ((widget.banners?.files?.length ?? 0) > 1)
             Positioned(
               bottom: 0,
@@ -92,7 +146,7 @@ class _ListBannerState extends State<ListBanner> {
               left: 0,
               right: 0,
               child: Center(
-                child: SmoothPageIndicator(
+                child: AnimatedSmoothIndicator(
                   effect: const ExpandingDotsEffect(
                     dotHeight: 8,
                     dotWidth: 8,
@@ -101,8 +155,8 @@ class _ListBannerState extends State<ListBanner> {
                     expansionFactor: 3,
                     spacing: 2,
                   ),
-                  controller: controller,
                   count: widget.banners?.files?.length ?? 0,
+                  activeIndex: _current,
                 ),
               ),
             ),

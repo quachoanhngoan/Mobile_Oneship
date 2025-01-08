@@ -17,6 +17,7 @@ abstract class AuthRepository {
   Future<UserM?> login(RequestLoginDto request);
   Future<UserM?> loginSms(RequestLoginSms request);
   Future<UserM?> profile();
+  Future<bool> updateProfile(String? name, String? avatar);
 }
 
 class AuthImpl implements AuthRepository {
@@ -59,5 +60,20 @@ class AuthImpl implements AuthRepository {
         isAuth: true);
 
     return UserM.fromMap(httpResponse.data ?? {});
+  }
+
+  @override
+  Future<bool> updateProfile(String? name, String? avatar) async {
+    final avatarS = avatar == "" ? null : avatar;
+    final httpResponse = await _clientDio.patch(AuthUrl.profile,
+        data: {
+          if (name != null) "name": name,
+          "avatarId": avatarS,
+        },
+        // isShowError: false,
+        isTranformData: true,
+        isAuth: true);
+
+    return httpResponse.statusCode == 200;
   }
 }

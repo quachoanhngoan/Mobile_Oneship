@@ -73,17 +73,17 @@ class Themings {
       color: Colors.black,
     ),
   );
-  static final labelSmall = TextStyle(
-    fontSize: 16.sp,
+  static const labelSmall = TextStyle(
+    fontSize: 14,
     fontWeight: FontWeight.w600,
-    color: Colors.black,
+    color: AppColors.textColor,
     wordSpacing: 0.1,
     letterSpacing: 0.1,
   );
-  static final labelMedium = TextStyle(
-    fontSize: 18.sp,
+  static const labelMedium = TextStyle(
+    fontSize: 16,
     fontWeight: FontWeight.w600,
-    color: Colors.black,
+    color: AppColors.textColor,
   );
   static final ThemeData lightTheme = ThemeData(
     // useMaterial3: false,

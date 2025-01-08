@@ -45,6 +45,7 @@ class InfoUser extends StatelessWidget {
                       child: NetworkImageWithLoader(
                         state.userData?.avatarId ?? "",
                         radius: 300,
+                        isBaseUrl: true,
                         fit: BoxFit.cover,
                       ),
                     );
