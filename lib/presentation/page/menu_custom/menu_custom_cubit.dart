@@ -28,6 +28,7 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
     try {
       final request = LinkFoodRequest(
         productStatus: "active",
+        status: "active",
         approvalStatus: "approved",
       );
       final response = await repository.getListMenu(request);

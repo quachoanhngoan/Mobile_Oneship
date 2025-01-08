@@ -49,6 +49,7 @@ abstract class MenuRepository {
 
 class MenuRepositoryImp implements MenuRepository {
   final DioUtil _clientDio;
+
   MenuRepositoryImp(this._clientDio);
 
   @override
@@ -163,7 +164,7 @@ class MenuRepositoryImp implements MenuRepository {
       {required int id}) async {
     try {
       final httpRequest = await _clientDio.patch("${AuthUrl.products}/$id",
-          queryParameters: request.removeNullValues());
+          data: request.removeNullValues());
       return FoodUpdateResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;

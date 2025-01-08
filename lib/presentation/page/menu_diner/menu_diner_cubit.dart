@@ -17,6 +17,7 @@ import 'domain/menu_domain.dart';
 
 class MenuDinerCubit extends Cubit<MenuDinerState> {
   final MenuRepository repository;
+
   MenuDinerCubit(this.repository) : super(const MenuDinerState());
 
   late PageController mainController;
@@ -76,6 +77,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       List<DataMenuTypeDomain> listAllMenu = [];
       for (var type in MenuType.values) {
         final request = LinkFoodRequest(
+            status: "active",
             productStatus: type.productStatus,
             approvalStatus: type.approvalStatus);
         final response = await repository.getListMenu(request);
@@ -94,7 +96,6 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       {required MenuType type, required int productCategoryId}) async {
     try {
       emit(state.copyWith(isLoading: true));
-      await Future.delayed(const Duration(milliseconds: 500));
       if (state.listFoodByMenu?.type == type &&
           state.listFoodByMenu?.idSellected == productCategoryId) {
         emit(state.copyWith(isHideListFoodByMenu: !state.isHideListFoodByMenu));
@@ -104,6 +105,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
             approvalStatus: type.approvalStatus,
             productCategoryId: productCategoryId);
         final response = await repository.detailFoodByMenu(request);
+        await Future.delayed(const Duration(milliseconds: 500));
         emit(state.copyWith(
             listFoodByMenu: ListFoodByMenuDomain(
                 idSellected: productCategoryId,
@@ -159,11 +161,12 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       {bool isHide = true, required int productCategoryId}) async {
     try {
       final request = FoodRegisterMenuRequest(
-          status: isHide ? "inactive" : "active",
-          name: item.name,
-          price: item.price.toDouble(),
-          imageId: item.imageId,
-          productCategoryId: productCategoryId);
+        status: isHide ? "inactive" : "active",
+        name: item.name,
+        price: item.price.toDouble(),
+        imageId: item.imageId,
+        productCategoryId: productCategoryId,
+      );
 
       final httpRequest =
           await repository.updateFoodInMenu(request, id: item.id);

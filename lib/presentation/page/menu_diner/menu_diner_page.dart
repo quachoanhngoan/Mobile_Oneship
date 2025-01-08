@@ -163,6 +163,7 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
 class _MenuWidget extends StatelessWidget {
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _MenuWidget({required this.bloc, required this.state});
 
   @override
@@ -378,6 +379,7 @@ class _MenuActiveBody extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _MenuActiveBody(
       {required this.listItem, required this.bloc, required this.state});
 
@@ -505,10 +507,15 @@ class _MenuActiveBody extends StatelessWidget {
 
 class _CardDetailMenu extends StatelessWidget {
   final Widget? actionWidget;
+  final bool isActive;
   final Function(MenuFoodResponseItem)? hideClick;
   final MenuFoodResponseItem item;
+
   const _CardDetailMenu(
-      {this.actionWidget, required this.item, this.hideClick});
+      {this.actionWidget,
+      required this.item,
+      this.hideClick,
+      this.isActive = true});
 
   @override
   Widget build(BuildContext context) {
@@ -706,7 +713,7 @@ class _CardDetailMenu extends StatelessWidget {
                                         },
                                         title: "Thay đổi trạng thái",
                                         listSubTitle: [
-                                          "Bạn có chắc chắn muốn ẩn món ",
+                                          "Bạn có chắc chắn muốn ${isActive ? "ẩn" : "hiển thị"} món ",
                                           "\"${item.name}\"",
                                           " trên ứng dụng khách hàng không?"
                                         ],
@@ -726,7 +733,11 @@ class _CardDetailMenu extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8)),
                               child: itemAction.title != null
                                   ? Text(
-                                      itemAction.title!,
+                                      itemAction != DetailMenuActionType.hide
+                                          ? itemAction.title!
+                                          : isActive
+                                              ? itemAction.title!
+                                              : "Hiển thị",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
@@ -758,6 +769,7 @@ class _MenuNotRegisteredBody extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _MenuNotRegisteredBody(
       {required this.listItem, required this.state, required this.bloc});
 
@@ -925,7 +937,11 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                       state.listFoodByMenu!.listFoodByMenu![inxDetail];
                   return _CardDetailMenu(
                     item: itemDetail,
-                    hideClick: (item) {},
+                    isActive: false,
+                    hideClick: (value) {
+                      bloc.hideOrShowMenuFood(value,
+                          productCategoryId: listItem[index].id, isHide: false);
+                    },
                   );
                 })
               ]
@@ -939,6 +955,7 @@ class _MenuPendingApprove extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _MenuPendingApprove(
       {required this.listItem, required this.state, required this.bloc});
 
@@ -1016,6 +1033,7 @@ class _MenuItemUnSuccess extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _MenuItemUnSuccess(
       {required this.listItem, required this.state, required this.bloc});
 
@@ -1262,6 +1280,7 @@ class _MenuItemUnSuccess extends StatelessWidget {
 class _GroupToppingWidget extends StatelessWidget {
   final MenuDinerState state;
   final MenuDinerCubit bloc;
+
   const _GroupToppingWidget({required this.bloc, required this.state});
 
   @override
@@ -1420,6 +1439,7 @@ class _ToppingEmptyBody extends StatelessWidget {
 class _ToppingActiveBody extends StatelessWidget {
   final List<GrAddToppingResponse> listItem;
   final MenuDinerCubit bloc;
+
   const _ToppingActiveBody({required this.bloc, required this.listItem});
 
   @override
@@ -1541,6 +1561,7 @@ class _ToppingActiveBody extends StatelessWidget {
 class _ToppingNotRegisteredBody extends StatelessWidget {
   final List<GrAddToppingResponse> listItem;
   final MenuDinerCubit bloc;
+
   const _ToppingNotRegisteredBody({required this.bloc, required this.listItem});
 
   @override

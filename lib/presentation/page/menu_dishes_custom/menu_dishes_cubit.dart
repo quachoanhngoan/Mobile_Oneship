@@ -281,6 +281,7 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
   getListCategory() async {
     try {
       final request = LinkFoodRequest(
+        status: "active",
         productStatus: "active",
         approvalStatus: "approved",
       );

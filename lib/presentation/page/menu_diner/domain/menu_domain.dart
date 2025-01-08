@@ -43,19 +43,18 @@ extension MenuTypeExtension on MenuType {
 
   String get productStatus {
     switch (this) {
-      case MenuType.active:
-        return "active";
-      default:
+      case MenuType.notRegistered:
         return "inactive";
+      default:
+        return "active";
     }
   }
 
   String get approvalStatus {
     switch (this) {
       case MenuType.active:
-        return "approved";
       case MenuType.notRegistered:
-        return "draft";
+        return "approved";
       case MenuType.pendingApproval:
         return "pending";
       case MenuType.unsuccessful:
@@ -144,12 +143,14 @@ extension DetailMenuActionTypeEx on DetailMenuActionType {
 class DataToppingTypeDomain {
   final ToppingType type;
   final List<GrAddToppingResponse>? data;
+
   DataToppingTypeDomain(this.data, this.type);
 }
 
 class DataMenuTypeDomain {
   final MenuType type;
   final List<ItemLinkFood>? data;
+
   DataMenuTypeDomain(this.data, this.type);
 }
 
@@ -157,5 +158,6 @@ class ListFoodByMenuDomain {
   final List<MenuFoodResponseItem>? listFoodByMenu;
   final MenuType? type;
   final int? idSellected;
+
   ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
 }

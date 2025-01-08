@@ -16,6 +16,7 @@ import '../../data/model/menu/linkfood_request.dart';
 
 class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   final MenuRepository repository;
+
   ToppingCustomCubit(this.repository) : super(const ToppingCustomState());
 
   final TextEditingController nameGroupToppingController =
@@ -179,8 +180,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
         } on DioException catch (e) {
           log("check error: ${e.message}");
           emit(state.copyWith(
-              showErrorComplete:
-                  e.message == "NAME_EXISTED" ? "Tên nhóm topping đã tồn tại" : e.message));
+              showErrorComplete: e.message == "NAME_EXISTED"
+                  ? "Tên nhóm topping đã tồn tại"
+                  : e.message));
         }
       } else {
         try {
@@ -212,8 +214,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
         } on DioException catch (e) {
           log("check error: ${e.message}");
           emit(state.copyWith(
-              showErrorComplete:
-                  e.message == "NAME_EXISTED" ? "Tên nhóm topping đã tồn tại" : e.message));
+              showErrorComplete: e.message == "NAME_EXISTED"
+                  ? "Tên nhóm topping đã tồn tại"
+                  : e.message));
         }
       }
     }
@@ -254,6 +257,7 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     try {
       final request = LinkFoodRequest(
         includeProducts: true,
+        status: "active",
         productStatus: "active",
         approvalStatus: "approved",
       );
