@@ -12,6 +12,7 @@ class MenuDinerState extends Equatable {
   final bool isHideListFoodByMenu;
   final String? errorEditTopping;
   final bool isLoading;
+  final String? textErrorToast;
 
   const MenuDinerState({
     this.toppingType = ToppingType.active,
@@ -23,6 +24,7 @@ class MenuDinerState extends Equatable {
     this.isHideListFoodByMenu = true,
     this.errorEditTopping,
     this.isLoading = false,
+    this.textErrorToast,
   });
 
   MenuDinerState copyWith({
@@ -35,6 +37,7 @@ class MenuDinerState extends Equatable {
     bool? isHideListFoodByMenu,
     String? errorEditTopping,
     bool? isLoading,
+    String? textErrorToast,
   }) {
     return MenuDinerState(
       toppingType: toppingType ?? this.toppingType,
@@ -46,6 +49,7 @@ class MenuDinerState extends Equatable {
       isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
       errorEditTopping: errorEditTopping,
       isLoading: isLoading ?? false,
+      textErrorToast: textErrorToast,
     );
   }
 
@@ -60,5 +64,6 @@ class MenuDinerState extends Equatable {
         isHideListFoodByMenu,
         errorEditTopping,
         isLoading,
+        textErrorToast,
       ];
 }

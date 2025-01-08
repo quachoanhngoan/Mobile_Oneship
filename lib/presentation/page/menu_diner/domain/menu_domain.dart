@@ -155,8 +155,7 @@ class DataMenuTypeDomain {
 
 class ListFoodByMenuDomain {
   final List<MenuFoodResponseItem>? listFoodByMenu;
-  final MenuType type;
-  final int idSellected;
-  ListFoodByMenuDomain(
-      {required this.idSellected, this.listFoodByMenu, required this.type});
+  final MenuType? type;
+  final int? idSellected;
+  ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
 }

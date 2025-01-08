@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
@@ -550,7 +549,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                       ),
                                       const HSpacing(spacing: 8),
                                       Text(
-                                        "${state.listLinkFood[index].name}(${state.listLinkFood[index].products!.length})",
+                                        "${state.listLinkFood[index].name}(${state.listLinkFood[index].options.length})",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
@@ -559,8 +558,8 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                       ),
                                       const Spacer(),
                                       Icon(
-                                        state.listLinkFood[index].products
-                                                    ?.isNotEmpty ==
+                                        state.listLinkFood[index].options
+                                                    .isNotEmpty ==
                                                 true
                                             ? Icons.keyboard_arrow_down_outlined
                                             : Icons
@@ -572,18 +571,18 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                   ),
                                 ),
                               ),
-                              state.listLinkFood[index].products?.isNotEmpty ==
+                              state.listLinkFood[index].options.isNotEmpty ==
                                       true
                                   ? const VSpacing(spacing: 12)
                                   : Container(),
-                              if (state.listLinkFood[index].products
-                                      ?.isNotEmpty ==
+                              if (state
+                                      .listLinkFood[index].options.isNotEmpty ==
                                   true) ...[
                                 ...List.generate(
-                                    state.listLinkFood[index].products!.length,
+                                    state.listLinkFood[index].options.length,
                                     (inxChild) {
                                   final childItem = state
-                                      .listLinkFood[index].products![inxChild];
+                                      .listLinkFood[index].options[inxChild];
                                   final isSellectChildId = state
                                           .listIdLinkFoodSellected
                                           .firstWhereOrNull(
@@ -640,7 +639,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                             ),
                                           ),
                                         ),
-                                        state.listLinkFood[index].products!
+                                        state.listLinkFood[index].options
                                                         .length -
                                                     1 !=
                                                 inxChild
@@ -679,6 +678,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
+                              _bloc.listIdLinkFoodSellectClear();
                               Get.back();
                             },
                             child: Container(

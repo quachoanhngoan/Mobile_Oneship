@@ -52,6 +52,9 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
           if (state.errorEditTopping != null) {
             context.showErrorDialog(state.errorEditTopping!, context);
           }
+          if (state.textErrorToast != null) {
+            context.showToastDialog(state.textErrorToast!);
+          }
         },
         builder: (context, state) {
           return Stack(
@@ -242,13 +245,13 @@ class _MenuWidget extends StatelessWidget {
                                 listItem: data!, bloc: bloc, state: state);
                           case MenuType.notRegistered:
                             return _MenuNotRegisteredBody(
-                                listItem: data!, state: state);
+                                listItem: data!, state: state, bloc: bloc);
                           case MenuType.pendingApproval:
                             return _MenuPendingApprove(
-                                listItem: data!, state: state);
+                                listItem: data!, state: state, bloc: bloc);
                           case MenuType.unsuccessful:
                             return _MenuItemUnSuccess(
-                                listItem: data!, state: state);
+                                listItem: data!, state: state, bloc: bloc);
                         }
                       }
                       return const _MenuEmptyBody();
@@ -306,7 +309,12 @@ class _MenuWidget extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       context.pushWithNamed(context,
-                          routerName: AppRoutes.menuDishsCustomPage);
+                          routerName: AppRoutes.menuDishsCustomPage,
+                          complete: (value) {
+                        if (value) {
+                          bloc.getAllMenu();
+                        }
+                      });
                     },
                     child: Container(
                       // width: double.infinity,
@@ -402,8 +410,8 @@ class _MenuActiveBody extends StatelessWidget {
                                 return DialogChangeStatus(
                                   done: (isOk) {
                                     if (isOk) {
-                                      // bloc.hideOrShowTopping(listItem[index],
-                                      //     isHide: true);
+                                      bloc.hideShowMenuGroup(listItem[index].id,
+                                          isHide: true);
                                     }
                                     Get.back();
                                   },
@@ -480,7 +488,13 @@ class _MenuActiveBody extends StatelessWidget {
                 ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
                     (inxDetail) {
                   final item = state.listFoodByMenu!.listFoodByMenu![inxDetail];
-                  return _CardDetailMenu(item: item);
+                  return _CardDetailMenu(
+                    item: item,
+                    hideClick: (value) {
+                      bloc.hideOrShowMenuFood(value,
+                          isHide: true, productCategoryId: listItem[index].id);
+                    },
+                  );
                 })
               ]
             ],
@@ -491,8 +505,10 @@ class _MenuActiveBody extends StatelessWidget {
 
 class _CardDetailMenu extends StatelessWidget {
   final Widget? actionWidget;
+  final Function(MenuFoodResponseItem)? hideClick;
   final MenuFoodResponseItem item;
-  const _CardDetailMenu({this.actionWidget, required this.item});
+  const _CardDetailMenu(
+      {this.actionWidget, required this.item, this.hideClick});
 
   @override
   Widget build(BuildContext context) {
@@ -633,7 +649,6 @@ class _CardDetailMenu extends StatelessWidget {
                       StatisticMenuType.values.length - 1 != index
                           ? Container(
                               width: 1,
-                              // height: 36,
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                       begin: Alignment.topCenter,
@@ -683,8 +698,9 @@ class _CardDetailMenu extends StatelessWidget {
                                       return DialogChangeStatus(
                                         done: (isOk) {
                                           if (isOk) {
-                                            // bloc.hideOrShowTopping(listItem[index],
-                                            //     isHide: true);
+                                            if (hideClick != null) {
+                                              hideClick!(item);
+                                            }
                                           }
                                           Get.back();
                                         },
@@ -741,7 +757,9 @@ class _CardDetailMenu extends StatelessWidget {
 class _MenuNotRegisteredBody extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
-  const _MenuNotRegisteredBody({required this.listItem, required this.state});
+  final MenuDinerCubit bloc;
+  const _MenuNotRegisteredBody(
+      {required this.listItem, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -772,8 +790,7 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                               return DialogChangeStatus(
                                 done: (isOk) {
                                   if (isOk) {
-                                    // bloc.hideOrShowTopping(listItem[index],
-                                    //     isHide: true);
+                                    bloc.hideShowMenuGroup(listItem[index].id);
                                   }
                                   Get.back();
                                 },
@@ -871,7 +888,11 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    bloc.getListFoodByMenu(
+                        type: MenuType.notRegistered,
+                        productCategoryId: listItem[index].id);
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     color: AppColors.white,
@@ -902,7 +923,10 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                     (inxDetail) {
                   final itemDetail =
                       state.listFoodByMenu!.listFoodByMenu![inxDetail];
-                  return _CardDetailMenu(item: itemDetail);
+                  return _CardDetailMenu(
+                    item: itemDetail,
+                    hideClick: (item) {},
+                  );
                 })
               ]
             ],
@@ -914,7 +938,9 @@ class _MenuNotRegisteredBody extends StatelessWidget {
 class _MenuPendingApprove extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
-  const _MenuPendingApprove({required this.listItem, required this.state});
+  final MenuDinerCubit bloc;
+  const _MenuPendingApprove(
+      {required this.listItem, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -934,7 +960,11 @@ class _MenuPendingApprove extends StatelessWidget {
                 height: 1,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  bloc.getListFoodByMenu(
+                      type: MenuType.pendingApproval,
+                      productCategoryId: listItem[index].id);
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   color: AppColors.white,
@@ -985,7 +1015,9 @@ class _MenuPendingApprove extends StatelessWidget {
 class _MenuItemUnSuccess extends StatelessWidget {
   final List<ItemLinkFood> listItem;
   final MenuDinerState state;
-  const _MenuItemUnSuccess({required this.listItem, required this.state});
+  final MenuDinerCubit bloc;
+  const _MenuItemUnSuccess(
+      {required this.listItem, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -1054,7 +1086,11 @@ class _MenuItemUnSuccess extends StatelessWidget {
                   ],
                 ),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    bloc.getListFoodByMenu(
+                        type: MenuType.unsuccessful,
+                        productCategoryId: listItem[index].id);
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     color: AppColors.white,

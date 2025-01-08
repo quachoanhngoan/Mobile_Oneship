@@ -270,15 +270,11 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
 
   getLinkFood() async {
     try {
-      final request = LinkFoodRequest(
-        includeProducts: true,
-        productStatus: "active",
-        approvalStatus: "approved",
-      );
-      final response = await repository.getListMenu(request);
+      final request = GetGroupToppingRequest(status: "active");
+      final response = await repository.getGroupTopping(request);
       emit(state.copyWith(listLinkFood: response?.items));
     } on DioException catch (e) {
-      log("error getLinkFood: ${e.message}");
+      log("getAllTopping error: ${e.message}");
     }
   }
 
@@ -305,7 +301,7 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
                 .where((e) => e.id == id)
                 .toList()
                 .firstOrNull
-                ?.products ??
+                ?.options ??
             [];
         for (var detail in listDetailLinkFood) {
           listId.removeWhere((e) => e.id == detail.id);
@@ -318,7 +314,7 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
                 .where((e) => e.id == id)
                 .toList()
                 .firstOrNull
-                ?.products ??
+                ?.options ??
             [];
         for (var detail in listDetailLinkFood) {
           listId.add(ProductAddTopping(id: detail.id));
@@ -345,9 +341,8 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
         if (linkFoodMain.id == product.id) {
           listNameSellect.add(linkFoodMain.name);
         } else {
-          if (linkFoodMain.products != null &&
-              linkFoodMain.products!.isNotEmpty) {
-            for (var detail in linkFoodMain.products!) {
+          if (linkFoodMain.options.isNotEmpty) {
+            for (var detail in linkFoodMain.options) {
               if (detail.id == product.id) {
                 listNameSellect.add(detail.name);
               }
@@ -377,7 +372,16 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
       final listIdLinkFoodSellected = List.of(state.listIdLinkFoodSellected);
       final listIdSellected = <int>[];
       for (var id in listIdLinkFoodSellected) {
-        listIdSellected.add(id.id);
+        final listLinkFood = List.of(state.listLinkFood);
+        for (var itemMainFood in listLinkFood) {
+          if (itemMainFood.options.isNotEmpty) {
+            final listResultId =
+                itemMainFood.options.where((e) => e.id == id.id);
+            if (listResultId.isNotEmpty) {
+              listIdSellected.add(id.id);
+            }
+          }
+        }
       }
 
       final request = FoodRegisterMenuRequest(
@@ -390,8 +394,14 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
           description: descriptionController.text,
           optionIds: listIdSellected);
       final httpRequest = await repository.registerFoodInMenu(request);
+      if (httpRequest != null) {
+        emit(state.copyWith(isCompleteSuccess: true));
+      } else {
+        emit(state.copyWith(isCompleteError: "Không thể tạo món"));
+      }
     } on DioException catch (e) {
       log("saveInfoClick error: ${e.message}");
+      emit(state.copyWith(isCompleteError: e.message));
     }
   }
 
@@ -400,86 +410,61 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
     if (mondayTimeEndController.text.isNotNullOrEmpty &&
         mondayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 0,
-          openTime: _convertStringToDateTime(mondayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(mondayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 1,
+          openTime: _convertTimeStringToMinute(mondayTimeStartController.text),
+          closeTime: _convertTimeStringToMinute(mondayTimeEndController.text)));
     }
 
     if (tuesdayTimeEndController.text.isNotNullOrEmpty &&
         tuesdayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 1,
-          openTime: _convertStringToDateTime(tuesdayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(tuesdayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 2,
+          openTime: _convertTimeStringToMinute(tuesdayTimeStartController.text),
+          closeTime:
+              _convertTimeStringToMinute(tuesdayTimeEndController.text)));
     }
     if (webnesdayTimeEndController.text.isNotNullOrEmpty &&
         webnesdayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 2,
-          openTime: _convertStringToDateTime(webnesdayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(webnesdayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 3,
+          openTime:
+              _convertTimeStringToMinute(webnesdayTimeStartController.text),
+          closeTime:
+              _convertTimeStringToMinute(webnesdayTimeEndController.text)));
     }
     if (thursdayTimeEndController.text.isNotNullOrEmpty &&
         thursdayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 3,
-          openTime: _convertStringToDateTime(thursdayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(thursdayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 4,
+          openTime:
+              _convertTimeStringToMinute(thursdayTimeStartController.text),
+          closeTime:
+              _convertTimeStringToMinute(thursdayTimeEndController.text)));
     }
     if (fridayTimeEndController.text.isNotNullOrEmpty &&
         fridayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 4,
-          openTime: _convertStringToDateTime(fridayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(fridayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 5,
+          openTime: _convertTimeStringToMinute(fridayTimeStartController.text),
+          closeTime: _convertTimeStringToMinute(fridayTimeEndController.text)));
     }
     if (saturdayTimeEndController.text.isNotNullOrEmpty &&
         saturdayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 5,
-          openTime: _convertStringToDateTime(saturdayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(saturdayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 6,
+          openTime:
+              _convertTimeStringToMinute(saturdayTimeStartController.text),
+          closeTime:
+              _convertTimeStringToMinute(saturdayTimeEndController.text)));
     }
     if (sundayTimeEndController.text.isNotNullOrEmpty &&
         sundayTimeStartController.text.isNotNullOrEmpty) {
       _listTimeSellect.add(ProductWorkingTime(
-          dayOfWeek: 6,
-          openTime: _convertStringToDateTime(sundayTimeStartController.text)
-              .microsecondsSinceEpoch,
-          closeTime: _convertStringToDateTime(sundayTimeEndController.text)
-              .microsecondsSinceEpoch));
+          dayOfWeek: 0,
+          openTime: _convertTimeStringToMinute(sundayTimeStartController.text),
+          closeTime: _convertTimeStringToMinute(sundayTimeEndController.text)));
     }
   }
-
-  // int _convertStringToTimestamp(String time) {
-  //   List<String> parts = time.split(":");
-  //   int hour = int.parse(parts[0]);
-  //   int minute = int.parse(parts[1]);
-
-  //   DateTime now = DateTime.now();
-
-  //   DateTime dateTime = DateTime(
-  //     now.year,
-  //     now.month,
-  //     now.day,
-  //     hour,
-  //     minute,
-  //   );
-
-  //   return dateTime.millisecondsSinceEpoch;
-  // }
 
   DateTime _convertStringToDateTime(String time) {
     List<String> parts = time.split(":");
@@ -495,5 +480,10 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
       hour,
       minute,
     );
+  }
+
+  int _convertTimeStringToMinute(String time) {
+    final dateTime = _convertStringToDateTime(time);
+    return dateTime.hour * 60 + dateTime.minute;
   }
 }

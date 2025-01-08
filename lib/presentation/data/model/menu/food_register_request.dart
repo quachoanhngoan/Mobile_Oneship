@@ -1,22 +1,22 @@
 class FoodRegisterMenuRequest {
-  String name;
+  String? name;
   String? description;
-  double price;
+  double? price;
   String status;
-  int productCategoryId;
-  String imageId;
-  bool isNormalTime;
+  int? productCategoryId;
+  String? imageId;
+  bool? isNormalTime;
   List<ProductWorkingTime>? productWorkingTimes;
   List<int>? optionIds;
 
   FoodRegisterMenuRequest({
-    required this.name,
+    this.name,
     this.description,
-    required this.price,
+    this.price,
     this.status = "active",
-    this.productCategoryId = 0,
-    required this.imageId,
-    required this.isNormalTime,
+    this.productCategoryId,
+    this.imageId,
+    this.isNormalTime,
     this.productWorkingTimes,
     this.optionIds,
   });

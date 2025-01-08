@@ -618,7 +618,6 @@ class DialogChangeStatus extends StatelessWidget {
     return Dialog(
       backgroundColor: AppColors.transparent,
       child: Container(
-        // padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: AppColors.white,
@@ -634,7 +633,7 @@ class DialogChangeStatus extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .labelLarge
-                    ?.copyWith(fontWeight: FontWeight.w700),
+                    ?.copyWith(fontWeight: FontWeight.w600, fontSize: 20),
               ),
             ),
             const VSpacing(spacing: 12),
@@ -646,9 +645,10 @@ class DialogChangeStatus extends StatelessWidget {
                   return TextSpan(
                       text: listSubTitle[index],
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontSize: 14,
                           fontWeight: index % 2 == 0
-                              ? FontWeight.w500
-                              : FontWeight.w700));
+                              ? FontWeight.w400
+                              : FontWeight.w600));
                 })),
                 textAlign: TextAlign.center,
               ),
@@ -686,7 +686,7 @@ class DialogChangeStatus extends StatelessWidget {
                               .textTheme
                               .bodySmall
                               ?.copyWith(
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   color: AppColors.color988),
                           textAlign: TextAlign.center,
                         ),

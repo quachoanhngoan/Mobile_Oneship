@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/food_register_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/food_register_response.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/food_update_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_menu_register_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/hide_menu_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
@@ -35,7 +38,13 @@ abstract class MenuRepository {
   Future<GrMenuRegisterResponse?> registerGroupMenu(
       GrMenuRegisterRequest request);
 
-  Future registerFoodInMenu(FoodRegisterMenuRequest request);
+  Future<FoodRegisterMenuResponse?> registerFoodInMenu(
+      FoodRegisterMenuRequest request);
+
+  Future<FoodUpdateResponse?> updateFoodInMenu(FoodRegisterMenuRequest request,
+      {required int id});
+
+  Future<HideMenuResponse?> hideOrShowMenuGroup(int id, {bool isHide = false});
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -135,12 +144,43 @@ class MenuRepositoryImp implements MenuRepository {
   }
 
   @override
-  Future registerFoodInMenu(FoodRegisterMenuRequest request) async {
+  Future<FoodRegisterMenuResponse?> registerFoodInMenu(
+      FoodRegisterMenuRequest request) async {
     try {
       final httpRequest = await _clientDio.post(AuthUrl.products,
           data: request.removeNullValues());
-      log("check data: ${httpRequest.data}");
-      // return GrMenuRegisterResponse.fromJson(httpRequest.data ?? {});
+      return FoodRegisterMenuResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<FoodUpdateResponse?> updateFoodInMenu(FoodRegisterMenuRequest request,
+      {required int id}) async {
+    try {
+      final httpRequest = await _clientDio.patch("${AuthUrl.products}/$id",
+          queryParameters: request.removeNullValues());
+      return FoodUpdateResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<HideMenuResponse?> hideOrShowMenuGroup(int id,
+      {bool isHide = false}) async {
+    try {
+      final pathUrl = isHide ? "hide-products" : "show-products";
+      final httpRequest =
+          await _clientDio.patch("${AuthUrl.productCategories}/$id/$pathUrl");
+      return HideMenuResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
     } catch (e) {

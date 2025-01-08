@@ -1,12 +1,14 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/food_register_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
 
 import '../../data/model/menu/gr_topping_response.dart';
@@ -79,7 +81,10 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
         final response = await repository.getListMenu(request);
         listAllMenu.add(DataMenuTypeDomain(response?.items, type));
       }
-      emit(state.copyWith(listMenu: listAllMenu));
+      emit(state.copyWith(
+          listMenu: listAllMenu,
+          listFoodByMenu: ListFoodByMenuDomain(
+              idSellected: null, type: null, listFoodByMenu: [])));
     } on DioException catch (e) {
       log("getAllMenu error: ${e.message}");
     }
@@ -88,6 +93,8 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   getListFoodByMenu(
       {required MenuType type, required int productCategoryId}) async {
     try {
+      emit(state.copyWith(isLoading: true));
+      await Future.delayed(const Duration(milliseconds: 500));
       if (state.listFoodByMenu?.type == type &&
           state.listFoodByMenu?.idSellected == productCategoryId) {
         emit(state.copyWith(isHideListFoodByMenu: !state.isHideListFoodByMenu));
@@ -102,10 +109,13 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
                 idSellected: productCategoryId,
                 type: type,
                 listFoodByMenu: response?.items),
-            isHideListFoodByMenu: false));
+            isHideListFoodByMenu: false,
+            textErrorToast:
+                response?.items.isNotEmpty == true ? null : "Không có món ăn"));
       }
     } on DioException catch (e) {
       log("getListMenuFood error: ${e.message}");
+      emit(state.copyWith(textErrorToast: e.message));
     }
   }
 
@@ -141,6 +151,50 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       }
     } on DioException catch (e) {
       log("deleteGroupTopping error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  hideOrShowMenuFood(MenuFoodResponseItem item,
+      {bool isHide = true, required int productCategoryId}) async {
+    try {
+      final request = FoodRegisterMenuRequest(
+          status: isHide ? "inactive" : "active",
+          name: item.name,
+          price: item.price.toDouble(),
+          imageId: item.imageId,
+          productCategoryId: productCategoryId);
+
+      final httpRequest =
+          await repository.updateFoodInMenu(request, id: item.id);
+      if (httpRequest != null) {
+        await getAllMenu();
+        emit(state.copyWith(isLoading: false));
+      } else {
+        emit(state.copyWith(
+            errorEditTopping: "Không thể thay đổi trạng thái topping"));
+      }
+    } on DioException catch (e) {
+      log("hideOrShowMenuFood error: ${e.message}");
+      emit(state.copyWith(errorEditTopping: e.message));
+    }
+  }
+
+  hideShowMenuGroup(int id, {bool isHide = false}) async {
+    try {
+      final httpRequest =
+          await repository.hideOrShowMenuGroup(id, isHide: isHide);
+      if (httpRequest != null) {
+        await getAllMenu();
+        emit(state.copyWith(
+            textErrorToast:
+                "${isHide ? "Ẩn" : "Hiển thị"} tất cả các món thành công"));
+      } else {
+        emit(state.copyWith(
+            errorEditTopping: "Không thể thay đổi trạng thái topping"));
+      }
+    } on DioException catch (e) {
+      log("hideOrShowMenuFood error: ${e.message}");
       emit(state.copyWith(errorEditTopping: e.message));
     }
   }

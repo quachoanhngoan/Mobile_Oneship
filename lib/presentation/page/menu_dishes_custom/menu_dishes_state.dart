@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/model/time_sell_type.dart';
 
@@ -17,7 +18,7 @@ class MenuDishesState extends Equatable {
   final String? errorTimeSellect;
   final bool isFilledSellectTime;
   final bool isFilledAllInfo;
-  final List<ItemLinkFood> listLinkFood;
+  final List<GrAddToppingResponse> listLinkFood;
   final List<ProductAddTopping> listIdLinkFoodSellected;
   final String? imageId;
 
@@ -51,7 +52,7 @@ class MenuDishesState extends Equatable {
     TimeSellType? typeTime,
     String? errorTimeSellect,
     bool? isFilledSellectTime,
-    List<ItemLinkFood>? listLinkFood,
+    List<GrAddToppingResponse>? listLinkFood,
     bool? isFilledAllInfo,
     String? imageId,
     List<ProductAddTopping>? listIdLinkFoodSellected,
