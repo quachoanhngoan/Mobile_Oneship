@@ -4,12 +4,14 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/food_register_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
 
 import '../../data/model/menu/gr_topping_response.dart';
 import '../../data/repository/menu_repository.dart';
@@ -26,11 +28,14 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   late PageController groupToppingController;
   late PageController menuController;
 
+  late TextEditingController nameMenuEditController;
+
   init() async {
     emit(state.copyWith(isLoading: true));
     mainController = PageController();
     groupToppingController = PageController();
     menuController = PageController();
+    nameMenuEditController = TextEditingController();
     await getAllTopping();
     await getAllMenu();
     emit(state.copyWith(isLoading: false));
@@ -254,5 +259,32 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       log("hideOrShowMenuFood error: ${e.message}");
       emit(state.copyWith(errorEditTopping: e.message));
     }
+  }
+
+  editMenuGroupName(int id) async {
+    if (nameMenuEditController.text.isNotNullOrEmpty) {
+      try {
+        emit(state.copyWith(isLoading: true));
+        final httpRequest =
+            await repository.updateGroupMenu(nameMenuEditController.text, id);
+        if (httpRequest != null) {
+          // emit(state.copyWith(textErrorToast: "Sửa tên nhóm thành công"));
+          emit(state.copyWith(editNameGroupSuccess: true));
+        } else {
+          emit(state.copyWith(errorEditTopping: "Không thể sửa tên nhóm"));
+        }
+      } on DioException catch (e) {
+        log("hideOrShowMenuFood error: ${e.message}");
+
+        emit(state.copyWith(
+            errorEditTopping:
+                e.message == "NAME_EXISTED" ? "Tên đã tồn tại" : e.message));
+      }
+    }
+  }
+
+  validateNameGrMenuEdit() {
+    emit(state.copyWith(
+        showClearNameEditMenu: nameMenuEditController.text.isNotNullOrEmpty));
   }
 }

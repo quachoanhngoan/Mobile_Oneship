@@ -12,10 +12,12 @@ class MenuDinerState extends Equatable {
   final ListFoodByMenuDomain? listFoodByMenu;
   final bool isHideListFoodByMenu;
   final String? errorEditTopping;
+  final bool editNameGroupSuccess;
   final bool isLoading;
   final String? textErrorToast;
   final bool errorRemoveGroup;
   final DetailFoodResponse? detailFoodData;
+  final bool showClearNameEditMenu;
 
   const MenuDinerState({
     this.toppingType = ToppingType.active,
@@ -30,6 +32,8 @@ class MenuDinerState extends Equatable {
     this.errorRemoveGroup = false,
     this.textErrorToast,
     this.detailFoodData,
+    this.showClearNameEditMenu = true,
+    this.editNameGroupSuccess = false,
   });
 
   MenuDinerState copyWith({
@@ -45,20 +49,25 @@ class MenuDinerState extends Equatable {
     bool? isLoading,
     String? textErrorToast,
     DetailFoodResponse? detailFoodData,
+    bool? showClearNameEditMenu,
+    bool? editNameGroupSuccess,
   }) {
     return MenuDinerState(
-        toppingType: toppingType ?? this.toppingType,
-        menuMainType: menuMainType ?? this.menuMainType,
-        menuType: menuType ?? this.menuType,
-        listTopping: listTopping ?? this.listTopping,
-        listMenu: listMenu ?? this.listMenu,
-        listFoodByMenu: listFoodByMenu ?? this.listFoodByMenu,
-        isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
-        errorEditTopping: errorEditTopping,
-        errorRemoveGroup: errorRemoveGroup ?? false,
-        isLoading: isLoading ?? false,
-        textErrorToast: textErrorToast,
-        detailFoodData: detailFoodData);
+      toppingType: toppingType ?? this.toppingType,
+      menuMainType: menuMainType ?? this.menuMainType,
+      menuType: menuType ?? this.menuType,
+      listTopping: listTopping ?? this.listTopping,
+      listMenu: listMenu ?? this.listMenu,
+      listFoodByMenu: listFoodByMenu ?? this.listFoodByMenu,
+      isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
+      errorEditTopping: errorEditTopping,
+      errorRemoveGroup: errorRemoveGroup ?? false,
+      isLoading: isLoading ?? false,
+      textErrorToast: textErrorToast,
+      detailFoodData: detailFoodData,
+      showClearNameEditMenu: showClearNameEditMenu ?? true,
+      editNameGroupSuccess: editNameGroupSuccess ?? false,
+    );
   }
 
   @override
@@ -75,5 +84,7 @@ class MenuDinerState extends Equatable {
         isLoading,
         textErrorToast,
         detailFoodData,
+        showClearNameEditMenu,
+        editNameGroupSuccess,
       ];
 }

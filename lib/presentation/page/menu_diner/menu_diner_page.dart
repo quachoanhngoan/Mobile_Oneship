@@ -11,6 +11,7 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_respo
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/menu_edit_sheet.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
@@ -54,6 +55,11 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
           }
           if (state.textErrorToast != null) {
             context.showToastDialog(state.textErrorToast!);
+          }
+          if (state.editNameGroupSuccess) {
+            context.popScreen();
+            context.showToastDialog("Sửa tên nhóm thành công");
+            bloc.getAllMenu();
           }
           if (state.errorRemoveGroup) {
             showDialog(
@@ -478,7 +484,16 @@ class _MenuActiveBody extends StatelessWidget {
                         ),
                       ),
                       CustomSlidableAction(
-                        onPressed: (_) {},
+                        onPressed: (_) {
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              builder: (_) {
+                                return MenuEditSheet(
+                                    bloc: bloc, item: listItem[index]);
+                              });
+                        },
                         backgroundColor: AppColors.color988,
                         padding: EdgeInsets.zero,
                         child: Text(
@@ -861,7 +876,14 @@ class _MenuNotRegisteredBody extends StatelessWidget {
                     ),
                     CustomSlidableAction(
                       onPressed: (_) {
-                        log("edit group menu not register");
+                        showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            builder: (_) {
+                              return MenuEditSheet(
+                                  bloc: bloc, item: listItem[index]);
+                            });
                       },
                       backgroundColor: AppColors.color988,
                       padding: EdgeInsets.zero,
@@ -1165,7 +1187,16 @@ class _MenuItemUnSuccess extends StatelessWidget {
                   motion: const ScrollMotion(),
                   children: [
                     CustomSlidableAction(
-                      onPressed: (_) {},
+                      onPressed: (_) {
+                        showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            builder: (_) {
+                              return MenuEditSheet(
+                                  bloc: bloc, item: listItem[index]);
+                            });
+                      },
                       backgroundColor: AppColors.color988,
                       padding: EdgeInsets.zero,
                       child: Text(

@@ -11,6 +11,7 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/hide_menu_resp
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
+import 'package:oneship_merchant_app/presentation/data/model/menu/menu_edit_response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/remove_menu_response.dart';
 
 import '../model/menu/category_global_response.dart';
@@ -56,6 +57,8 @@ abstract class MenuRepository {
   Future<RemoveMenuResponse?> removeGroupMenu(int id);
 
   Future<DetailFoodResponse?> getDetailFoodById(int id);
+
+  Future<MenuEditResponse?> updateGroupMenu(String name, int id);
 }
 
 class MenuRepositoryImp implements MenuRepository {
@@ -220,6 +223,8 @@ class MenuRepositoryImp implements MenuRepository {
     try {
       final httpRequest = await _clientDio.delete("${AuthUrl.products}/$id");
       return FoodRegisterMenuResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
     } catch (e) {
       log("detailFoodByMenu error: $e");
     }
@@ -232,6 +237,8 @@ class MenuRepositoryImp implements MenuRepository {
       final httpRequest =
           await _clientDio.delete("${AuthUrl.productCategories}/$id");
       return RemoveMenuResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
     } catch (e) {
       log("detailFoodByMenu error: $e");
     }
@@ -243,6 +250,22 @@ class MenuRepositoryImp implements MenuRepository {
     try {
       final httpRequest = await _clientDio.get("${AuthUrl.products}/$id");
       return DetailFoodResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
+    } catch (e) {
+      log("detailFoodByMenu error: $e");
+    }
+    return null;
+  }
+
+  @override
+  Future<MenuEditResponse?> updateGroupMenu(String name, int id) async {
+    try {
+      final httpRequest = await _clientDio
+          .patch("${AuthUrl.productCategories}/$id", data: {"name": name});
+      return MenuEditResponse.fromJson(httpRequest.data ?? {});
+    } on DioException catch (_) {
+      rethrow;
     } catch (e) {
       log("detailFoodByMenu error: $e");
     }
