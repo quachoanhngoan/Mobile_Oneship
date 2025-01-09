@@ -5,7 +5,7 @@ import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
-import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field%20copy.dart';
+import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field.dart';
 
 import '../menu_diner_cubit.dart';
 

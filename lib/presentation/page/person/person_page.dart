@@ -72,7 +72,7 @@ class PersonPage extends StatelessWidget {
               ),
               const Positioned(
                 bottom: 60,
-                right: 0,
+                right: 20,
                 child: ChangeStoreButton(),
               ),
               //padding from aspect ratio

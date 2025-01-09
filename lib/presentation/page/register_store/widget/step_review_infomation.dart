@@ -151,10 +151,10 @@ class StepReviewInfomation extends StatelessWidget {
                           title: "Email",
                           value: bloc.state.representative?.email,
                         ),
-                        _info(
-                          title: "Mã số thuế cá nhân",
-                          value: bloc.state.representative?.taxCode,
-                        ),
+                        // _info(
+                        //   title: "Mã số thuế cá nhân",
+                        //   value: bloc.state.representative?.taxCode,
+                        // ),
                         _info(
                           title: "Mã số thuế",
                           value: bloc.state.representative?.taxCode,
