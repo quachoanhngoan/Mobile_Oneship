@@ -261,6 +261,7 @@ class MenuRepositoryImp implements MenuRepository {
   @override
   Future<MenuEditResponse?> updateGroupMenu(String name, int id) async {
     try {
+      // log("checl url: ${AuthUrl.productCategories}/$id");
       final httpRequest = await _clientDio
           .patch("${AuthUrl.productCategories}/$id", data: {"name": name});
       return MenuEditResponse.fromJson(httpRequest.data ?? {});

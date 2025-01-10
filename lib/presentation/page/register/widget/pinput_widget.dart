@@ -104,7 +104,7 @@ class _PinputWidgetState extends State<PinputWidget> {
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12.sp,
                         color: AppColors.color988,
-                        fontWeight: FontWeight.w700))
+                        fontWeight: FontWeight.w600))
               ]
             ])),
           )

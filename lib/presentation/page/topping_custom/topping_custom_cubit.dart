@@ -102,14 +102,15 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     emit(state.copyWith(indexOptionTopping: index));
   }
 
-  validateNameTopping(String value) {
-    if (value.isNullOrEmpty) {
+  validateNameTopping() {
+    if (nameToppingController.text.isNullOrEmpty) {
       emit(state.copyWith(errorNameTopping: null, isToppingClearButton: false));
     } else {
       final listTopping = state.listTopping;
       var isConflictName = false;
       for (var item in listTopping) {
-        if (item.name?.toLowerCase() == value.toLowerCase()) {
+        if (item.name?.toLowerCase() ==
+            nameToppingController.text.toLowerCase()) {
           isConflictName = true;
         }
       }
@@ -123,8 +124,9 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     }
   }
 
-  validatePriceTopping(String value) {
-    emit(state.copyWith(isPriceClearButton: value.isNotNullOrEmpty));
+  validatePriceTopping() {
+    emit(state.copyWith(
+        isPriceClearButton: priceController.text.isNotNullOrEmpty));
   }
 
   saveInfoClick() async {

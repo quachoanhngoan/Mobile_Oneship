@@ -16,6 +16,8 @@ class AppTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? errorText;
+  final bool? readOnly;
+
   const AppTextFormField(
       {super.key,
       required this.isRequired,
@@ -29,7 +31,8 @@ class AppTextFormField extends StatelessWidget {
       this.onChanged,
       this.keyboardType,
       this.inputFormatters,
-      this.errorText});
+      this.errorText,
+      this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +53,7 @@ class AppTextFormField extends StatelessWidget {
         enabled: enabled,
         autocorrect: false,
         inputFormatters: inputFormatters,
+        readOnly: readOnly ?? false,
         decoration: InputDecoration(
           suffixIcon: suffix,
           // floatingLabelBehavior: FloatingLabelBehavior.always,

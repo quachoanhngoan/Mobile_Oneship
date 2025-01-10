@@ -811,9 +811,21 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                   ),
                                 ),
                               ),
-                              widget.listItem[index].products?.isNotEmpty ==
+                              // widget.listItem[index].products?.isNotEmpty ==
+                              //         true
+                              //     ? const VSpacing(spacing: 12)
+                              //     : Container(),
+                              state.listLinkFood[index].products?.isNotEmpty ==
                                       true
-                                  ? const VSpacing(spacing: 12)
+                                  ? const VSpacing(spacing: 6)
+                                  : Container(),
+                              state.listLinkFood[index].products?.isNotEmpty ==
+                                      true
+                                  ? Divider(
+                                      color:
+                                          AppColors.textGray.withOpacity(0.3),
+                                      height: 16,
+                                      thickness: 1.2)
                                   : Container(),
                               if (widget.listItem[index].products?.isNotEmpty ==
                                   true) ...[
@@ -838,6 +850,10 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                           },
                                           child: Container(
                                             color: AppColors.transparent,
+                                            // margin:
+                                            //     const EdgeInsets.only(left: 30),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6),
                                             child: Row(
                                               children: <Widget>[
                                                 Container(
@@ -878,15 +894,74 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                             ),
                                           ),
                                         ),
-                                        widget.listItem[index].products!
+                                        state.listLinkFood[index].products!
                                                         .length -
                                                     1 !=
                                                 inxChild
-                                            ? const Divider(
-                                                color: AppColors.textGray,
-                                                height: 1,
-                                                thickness: 1)
+                                            ? Divider(
+                                                color: AppColors.textGray
+                                                    .withOpacity(0.3),
+                                                height: 16,
+                                                thickness: 1.2)
                                             : Container()
+                                        // GestureDetector(
+                                        //   onTap: () {
+                                        //     _bloc.listIdLinkFoodSellect(
+                                        //         childItem.id);
+                                        //   },
+                                        //   child: Container(
+                                        //     color: AppColors.transparent,
+                                        //     padding: const EdgeInsets.symmetric(
+                                        //         vertical: 6),
+                                        //     child: Row(
+                                        //       children: <Widget>[
+                                        //         Container(
+                                        //           width: 16,
+                                        //           height: 16,
+                                        //           decoration: BoxDecoration(
+                                        //               color: isSellectChildId
+                                        //                   ? AppColors.color988
+                                        //                   : AppColors
+                                        //                       .transparent,
+                                        //               borderRadius:
+                                        //                   BorderRadius.circular(
+                                        //                       4),
+                                        //               border: Border.all(
+                                        //                   color: isSellectChildId
+                                        //                       ? AppColors
+                                        //                           .transparent
+                                        //                       : AppColors
+                                        //                           .textGray,
+                                        //                   width: 1)),
+                                        //           child: const Icon(
+                                        //             Icons.check_outlined,
+                                        //             color: AppColors.white,
+                                        //             size: 12,
+                                        //           ),
+                                        //         ),
+                                        //         const HSpacing(spacing: 8),
+                                        //         Text(
+                                        //           childItem.name,
+                                        //           style: Theme.of(context)
+                                        //               .textTheme
+                                        //               .bodySmall
+                                        //               ?.copyWith(
+                                        //                   fontWeight:
+                                        //                       FontWeight.w500),
+                                        //         ),
+                                        //       ],
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        // widget.listItem[index].products!
+                                        //                 .length -
+                                        //             1 !=
+                                        //         inxChild
+                                        //     ? const Divider(
+                                        //         color: AppColors.textGray,
+                                        //         height: 1,
+                                        //         thickness: 1)
+                                        //     : Container()
                                       ],
                                     ),
                                   );
@@ -985,7 +1060,7 @@ class _AddTopping extends StatelessWidget {
             hintText: "Tên topping",
             controller: bloc.nameToppingController,
             onChanged: (value) {
-              bloc.validateNameTopping(value);
+              bloc.validateNameTopping();
               bloc.checkFilledInfomation();
             },
             isRequired: true,
@@ -994,6 +1069,8 @@ class _AddTopping extends StatelessWidget {
                 ? IconButton(
                     onPressed: () {
                       bloc.nameToppingController.clear();
+                      bloc.validateNameTopping();
+                      bloc.checkFilledInfomation();
                     },
                     icon: Icon(
                       Icons.cancel_outlined,
@@ -1005,7 +1082,7 @@ class _AddTopping extends StatelessWidget {
             hintText: "Giá bán",
             controller: bloc.priceController,
             onChanged: (value) {
-              bloc.validatePriceTopping(value);
+              bloc.validatePriceTopping();
               bloc.checkFilledInfomation();
             },
             isRequired: true,
@@ -1017,6 +1094,8 @@ class _AddTopping extends StatelessWidget {
                 ? IconButton(
                     onPressed: () {
                       bloc.priceController.clear();
+                      bloc.validatePriceTopping();
+                      bloc.checkFilledInfomation();
                     },
                     icon: Icon(
                       Icons.cancel_outlined,

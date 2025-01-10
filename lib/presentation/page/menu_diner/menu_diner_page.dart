@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
@@ -22,7 +23,6 @@ import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/menu_u
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
-import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_base.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_search.dart';
 
 import '../../../injector.dart';
@@ -127,11 +127,28 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                           if (state.isShowSearch) ...[
                             Expanded(
                                 child: TextFieldSearch(
+                                    controller: bloc.searchController,
+                                    showClearButton: bloc
+                                        .searchController.text.isNotNullOrEmpty,
                                     onChange: (value) {
                                       bloc.searchFoodByMenu(value);
                                     },
-                                    clearTextClicked: () {},
+                                    clearTextClicked: () {
+                                      bloc.searchController.clear();
+                                    },
                                     hintText: "Tìm kiếm tên sản phẩm")),
+                            const HSpacing(spacing: 8),
+                            GestureDetector(
+                                onTap: () {
+                                  bloc.hideOrShowSearch();
+                                },
+                                child: Text(
+                                  "Huỷ",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(color: AppColors.color988),
+                                )),
                             const HSpacing(spacing: 12)
                           ] else ...[
                             Expanded(

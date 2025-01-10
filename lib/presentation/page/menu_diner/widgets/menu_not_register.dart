@@ -41,14 +41,14 @@ class MenuNotRegisteredBody extends StatelessWidget {
                   height: 40,
                   child: Row(
                     children: List.generate(ActionNotRegisterType.values.length,
-                        (index) {
-                      final itemAction = ActionNotRegisterType.values[index];
+                        (it) {
+                      final itemAction = ActionNotRegisterType.values[it];
                       return Expanded(
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.only(
                               right: ActionNotRegisterType.values.length - 1 !=
-                                      index
+                                      it
                                   ? 8
                                   : 0),
                           child: GestureDetector(
@@ -60,13 +60,13 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                 case ActionNotRegisterType.show:
                                   showDialog(
                                       context: context,
-                                      builder: (context) {
+                                      builder: (_) {
                                         return DialogChangeStatus(
                                           done: (isOk) {
                                             if (isOk) {
                                               bloc.hideOrShowMenuFood(item,
                                                   productCategoryId:
-                                                      listItem[index].id,
+                                                      listItem[it].id,
                                                   isHide: false);
                                             }
                                             Get.back();
@@ -226,7 +226,7 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                 },
                                 title: "Xoá danh mục",
                                 listSubTitle: [
-                                  "Bạn có muốn xoá sản phẩm ",
+                                  "Bạn có muốn xoá danh mục ",
                                   "\"${listItem[index].name}\"",
                                   " không?"
                                 ],

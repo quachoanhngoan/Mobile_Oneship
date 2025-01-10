@@ -4,6 +4,7 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/helper/validate.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/avatar_user.dart';
+import 'package:oneship_merchant_app/presentation/page/account/widget/phone_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
@@ -20,6 +21,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController name;
   String? avatarId;
+
   @override
   void initState() {
     name = TextEditingController(
@@ -118,8 +120,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         AppTextFormField(
                           onTap: () {
-                            print("Chuyển sang quên mật khẩu");
-                            //TODO : Chuyển sang quên mật khẩu
+                            showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                useSafeArea: true,
+                                builder: (_) {
+                                  return PhoneEditProfile(
+                                      phone: state.userData?.phone ?? "");
+                                });
                           },
                           isRequired: false,
                           enabled: false,

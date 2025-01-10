@@ -74,12 +74,6 @@ class RegisterCubit extends Cubit<RegisterState> {
       errorPass = null;
     }
 
-    // if (repass.isNotNullOrEmpty) {
-    //   errorRePass = userValidate.passValid(repass!);
-    // } else {
-    //   errorRePass = null;
-    // }
-
     if (pass.isNotNullOrEmpty && repass.isNotNullOrEmpty && errorPass == null) {
       if (pass == repass) {
         emit(state.copyWith(

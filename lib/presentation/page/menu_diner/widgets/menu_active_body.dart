@@ -243,8 +243,8 @@ class MenuActiveBody extends StatelessWidget {
                       height: 40,
                       child: Row(
                         children: List.generate(
-                            DetailMenuActionType.values.length, (index) {
-                          final itemAction = DetailMenuActionType.values[index];
+                            DetailMenuActionType.values.length, (it) {
+                          final itemAction = DetailMenuActionType.values[it];
                           return Expanded(
                             flex:
                                 itemAction == DetailMenuActionType.more ? 2 : 5,
@@ -252,7 +252,7 @@ class MenuActiveBody extends StatelessWidget {
                               padding: EdgeInsets.only(
                                   right:
                                       DetailMenuActionType.values.length - 1 !=
-                                              index
+                                              it
                                           ? 8
                                           : 0),
                               child: GestureDetector(

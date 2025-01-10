@@ -248,9 +248,9 @@ class MenuItemUnSuccess extends StatelessWidget {
                                   }
                                   Get.back();
                                 },
-                                title: "Xoá sản phẩm",
+                                title: "Xoá danh mục",
                                 listSubTitle: [
-                                  "Bạn có muốn xoá sản phẩm ",
+                                  "Bạn có muốn xoá danh mục",
                                   "\"${listItem[index].name}\"",
                                   " không?"
                                 ],
@@ -458,7 +458,7 @@ class MenuItemUnSuccess extends StatelessWidget {
                         ),
                         const VSpacing(spacing: 8),
                         Text(
-                          "*Hình ảnh sản phẩm không hợp lệ",
+                          itemDetail.reason ?? "",
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall

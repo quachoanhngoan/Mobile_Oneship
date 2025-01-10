@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -299,20 +297,26 @@ class PhoneRegister extends StatelessWidget {
   final FocusNode focusNode;
   final Function(String?) onChange;
   final Function suffixClick;
+  final String? hintText;
+  final String? title;
+
   const PhoneRegister(
       {super.key,
       required this.phoneController,
       required this.isForcus,
       required this.onChange,
       required this.suffixClick,
-      required this.focusNode});
+      required this.focusNode,
+      this.hintText,
+      this.title});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Text(
-          "Chúng tôi sẽ gửi mã xác nhận OTP đến số điện thoại hoặc email đăng ký.",
+          title ??
+              "Chúng tôi sẽ gửi mã xác nhận OTP đến số điện thoại hoặc email đăng ký.",
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: AppColors.color723, fontWeight: FontWeight.w500),
         ),
@@ -320,7 +324,7 @@ class PhoneRegister extends StatelessWidget {
         TextFieldBase(
           focusNode: focusNode,
           controller: phoneController,
-          hintText: "Nhập SĐT hoặc email",
+          hintText: hintText ?? "Nhập SĐT hoặc email",
           onChanged: (value) {
             onChange(value);
           },
@@ -356,6 +360,7 @@ class OtpRegister extends StatelessWidget {
   final Function() timeoutPressed;
   final Function() timeOutListener;
   final String phone;
+
   const OtpRegister(
       {super.key,
       required this.phone,
@@ -478,6 +483,7 @@ class TextFieldPassRegister extends StatelessWidget {
   final bool? isNumber;
   final bool? readOnly;
   final Function? onTap;
+
   const TextFieldPassRegister({
     super.key,
     this.focusNode,

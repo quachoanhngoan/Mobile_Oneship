@@ -10,13 +10,15 @@ class TextFieldSearch extends StatelessWidget {
   final Color? colorPrefixIcon;
   final Function clearTextClicked;
   final Function(String) onChange;
+  final bool showClearButton;
   const TextFieldSearch(
       {super.key,
       this.controller,
       this.hintText,
       this.colorPrefixIcon,
       required this.clearTextClicked,
-      required this.onChange});
+      required this.onChange,
+      required this.showClearButton});
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +48,14 @@ class TextFieldSearch extends StatelessWidget {
                 color: colorPrefixIcon ?? AppColors.color2B3,
               ),
             ),
-            suffixIcon: IconButton(
-                onPressed: () {
-                  clearTextClicked();
-                },
-                icon: const Icon(Icons.clear_outlined,
-                    size: 16, color: AppColors.color988)),
+            suffixIcon: showClearButton
+                ? IconButton(
+                    onPressed: () {
+                      clearTextClicked();
+                    },
+                    icon: const Icon(Icons.clear_outlined,
+                        size: 16, color: AppColors.color988))
+                : const SizedBox.shrink(),
             enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: AppColors.borderColor),
                 borderRadius: BorderRadius.all(Radius.circular(8))),

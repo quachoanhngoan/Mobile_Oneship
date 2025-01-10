@@ -28,6 +28,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   late PageController menuController;
 
   late TextEditingController nameMenuEditController;
+  late TextEditingController searchController;
 
   init() async {
     emit(state.copyWith(isLoading: true));
@@ -36,6 +37,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     menuController = PageController();
     // searchMainController = PageController();
     nameMenuEditController = TextEditingController();
+    searchController = TextEditingController();
     await getAllTopping();
     await getAllMenu();
     emit(state.copyWith(isLoading: false));
@@ -267,7 +269,10 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       }
     } on DioException catch (e) {
       log("hideOrShowMenuFood error: ${e.message}");
-      emit(state.copyWith(errorEditTopping: e.message));
+      emit(state.copyWith(
+          errorEditTopping: e.message == "CATEGORY_HAS_PRODUCTS"
+              ? "Danh mục chứa sản phẩm đang hoạt động."
+              : e.message));
     }
   }
 
