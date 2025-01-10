@@ -8,7 +8,7 @@ import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.da
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
-import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field%20copy.dart';
+import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -78,94 +78,99 @@ class _EditProfilePageState extends State<EditProfilePage> {
             body: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               width: MediaQuery.of(context).size.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  AvatarUser(
-                    imageUrl: avatarId,
-                    avatarId: (value) {
-                      avatarId = value;
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    children: [
-                      AppTextFormField(
-                        isRequired: false,
-                        enabled: true,
-                        hintText: 'Họ và tên',
-                        controller: name,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const AppTextFormField(
-                        isRequired: false,
-                        enabled: false,
-                        hintText: 'Vai trò',
-                        filled: true,
-                        initialValue: "Chủ quán",
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      AppTextFormField(
-                        onTap: () {
-                          print("Chuyển sang quên mật khẩu");
-                          //TODO : Chuyển sang quên mật khẩu
-                        },
-                        isRequired: false,
-                        enabled: false,
-                        hintText: 'Số điện thoại',
-                        initialValue: formatPhone(state.userData?.phone ?? ""),
-                        suffix: IconButton(
-                            onPressed: () {},
-                            icon: const ImageAssetWidget(
-                                image: AppAssets.imagesIconsArrowRight01,
-                                width: 20)),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      AppTextFormField(
-                        onTap: () {
-                          //TODO : Chuyển sang quên mật khẩu
-                        },
-                        isRequired: false,
-                        enabled: false,
-                        hintText: 'Email',
-                        initialValue: state.userData?.email ?? "Chưa cập nhật",
-                        suffix: IconButton(
-                            onPressed: () {},
-                            icon: const ImageAssetWidget(
-                                image: AppAssets.imagesIconsArrowRight01,
-                                width: 20)),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      AppButton(
-                        isEnable: true,
-                        onPressed: () {
-                          // Get.toNamed(AppRoutes.changePassword);
-                        },
-                        margin: const EdgeInsets.only(top: 10),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        backgroundColor: Colors.white,
-                        textColor: AppColors.primary,
-                        borderSide: const BorderSide(color: AppColors.primary),
-                        text: "Đổi mật khẩu",
-                      )
-                    ],
-                  )
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    AvatarUser(
+                      imageUrl: avatarId,
+                      avatarId: (value) {
+                        avatarId = value;
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
+                      children: [
+                        AppTextFormField(
+                          isRequired: false,
+                          enabled: true,
+                          hintText: 'Họ và tên',
+                          controller: name,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const AppTextFormField(
+                          isRequired: false,
+                          enabled: false,
+                          hintText: 'Vai trò',
+                          filled: true,
+                          initialValue: "Chủ quán",
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        AppTextFormField(
+                          onTap: () {
+                            print("Chuyển sang quên mật khẩu");
+                            //TODO : Chuyển sang quên mật khẩu
+                          },
+                          isRequired: false,
+                          enabled: false,
+                          hintText: 'Số điện thoại',
+                          initialValue:
+                              formatPhone(state.userData?.phone ?? ""),
+                          suffix: IconButton(
+                              onPressed: () {},
+                              icon: const ImageAssetWidget(
+                                  image: AppAssets.imagesIconsArrowRight01,
+                                  width: 20)),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        AppTextFormField(
+                          onTap: () {
+                            //TODO : Chuyển sang quên mật khẩu
+                          },
+                          isRequired: false,
+                          enabled: false,
+                          hintText: 'Email',
+                          initialValue:
+                              state.userData?.email ?? "Chưa cập nhật",
+                          suffix: IconButton(
+                              onPressed: () {},
+                              icon: const ImageAssetWidget(
+                                  image: AppAssets.imagesIconsArrowRight01,
+                                  width: 20)),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        AppButton(
+                          isEnable: true,
+                          onPressed: () {
+                            // Get.toNamed(AppRoutes.changePassword);
+                          },
+                          margin: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          backgroundColor: Colors.white,
+                          textColor: AppColors.primary,
+                          borderSide:
+                              const BorderSide(color: AppColors.primary),
+                          text: "Đổi mật khẩu",
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

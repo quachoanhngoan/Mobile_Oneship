@@ -56,6 +56,7 @@ class RegisterShopInfo extends StatelessWidget {
                     bloc.setInfomatinoStore(state.infomation?.copyWith(
                       streetName: value,
                     ));
+                    print("streetName: $value");
                   },
                 ),
                 const VSpacing(spacing: 16),
@@ -320,7 +321,6 @@ class _ProvicesWidget extends StatelessWidget {
                               bloc.state.infomation?.copyWith(
                                 ward: 0,
                                 district: 0,
-                                streetName: '',
                               ),
                             );
                             Get.back();
@@ -358,7 +358,6 @@ class _ProvicesWidget extends StatelessWidget {
                     bloc.setInfomatinoStore(bloc.state.infomation?.copyWith(
                       district: 0,
                       ward: 0,
-                      streetName: '',
                       homeAndStreet: '',
                     ));
                     bloc.setdistricts([]);
