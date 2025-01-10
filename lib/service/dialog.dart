@@ -60,75 +60,80 @@ class DialogService {
   }
 
   showNotificationSuccess(String title) {
-    fToast.showToast(
-      toastDuration: const Duration(seconds: 2),
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: AppColors.primary,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const ImageAssetWidget(
-                  image: AppAssets.imagesIconsTeenyiconsTickCircleSolid,
-                  width: 20,
-                  height: 20),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                title,
-                style: Get.theme.textTheme.bodySmall!.copyWith(
-                  color: Colors.white,
+    //widget biding
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      fToast.showToast(
+        toastDuration: const Duration(seconds: 2),
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: AppColors.primary,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const ImageAssetWidget(
+                    image: AppAssets.imagesIconsTeenyiconsTickCircleSolid,
+                    width: 20,
+                    height: 20),
+                const SizedBox(
+                  width: 10,
                 ),
-              )
-            ],
+                Text(
+                  title,
+                  style: Get.theme.textTheme.bodySmall!.copyWith(
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      gravity: ToastGravity.CENTER,
-    );
+        gravity: ToastGravity.CENTER,
+      );
+    });
   }
 
   showNotificationError(String title) {
-    fToast.showToast(
-      toastDuration: const Duration(seconds: 2),
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          width: Get.width,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: AppColors.error,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.error,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                title,
-                style: Get.theme.textTheme.bodySmall!.copyWith(
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      fToast.showToast(
+        toastDuration: const Duration(seconds: 2),
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: Get.width,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: AppColors.error,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.error,
                   color: Colors.white,
-                  fontSize: 14,
                 ),
-              )
-            ],
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  title,
+                  style: Get.theme.textTheme.bodySmall!.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      gravity: ToastGravity.CENTER,
-    );
+        gravity: ToastGravity.CENTER,
+      );
+    });
   }
 }
 

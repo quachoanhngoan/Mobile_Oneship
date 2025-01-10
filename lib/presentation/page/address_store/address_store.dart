@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
+import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/address.model.dart';
+import 'package:oneship_merchant_app/presentation/page/address_store/bloc/edit_address_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 
 import 'edit_address.dart';
@@ -13,35 +17,56 @@ class AddressStorePage extends StatefulWidget {
 }
 
 class _AddressStorePageState extends State<AddressStorePage> {
+  late EditAddressBloc _editAddressBloc;
+  @override
+  void initState() {
+    _editAddressBloc = injector.get<EditAddressBloc>();
+    _editAddressBloc.getAddresss();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         backgroundColor: Color(0xffF5F5F5),
         appBar: AppBarAuth(
           title: "Địa chỉ",
         ),
-        body: Column(
-          children: [
-            _AddressITem(),
-            SizedBox(
-              height: 5,
-            ),
-            _AddressITem(),
-          ],
+        body: BlocBuilder<EditAddressBloc, EditAddressState>(
+          bloc: _editAddressBloc,
+          builder: (context, state) {
+            return ListView.builder(
+              itemCount: state.addressStores.length,
+              itemBuilder: (context, index) {
+                return _AddressITem(
+                  address: state.addressStores[index],
+                  bloc: _editAddressBloc,
+                );
+              },
+            );
+          },
         ));
   }
 }
 
 class _AddressITem extends StatelessWidget {
+  final AddressStoreM? address;
+  final EditAddressBloc bloc;
   const _AddressITem({
     super.key,
+    this.address,
+    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => const EditAddressPage());
+        Get.to(() => EditAddressPage(
+              address: address,
+            ))?.then((value) {
+          bloc.getAddresss();
+        });
       },
       child: Container(
         padding: const EdgeInsets.all(15),
@@ -58,7 +83,7 @@ class _AddressITem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Địa chỉ nhận hàng",
+                        address?.store?.name ?? "",
                         style: Theme.of(context).textTheme.labelSmall!.copyWith(
                               fontWeight: FontWeight.w700,
                               color: AppColors.textGray2,
@@ -68,7 +93,7 @@ class _AddressITem extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        "64/32 Nguyễn Văn Cừ, Quận. Phú Nhuận, Thành phố Hồ Chí Minh",
+                        address?.address ?? "",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontSize: 12,
                               color: AppColors.color373,
@@ -79,7 +104,7 @@ class _AddressITem extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        "Nguyễn Trần Hoàng Long  |  0901234567",
+                        "${address?.store?.name ?? ""} | ${address?.store?.phoneNumber ?? ""}",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontSize: 12,
                               color: AppColors.textGray2,
@@ -111,7 +136,7 @@ class _AddressITem extends StatelessWidget {
                 ),
               ),
               child: Text(
-                "Nhận hàng",
+                address?.getNameAddresss() ?? "",
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: const Color(0xffE15D33),
                     fontWeight: FontWeight.w400,

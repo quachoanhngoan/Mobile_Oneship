@@ -214,7 +214,7 @@ class ListMenuAccountPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _MenuItem(
-            title: "Chính sách và điều khoản của GOO+",
+            title: "Chính sách và Điều khoản của GOO+",
             image: AppAssets.imagesIconsSquareUserCheckAlt,
           ),
           SizedBox(
