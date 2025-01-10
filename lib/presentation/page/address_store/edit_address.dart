@@ -61,7 +61,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
                 isEnable: true,
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  _editAddressBloc.updateAddress();
+                  _editAddressBloc.updateAddress(
+                    widget.address?.type ?? "",
+                  );
                 },
                 margin: const EdgeInsets.only(top: 10),
                 padding:

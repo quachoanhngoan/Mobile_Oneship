@@ -30,8 +30,13 @@ class EditAddressBloc extends Cubit<EditAddressState> {
     }
   }
 
-  Future<void> updateAddress() async {
+  Future<void> updateAddress(String type) async {
     setUpdateStatus(EState.loading);
+    setRequestUpdateAddress(
+      state.requestUpdateAddress.copyWith(
+        type: type,
+      ),
+    );
     try {
       final response = await execute(
         () => repository.updateAddresss(

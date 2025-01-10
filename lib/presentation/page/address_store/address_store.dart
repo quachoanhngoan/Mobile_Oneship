@@ -40,6 +40,7 @@ class _AddressStorePageState extends State<AddressStorePage> {
               itemBuilder: (context, index) {
                 return _AddressITem(
                   address: state.addressStores[index],
+                  bloc: _editAddressBloc,
                 );
               },
             );
@@ -50,9 +51,11 @@ class _AddressStorePageState extends State<AddressStorePage> {
 
 class _AddressITem extends StatelessWidget {
   final AddressStoreM? address;
+  final EditAddressBloc bloc;
   const _AddressITem({
     super.key,
     this.address,
+    required this.bloc,
   });
 
   @override
@@ -61,7 +64,9 @@ class _AddressITem extends StatelessWidget {
       onTap: () {
         Get.to(() => EditAddressPage(
               address: address,
-            ));
+            ))?.then((value) {
+          bloc.getAddresss();
+        });
       },
       child: Container(
         padding: const EdgeInsets.all(15),
