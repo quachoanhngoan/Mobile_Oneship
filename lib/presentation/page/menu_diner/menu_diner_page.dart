@@ -259,10 +259,11 @@ class _MenuWidget extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = MenuType.values[index];
                       final titleCount = state.listMenu
-                          ?.firstWhereOrNull((e) => e.type == item)
-                          ?.totalProducts
-                          .toString()
-                          .padLeft(2, "0");
+                              ?.firstWhereOrNull((e) => e.type == item)
+                              ?.totalProducts
+                              .toString()
+                              .padLeft(2, "0") ??
+                          "00";
                       0;
                       return Row(
                         children: <Widget>[
@@ -276,7 +277,7 @@ class _MenuWidget extends StatelessWidget {
                                     const EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
                                   item.title.replaceAll(
-                                      RegExp(r'#VALUE'), '$titleCount'),
+                                      RegExp(r'#VALUE'), titleCount),
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
