@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/response_login_store_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/search.model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/store/address.model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/create_store.response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/utils.dart';
+import 'package:oneship_merchant_app/presentation/page/address_store/bloc/request_update_address.dart';
 
 import '../model/register_store/provinces_model.dart';
 
@@ -20,6 +24,7 @@ mixin AuthUrl {
   static const String ward = "/api/v1/wards";
   static const String register = "/api/v1/merchant/stores";
   static const String loginStore = "/api/v1/merchant/auth/login-store";
+  static const String address = "/api/v1/merchant/store-addresses";
 }
 
 abstract class StoreRepository {
@@ -41,6 +46,10 @@ abstract class StoreRepository {
   Future<bool> deleteStore(int id);
   Future<CreateStoreResponse> getStoreById(int id);
   Future<ResponseLoginStoreModel?> loginStore(int idStore);
+
+  Future<List<AddressStoreM>> getAddresss();
+  Future<bool> updateAddresss(RequestUpdateAddress body);
+  Future<SearchResponse> searchAddress({String? query});
 }
 
 class StoreImpl implements StoreRepository {
@@ -153,42 +162,36 @@ class StoreImpl implements StoreRepository {
     );
     return ResponseLoginStoreModel.fromMap(result.data ?? {});
   }
-}
 
-class ResponseLoginStoreModel {
-  final String? accessToken;
-  final String? refreshToken;
-  ResponseLoginStoreModel({
-    this.accessToken,
-    this.refreshToken,
-  });
-
-  ResponseLoginStoreModel copyWith({
-    String? accessToken,
-    String? refreshToken,
-  }) {
-    return ResponseLoginStoreModel(
-      accessToken: accessToken ?? this.accessToken,
-      refreshToken: refreshToken ?? this.refreshToken,
+  @override
+  Future<List<AddressStoreM>> getAddresss() async {
+    final httpResponse = await _clientDio.get(
+      AuthUrl.address,
+      isTranformData: true,
+      isAuth: true,
     );
+    return List<AddressStoreM>.from(
+        httpResponse.data?.map((x) => AddressStoreM.fromJson(x)) ?? []);
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'accessToken': accessToken,
-      'refreshToken': refreshToken,
-    };
-  }
-
-  factory ResponseLoginStoreModel.fromMap(Map<String, dynamic> map) {
-    return ResponseLoginStoreModel(
-      accessToken: map['accessToken'],
-      refreshToken: map['refreshToken'],
+  @override
+  Future<bool> updateAddresss(RequestUpdateAddress body) async {
+    final httpResponse = await _clientDio.put(
+      data: body.toJson(),
+      AuthUrl.address,
+      isTranformData: true,
+      isAuth: true,
     );
+    return httpResponse.statusCode == 200;
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory ResponseLoginStoreModel.fromJson(String source) =>
-      ResponseLoginStoreModel.fromMap(json.decode(source));
+  @override
+  Future<SearchResponse> searchAddress({String? query}) async {
+    final httpResponse = await _clientDio.get(
+      "/api/v1/mapbox/geocoding/v5/mapbox.places/${query!}",
+      isTranformData: true,
+      isAuth: true,
+    );
+    return SearchResponse.fromJson(httpResponse.data ?? {});
+  }
 }

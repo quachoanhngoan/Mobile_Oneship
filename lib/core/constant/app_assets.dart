@@ -108,6 +108,8 @@ class AppAssets {
 
   static const String imagesIconsCircleInformation = "assets/images/icons/circle-information.png";
 
+  static const String imagesIconsCurrentLocation = "assets/images/icons/Current-location.png";
+
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";
 
   static const String imagesIconsEye = "assets/images/icons/eye.png";
@@ -144,6 +146,10 @@ class AppAssets {
 
   static const String imagesIconsIcon = "assets/images/icons/Icon.png";
 
+  static const String imagesIconsLocation = "assets/images/icons/location.png";
+
+  static const String imagesIconsLocationSlash = "assets/images/icons/location-slash.png";
+
   static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";
 
   static const String imagesIconsMedal = "assets/images/icons/medal.png";
@@ -151,6 +157,8 @@ class AppAssets {
   static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
+
+  static const String imagesIconsSearchAlt1 = "assets/images/icons/search-alt-1.png";
 
   static const String imagesIconsSquareUser = "assets/images/icons/square-user.png";
 
@@ -163,6 +171,8 @@ class AppAssets {
   static const String imagesIconsTeenyiconsTickCircleSolid = "assets/images/icons/teenyicons_tick-circle-solid.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
+
+  static const String imagesImgEmptySearch = "assets/images/img_empty_search.png";
 
   static const String imagesImgGrmenuEmpty = "assets/images/img_grmenu_empty.png";
 

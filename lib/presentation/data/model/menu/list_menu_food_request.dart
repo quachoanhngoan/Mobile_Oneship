@@ -5,16 +5,16 @@ class ListMenuFoodRequest {
   String status;
   String approvalStatus;
   bool? isDisplay;
-  int productCategoryId;
+  int? productCategoryId;
 
   ListMenuFoodRequest({
-    this.limit = 10,
+    this.limit = 0,
     this.page = 1,
     this.search,
     required this.status,
     required this.approvalStatus,
     this.isDisplay,
-    required this.productCategoryId,
+    this.productCategoryId,
   });
 
   factory ListMenuFoodRequest.fromJson(Map<String, dynamic> json) {

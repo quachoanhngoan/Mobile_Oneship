@@ -7,6 +7,7 @@ import 'package:oneship_merchant_app/presentation/data/repository/auth_repositor
 import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
+import 'package:oneship_merchant_app/presentation/page/address_store/bloc/edit_address_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
@@ -101,6 +102,7 @@ void blocModule() {
   injector.registerFactory<MenuCustomCubit>(() => MenuCustomCubit(injector()));
 
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
+  injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
 }
 
 PrefManager get prefManager => injector<PrefManager>();
