@@ -59,26 +59,26 @@ class _ListCategoryPersonWidgetState extends State<ListCategoryPersonWidget> {
         title: "Cài đặt máy in",
         icon: AppAssets.imagesIconsGearAlt,
       ),
-      _Category(
-        onTap: () {},
-        title: "Cài đặt vận chuyển",
-        icon: AppAssets.imagesIconsGearAlt,
-      ),
-      _Category(
-        onTap: () {},
-        title: "Cài đặt thông báo",
-        icon: AppAssets.imagesIconsGearAlt,
-      ),
-      _Category(
-        onTap: () {},
-        title: "Cài đặt khác",
-        icon: AppAssets.imagesIconsGearAlt,
-      ),
-      _Category(
-        onTap: () {},
-        title: "Cài đặt khác",
-        icon: AppAssets.imagesIconsGearAlt,
-      ),
+      // _Category(
+      //   onTap: () {},
+      //   title: "Cài đặt vận chuyển",
+      //   icon: AppAssets.imagesIconsGearAlt,
+      // ),
+      // _Category(
+      //   onTap: () {},
+      //   title: "Cài đặt thông báo",
+      //   icon: AppAssets.imagesIconsGearAlt,
+      // ),
+      // _Category(
+      //   onTap: () {},
+      //   title: "Cài đặt khác",
+      //   icon: AppAssets.imagesIconsGearAlt,
+      // ),
+      // _Category(
+      //   onTap: () {},
+      //   title: "Cài đặt khác",
+      //   icon: AppAssets.imagesIconsGearAlt,
+      // ),
     ];
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -169,7 +169,7 @@ class _Category extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 75,
+        width: MediaQuery.of(context).size.width / 5.2,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
