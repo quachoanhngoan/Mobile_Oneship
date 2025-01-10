@@ -1,8 +1,10 @@
 class LinkfoodResponse {
   List<ItemLinkFood> items;
   int total;
+  int? totalProducts;
 
-  LinkfoodResponse({required this.items, required this.total});
+  LinkfoodResponse(
+      {required this.items, required this.total, this.totalProducts});
 
   factory LinkfoodResponse.fromJson(Map<String, dynamic> json) {
     var itemsList = json['items'] as List;
@@ -12,6 +14,7 @@ class LinkfoodResponse {
     return LinkfoodResponse(
       items: items,
       total: json['total'],
+      totalProducts: json['totalProducts'],
     );
   }
 
@@ -19,6 +22,7 @@ class LinkfoodResponse {
     return {
       'items': items.map((item) => item.toJson()).toList(),
       'total': total,
+      'totalProducts': totalProducts,
     };
   }
 }

@@ -11,7 +11,6 @@ import 'package:oneship_merchant_app/presentation/data/model/menu/linkfood_reque
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/list_menu_food_response.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
-import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
 
 import '../../data/model/menu/gr_topping_response.dart';
 import '../../data/repository/menu_repository.dart';
@@ -35,6 +34,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     mainController = PageController();
     groupToppingController = PageController();
     menuController = PageController();
+    // searchMainController = PageController();
     nameMenuEditController = TextEditingController();
     await getAllTopping();
     await getAllMenu();
@@ -88,7 +88,10 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
             productStatus: type.productStatus,
             approvalStatus: type.approvalStatus);
         final response = await repository.getListMenu(request);
-        listAllMenu.add(DataMenuTypeDomain(response?.items, type));
+        listAllMenu.add(DataMenuTypeDomain(
+            data: response?.items,
+            type: type,
+            totalProducts: response?.totalProducts));
       }
       emit(state.copyWith(
           listMenu: listAllMenu,
@@ -125,6 +128,30 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     } on DioException catch (e) {
       log("getListMenuFood error: ${e.message}");
       emit(state.copyWith(textErrorToast: e.message));
+    }
+  }
+
+  searchFoodByMenu(String value) async {
+    try {
+      List<ResultSearchMenuTypeDomain> listResultSearch = [];
+      if (value.isNotNullOrEmpty) {
+        for (var type in MenuType.values) {
+          final request = ListMenuFoodRequest(
+            status: type.productStatus,
+            approvalStatus: type.approvalStatus,
+            search: value,
+          );
+          final response = await repository.detailFoodByMenu(request);
+          if (response != null) {
+            listResultSearch.add(ResultSearchMenuTypeDomain(
+                type: type, listResult: response.items));
+          }
+        }
+      }
+
+      emit(state.copyWith(listResultSearch: listResultSearch));
+    } on DioException catch (e) {
+      log("getAllMenu error: ${e.message}");
     }
   }
 
@@ -249,7 +276,6 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       emit(state.copyWith(isLoading: true));
       final httpRequest = await repository.getDetailFoodById(id);
       if (httpRequest != null) {
-        // emit(state.copyWith(textErrorToast: "Xoá món thành công"));
         log("get detail topping success: $httpRequest", name: tag);
         emit(state.copyWith(detailFoodData: httpRequest));
       } else {
@@ -286,5 +312,9 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   validateNameGrMenuEdit() {
     emit(state.copyWith(
         showClearNameEditMenu: nameMenuEditController.text.isNotNullOrEmpty));
+  }
+
+  hideOrShowSearch() {
+    emit(state.copyWith(isShowSearch: !state.isShowSearch));
   }
 }

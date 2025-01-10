@@ -1,9 +1,9 @@
 class GrMenuRegisterRequest {
-  final String name;
+  final String? name;
   final int parentId;
 
   GrMenuRegisterRequest({
-    required this.name,
+    this.name,
     required this.parentId,
   });
 

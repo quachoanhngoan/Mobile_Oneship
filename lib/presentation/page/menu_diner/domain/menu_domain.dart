@@ -166,9 +166,11 @@ class DataToppingTypeDomain {
 
 class DataMenuTypeDomain {
   final MenuType type;
+  final int? totalProducts;
   final List<ItemLinkFood>? data;
 
-  DataMenuTypeDomain(this.data, this.type);
+  DataMenuTypeDomain(
+      {this.data, this.type = MenuType.active, this.totalProducts});
 }
 
 class ListFoodByMenuDomain {
@@ -177,4 +179,11 @@ class ListFoodByMenuDomain {
   final int? idSellected;
 
   ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
+}
+
+class ResultSearchMenuTypeDomain {
+  final MenuType type;
+  final List<MenuFoodResponseItem> listResult;
+  ResultSearchMenuTypeDomain(
+      {this.listResult = const [], this.type = MenuType.active});
 }

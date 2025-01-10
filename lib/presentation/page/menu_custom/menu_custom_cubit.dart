@@ -36,7 +36,11 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
   }
 
   sellectCommonGooMenu() {
+    if (!state.isSellectCheckBox) {
+      storeCategorController.text = gooCategoryController.text;
+    }
     emit(state.copyWith(isSellectCheckBox: !state.isSellectCheckBox));
+    checkFilledInfo();
   }
 
   checkFilledInfo() {
@@ -55,14 +59,22 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
 
   confirmSellectCategoryGoo() {
     gooCategoryController.text = state.categorySellectGlobal?.name ?? "";
+    if (state.isSellectCheckBox) {
+      storeCategorController.text = gooCategoryController.text;
+    }
     checkFilledInfo();
   }
 
   saveInfoClick() async {
     try {
       emit(state.copyWith(isLoading: true));
-      final request =
-          GrMenuRegisterRequest(name: storeCategorController.text, parentId: 0);
+      var request = GrMenuRegisterRequest(
+          name: storeCategorController.text,
+          parentId: state.categorySellectGlobal?.id ?? 0);
+      if (state.isSellectCheckBox) {
+        request = GrMenuRegisterRequest(
+            parentId: state.categorySellectGlobal?.id ?? 0);
+      }
       final httpResponse = await repository.registerGroupMenu(request);
       if (httpResponse != null) {
         emit(state.copyWith(isCompleteSuccess: true));
@@ -71,10 +83,19 @@ class MenuCustomCubit extends Cubit<MenuCustomState> {
       }
     } on DioException catch (e) {
       log("save Info Click error: ${e.message}");
-      emit(state.copyWith(
-          isCompleteError: e.message == "NAME_EXISTED"
-              ? "Tên danh mục đã tồn tại"
-              : e.message));
+      switch (e.message) {
+        case "NAME_EXISTED":
+          emit(state.copyWith(isCompleteError: "Tên danh mục đã tồn tại"));
+          break;
+
+        case "OK":
+          emit(state.copyWith(
+              isCompleteError: "Danh mục đã được tạo trước đó"));
+          break;
+        default:
+          emit(state.copyWith(isCompleteError: e.message));
+          break;
+      }
     }
   }
 }

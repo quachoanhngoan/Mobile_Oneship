@@ -16,7 +16,7 @@ import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_d
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_state.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/widget/time_sellect_sheet.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_multi.dart';
+import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field_multi.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:dio/dio.dart' as dio2;

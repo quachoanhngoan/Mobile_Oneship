@@ -164,6 +164,8 @@ class AppAssets {
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
 
+  static const String imagesImgEmptySearch = "assets/images/img_empty_search.png";
+
   static const String imagesImgGrmenuEmpty = "assets/images/img_grmenu_empty.png";
 
   static const String imagesImgGrtopingEmpty = "assets/images/img_grtoping_empty.png";
