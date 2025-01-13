@@ -17,6 +17,7 @@ class ToppingCustomState extends Equatable {
   final bool isShowClearName;
   final List<ItemLinkFood> listLinkFood;
   final List<ProductAddTopping> listIdLinkFoodSellected;
+  final List<ProductAddTopping> listIdLinkFoodSellectedDraft;
 
   const ToppingCustomState(
       {this.isFilledInfo = false,
@@ -31,7 +32,8 @@ class ToppingCustomState extends Equatable {
       this.isLoading = false,
       this.listLinkFood = const [],
       this.listIdLinkFoodSellected = const [],
-      this.isShowClearName = false});
+      this.isShowClearName = false,
+      this.listIdLinkFoodSellectedDraft = const []});
 
   @override
   List<Object?> get props => [
@@ -47,7 +49,8 @@ class ToppingCustomState extends Equatable {
         isLoading,
         listLinkFood,
         listIdLinkFoodSellected,
-        isShowClearName
+        isShowClearName,
+        listIdLinkFoodSellectedDraft
       ];
 
   ToppingCustomState copyWith({
@@ -63,6 +66,7 @@ class ToppingCustomState extends Equatable {
     bool? isLoading,
     List<ItemLinkFood>? listLinkFood,
     List<ProductAddTopping>? listIdLinkFoodSellected,
+    List<ProductAddTopping>? listIdLinkFoodSellectedDraft,
     bool? isShowClearName,
   }) {
     return ToppingCustomState(
@@ -80,6 +84,8 @@ class ToppingCustomState extends Equatable {
       listIdLinkFoodSellected:
           listIdLinkFoodSellected ?? this.listIdLinkFoodSellected,
       isShowClearName: isShowClearName ?? this.isShowClearName,
+      listIdLinkFoodSellectedDraft:
+          listIdLinkFoodSellectedDraft ?? this.listIdLinkFoodSellectedDraft,
     );
   }
 

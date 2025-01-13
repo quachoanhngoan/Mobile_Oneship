@@ -97,6 +97,7 @@ class MenuActiveBody extends StatelessWidget {
                                 child: itemAction.title != null
                                     ? Text(
                                         itemAction.title!,
+                                        textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
@@ -301,6 +302,7 @@ class MenuActiveBody extends StatelessWidget {
                                     child: itemAction.title != null
                                         ? Text(
                                             itemAction.title!,
+                                            textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall

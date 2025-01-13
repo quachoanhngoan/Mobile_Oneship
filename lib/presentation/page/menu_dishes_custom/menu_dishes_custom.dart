@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart' as dio2;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,10 +17,9 @@ import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_d
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_state.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/widget/time_sellect_sheet.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field.dart';
-import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field_multi.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
-import 'package:dio/dio.dart' as dio2;
+import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field_multi.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 import '../../widget/images/form_upload_image.dart';
@@ -74,7 +74,7 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                       },
                       icon:
                           const Icon(Icons.arrow_back, color: AppColors.black)),
-                  title: Text("Thêm món ăn",
+                  title: Text(arg != null ? "Chỉnh sửa" : "Thêm món ăn",
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -329,51 +329,54 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
                                   );
                                 }),
                               ),
-                              const VSpacing(spacing: 16),
-                              Divider(
-                                  thickness: 1.2,
-                                  height: 1,
-                                  color: AppColors.textGray.withOpacity(0.3)),
-                              const VSpacing(spacing: 12),
-                              GestureDetector(
-                                onTap: () {
-                                  showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      useSafeArea: true,
-                                      context: context,
-                                      builder: (_) {
-                                        return TimeSellectSheet(bloc: bloc);
-                                      });
-                                },
-                                child: Container(
-                                  color: AppColors.transparent,
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        "Chọn giờ bán",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                                color: AppColors.textGray2),
-                                      ),
-                                      const Spacer(),
-                                      const Icon(
-                                        Icons.keyboard_arrow_right_outlined,
-                                        color: AppColors.textGray2,
-                                        size: 24,
-                                      )
-                                    ],
+                              if (state.typeTime ==
+                                  TimeSellType.timeOption) ...[
+                                const VSpacing(spacing: 16),
+                                Divider(
+                                    thickness: 1.2,
+                                    height: 1,
+                                    color: AppColors.textGray.withOpacity(0.3)),
+                                const VSpacing(spacing: 12),
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        useSafeArea: true,
+                                        context: context,
+                                        builder: (_) {
+                                          return TimeSellectSheet(bloc: bloc);
+                                        });
+                                  },
+                                  child: Container(
+                                    color: AppColors.transparent,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "Chọn giờ bán",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColors.textGray2),
+                                        ),
+                                        const Spacer(),
+                                        const Icon(
+                                          Icons.keyboard_arrow_right_outlined,
+                                          color: AppColors.textGray2,
+                                          size: 24,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                               const VSpacing(spacing: 12),
                               Divider(
                                   thickness: 1.2,
                                   height: 1,
                                   color: AppColors.textGray.withOpacity(0.3)),
-                              const VSpacing(spacing: 4),
+                              // const VSpacing(spacing: 4),
                               AppTextFormFieldSelect(
                                 isRequired: false,
                                 controller: bloc.toppingController,
@@ -475,6 +478,7 @@ class _MenuDishsCustomPageState extends State<MenuDishsCustomPage> {
 
 class _LinkedFoodSheet extends StatefulWidget {
   final MenuDishesCubit bloc;
+
   const _LinkedFoodSheet({required this.bloc});
 
   @override
@@ -518,6 +522,14 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                 .firstWhereOrNull((e) =>
                                     e.id == state.listLinkFood[index].id) !=
                             null;
+
+                        final isShowDetail = state.listIdToppingHideDetail
+                                    .firstWhereOrNull((e) =>
+                                        e != state.listLinkFood[index].id) !=
+                                null &&
+                            state.listLinkFood[index].options.isNotEmpty ==
+                                true;
+
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
@@ -568,35 +580,38 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                                 fontWeight: FontWeight.w600),
                                       ),
                                       const Spacer(),
-                                      Icon(
-                                        state.listLinkFood[index].options
-                                                    .isNotEmpty ==
-                                                true
-                                            ? Icons.keyboard_arrow_down_outlined
-                                            : Icons
-                                                .keyboard_arrow_right_outlined,
-                                        color: AppColors.textGray,
-                                        size: 20,
+                                      GestureDetector(
+                                        onTap: () {
+                                          _bloc.toppingShowOrHideDetail(
+                                              state.listLinkFood[index].id);
+                                        },
+                                        child: Icon(
+                                          state.listLinkFood[index].options
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? Icons
+                                                  .keyboard_arrow_down_outlined
+                                              : Icons
+                                                  .keyboard_arrow_right_outlined,
+                                          color: AppColors.textGray,
+                                          size: 20,
+                                        ),
                                       )
                                     ],
                                   ),
                                 ),
                               ),
-                              state.listLinkFood[index].options.isNotEmpty ==
-                                      true
+                              isShowDetail
                                   ? const VSpacing(spacing: 6)
                                   : Container(),
-                              state.listLinkFood[index].options.isNotEmpty ==
-                                      true
+                              isShowDetail
                                   ? Divider(
                                       color:
                                           AppColors.textGray.withOpacity(0.3),
                                       height: 16,
                                       thickness: 1.2)
                                   : Container(),
-                              if (state
-                                      .listLinkFood[index].options.isNotEmpty ==
-                                  true) ...[
+                              if (isShowDetail) ...[
                                 ...List.generate(
                                     state.listLinkFood[index].options.length,
                                     (inxChild) {
@@ -757,6 +772,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
 class _ImageFood extends StatefulWidget {
   final ValueChanged<String> onUploadedImage;
   final String? imageDefault;
+
   const _ImageFood({required this.onUploadedImage, this.imageDefault});
 
   @override
@@ -992,6 +1008,7 @@ class _ImageFoodState extends State<_ImageFood> {
 
 class _ListCategoryStore extends StatefulWidget {
   final MenuDishesCubit bloc;
+
   const _ListCategoryStore({super.key, required this.bloc});
 
   @override

@@ -47,10 +47,10 @@ class MenuNotRegisteredBody extends StatelessWidget {
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              right: ActionNotRegisterType.values.length - 1 !=
-                                      it
-                                  ? 8
-                                  : 0),
+                              right:
+                                  ActionNotRegisterType.values.length - 1 != it
+                                      ? 8
+                                      : 0),
                           child: GestureDetector(
                             onTap: () {
                               switch (itemAction) {
@@ -119,6 +119,7 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Text(
                                   itemAction.title,
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -370,6 +371,7 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Text(
                                       itemAction.title,
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

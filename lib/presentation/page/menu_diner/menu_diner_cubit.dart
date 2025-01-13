@@ -90,6 +90,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
             productStatus: type.productStatus,
             approvalStatus: type.approvalStatus);
         final response = await repository.getListMenu(request);
+        // log("check json: ${response?.toJson()}");
         listAllMenu.add(DataMenuTypeDomain(
             data: response?.items,
             type: type,

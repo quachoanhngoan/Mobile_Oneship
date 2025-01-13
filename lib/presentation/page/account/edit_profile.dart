@@ -4,6 +4,7 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/helper/validate.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/avatar_user.dart';
+import 'package:oneship_merchant_app/presentation/page/account/widget/email_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/phone_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
@@ -20,12 +21,21 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController name;
+  late final TextEditingController emailController;
+  late final TextEditingController phoneController;
+
   String? avatarId;
 
   @override
   void initState() {
     name = TextEditingController(
         text: context.read<AuthCubit>().state.userData?.name ?? "");
+    emailController = TextEditingController(
+        text:
+            context.read<AuthCubit>().state.userData?.email ?? "Chưa cập nhật");
+    phoneController = TextEditingController(
+        text: formatPhone(context.read<AuthCubit>().state.userData?.phone ??
+            "Chưa cập nhật"));
     super.initState();
   }
 
@@ -120,20 +130,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         AppTextFormField(
                           onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                useSafeArea: true,
-                                builder: (_) {
-                                  return PhoneEditProfile(
-                                      phone: state.userData?.phone ?? "");
-                                });
+                            if (state.userData != null) {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  enableDrag: false,
+                                  isDismissible: false,
+                                  useSafeArea: true,
+                                  builder: (_) {
+                                    return PhoneEditProfile(
+                                        userData: state.userData!);
+                                  }).then((result) {
+                                if (result != null && context.mounted) {
+                                  context.read<AuthCubit>().getProfile();
+                                  phoneController.text = result;
+                                }
+                              });
+                            }
                           },
                           isRequired: false,
                           enabled: false,
                           hintText: 'Số điện thoại',
-                          initialValue:
-                              formatPhone(state.userData?.phone ?? ""),
+                          controller: phoneController,
+                          // initialValue:
+                          //     formatPhone(state.userData?.phone ?? ""),
                           suffix: IconButton(
                               onPressed: () {},
                               icon: const ImageAssetWidget(
@@ -145,13 +165,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                         AppTextFormField(
                           onTap: () {
-                            //TODO : Chuyển sang quên mật khẩu
+                            if (state.userData != null) {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  enableDrag: false,
+                                  isDismissible: false,
+                                  useSafeArea: true,
+                                  builder: (_) {
+                                    return EmailEditProfile(
+                                        userData: state.userData!);
+                                  }).then((result) {
+                                if (result != null && context.mounted) {
+                                  context.read<AuthCubit>().getProfile();
+                                  emailController.text = result;
+                                }
+                              });
+                            }
                           },
                           isRequired: false,
                           enabled: false,
                           hintText: 'Email',
-                          initialValue:
-                              state.userData?.email ?? "Chưa cập nhật",
+                          controller: emailController,
+                          // initialValue:
+                          //     state.userData?.email ?? "Chưa cập nhật",
                           suffix: IconButton(
                               onPressed: () {},
                               icon: const ImageAssetWidget(

@@ -40,4 +40,26 @@ abstract class AuthApiService {
   @POST("/auth/reset-password-by-sms")
   Future<HttpResponse<ResponseDomain>> forgotPassWithPhone(
       @Body() Map<String, String> body);
+
+  @PATCH("/auth/update-email")
+  Future<HttpResponse<ResponseDomain>> updateEmailProfile(
+    @Header("Authorization") String token,
+    @Body() Map<String, String> body,
+  );
+
+  @PATCH("/auth/update-phone")
+  Future<HttpResponse<ResponseDomain>> getOTPByEmailProfile(
+    @Header("Authorization") String token,
+  );
+
+  @PATCH("/auth/update-phone/completed")
+  Future<HttpResponse<ResponseDomain>> updatePhoneProfile(
+    @Header("Authorization") String token,
+    @Body() Map<String, String> body,
+  );
+
+  @POST("/auth/check-otp")
+  Future<HttpResponse<ResponseDomain>> checkOtpEmailProfile(
+      // @Header("Authorization") String token, 
+      @Body() OtpRequest request);
 }

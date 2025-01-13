@@ -18,6 +18,7 @@ import '../../data/model/menu/linkfood_response.dart';
 
 class MenuDishesCubit extends Cubit<MenuDishesState> {
   final MenuRepository repository;
+
   MenuDishesCubit(this.repository) : super(const MenuDishesState());
 
   late TextEditingController nameFoodController;
@@ -574,5 +575,15 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
     // int hours = duration.inHours;
     // int minutes = duration.inMinutes % 60;
     // return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+  }
+
+  toppingShowOrHideDetail(int id) {
+    final listIdHide = List.of(state.listIdToppingHideDetail);
+    if (listIdHide.contains(id)) {
+      listIdHide.remove(id);
+    } else {
+      listIdHide.add(id);
+    }
+    emit(state.copyWith(listIdToppingHideDetail: listIdHide));
   }
 }
