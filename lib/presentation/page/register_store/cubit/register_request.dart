@@ -144,6 +144,13 @@ class Representative {
     return toJson()..removeWhere((key, value) => value == null);
   }
 
+  String formatDate() {
+    if (identityCardDate.isNullOrEmpty) return '';
+    final date = DateTime.parse(identityCardDate!);
+    final format = DateFormat('dd/MM/yyyy');
+    return format.format(date);
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['type'] = type?.value;

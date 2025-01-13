@@ -9,6 +9,7 @@ import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/create_store.response.dart';
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 
 part 'store_state.dart';
 
@@ -82,6 +83,8 @@ class StoreCubit extends Cubit<StoreState> {
         prefManager.refreshToken = data.refreshToken!;
         currentStore = store;
         Get.offAllNamed(AppRoutes.homepage);
+
+        dialogService.showNotificationSuccess("Đăng nhập thành công");
       }, failure: (error) {
         setLoginState(EState.failure);
       });

@@ -165,7 +165,7 @@ class StepReviewInfomation extends StatelessWidget {
                         ),
                         _info(
                           title: "Ngày cấp",
-                          value: bloc.state.representative?.identityCardDate,
+                          value: bloc.state.representative?.formatDate(),
                         ),
                         _info(
                           title: "Nơi cấp",

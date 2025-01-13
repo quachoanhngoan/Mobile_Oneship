@@ -109,8 +109,8 @@ class _EditAddressPageState extends State<EditAddressPage> {
                       _editAddressBloc.setRequestUpdateAddress(
                           state.requestUpdateAddress.copyWith(
                         address: feature.text,
-                        lat: feature.center?[0],
-                        lng: feature.center?[1],
+                        lat: feature.center?[1],
+                        lng: feature.center?[0],
                       ));
                       print(feature.text);
                       _controller.text = feature.text ?? "";
@@ -155,8 +155,8 @@ class _EditAddressPageState extends State<EditAddressPage> {
                   hintText: 'Ghi chú cho tài xế',
                   initialValue: widget.address?.note ?? "",
                   onChanged: (p0) {
-                    // _editAddressBloc.setRequestUpdateAddress(
-                    //     state.requestUpdateAddress.copyWith(note: p0));
+                    _editAddressBloc.setRequestUpdateAddress(
+                        state.requestUpdateAddress.copyWith(note: p0));
                   },
                 ),
                 const SizedBox(height: 10),

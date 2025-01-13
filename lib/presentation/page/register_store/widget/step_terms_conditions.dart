@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';

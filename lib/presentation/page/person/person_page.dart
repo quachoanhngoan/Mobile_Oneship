@@ -12,8 +12,19 @@ import 'package:oneship_merchant_app/presentation/page/person/list_category.dart
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 
-class PersonPage extends StatelessWidget {
+class PersonPage extends StatefulWidget {
   const PersonPage({super.key});
+
+  @override
+  State<PersonPage> createState() => _PersonPageState();
+}
+
+class _PersonPageState extends State<PersonPage> {
+  @override
+  void initState() {
+    context.read<AuthCubit>().getProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

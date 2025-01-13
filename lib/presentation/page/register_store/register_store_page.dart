@@ -11,6 +11,7 @@ import 'package:oneship_merchant_app/presentation/page/register_store/widget/ste
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_image_store.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_review_infomation.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_terms_conditions.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/work_time_page.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 
@@ -144,6 +145,9 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               controller: bloc.pageController,
                               children: [
+                                WorkTimePage(
+                                  bloc: bloc,
+                                ),
                                 TermsAndConditionsPage(
                                   bloc: bloc,
                                 ),

@@ -17,6 +17,7 @@ enum ERegisterPageType {
   //hình ảnh quán
   storeImages,
   //xem lại thông tin
+  workTime,
   reviewInformation;
 
   String get title {
@@ -37,6 +38,8 @@ enum ERegisterPageType {
         return 'Hình ảnh quán';
       case ERegisterPageType.reviewInformation:
         return 'Thông tin tổng quan';
+      case ERegisterPageType.workTime:
+        return 'Thời gian làm việc';
       default:
         return '';
     }

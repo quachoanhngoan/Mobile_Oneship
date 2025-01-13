@@ -54,6 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               child: SafeArea(
                 child: AppButton(
+                  isCheckLastPress: false,
                   isLoading: state.updateProfileState.isLoading,
                   isEnable: true,
                   onPressed: () {
