@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/provinces_model.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 
 class CreateStoreResponse {
   final int? merchantId;
@@ -42,6 +43,7 @@ class CreateStoreResponse {
   final DistrictModel? ward;
   final ProvinceModel? businessArea;
   final GroupServiceModel? serviceType;
+  final List<WorkingTime> workingTimes;
   CreateStoreResponse({
     this.merchantId,
     this.isDraft,
@@ -79,6 +81,7 @@ class CreateStoreResponse {
     this.ward,
     this.businessArea,
     this.serviceType,
+    this.workingTimes = const [],
   });
 
   factory CreateStoreResponse.fromRawJson(String str) =>
@@ -135,6 +138,10 @@ class CreateStoreResponse {
           businessArea: json["businessArea"] == null
               ? null
               : ProvinceModel.fromJson(json["businessArea"]),
+          workingTimes: json["workingTimes"] == null
+              ? []
+              : List<WorkingTime>.from(
+                  json["workingTimes"].map((x) => WorkingTime.fromJson(x))),
           serviceType: json["serviceType"] == null
               ? null
               : GroupServiceModel.fromJson(json["serviceType"]));

@@ -338,6 +338,85 @@ class StepReviewInfomation extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               _ReviewInfo(
+                title: "Lịch làm việc hàng ngày",
+                widget: SizedBox(
+                  width: double.infinity,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: bloc.state.data.length,
+                    itemBuilder: (context, index) {
+                      final item = bloc.state.data[index];
+                      return Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 160,
+                                  child: Text(
+                                    item.dayOfWeek ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.colorC5C,
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: List.generate(
+                                    item.wkt.length,
+                                    (index) {
+                                      return Row(
+                                        children: [
+                                          Text(
+                                            item.wkt[index].openTimeStr ?? "",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppColors.color054,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 5),
+                                          const Text(
+                                            "-",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppColors.color054,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            item.wkt[index].closeTimeStr ?? "",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppColors.color054,
+                                                ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                )
+                              ]),
+                          const _Space(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              _ReviewInfo(
                 title: "Hình ảnh quán",
                 widget: SizedBox(
                   width: double.infinity,

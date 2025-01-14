@@ -113,7 +113,7 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                               width: double.infinity,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(7, (index) {
+                                children: List.generate(8, (index) {
                                   return Expanded(
                                     child: AnimatedContainer(
                                       margin: const EdgeInsets.only(right: 5),
@@ -145,9 +145,6 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               controller: bloc.pageController,
                               children: [
-                                WorkTimePage(
-                                  bloc: bloc,
-                                ),
                                 TermsAndConditionsPage(
                                   bloc: bloc,
                                 ),
@@ -168,6 +165,9 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                                   bloc: bloc,
                                 ),
                                 StepImageStore(
+                                  bloc: bloc,
+                                ),
+                                WorkTimePage(
                                   bloc: bloc,
                                 ),
                                 StepReviewInfomation(
