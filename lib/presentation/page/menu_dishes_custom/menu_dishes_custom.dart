@@ -523,9 +523,9 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                     e.id == state.listLinkFood[index].id) !=
                             null;
 
-                        final isShowDetail = state.listIdToppingHideDetail
+                        final isShowDetail = state.listIdToppingShowDetail
                                     .firstWhereOrNull((e) =>
-                                        e != state.listLinkFood[index].id) !=
+                                        e == state.listLinkFood[index].id) !=
                                 null &&
                             state.listLinkFood[index].options.isNotEmpty ==
                                 true;

@@ -336,7 +336,13 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
     try {
       final request = GetGroupToppingRequest(status: "active");
       final response = await repository.getGroupTopping(request);
-      emit(state.copyWith(listLinkFood: response?.items));
+      List<int> _listIdToppingShowDetail = [];
+      response?.items.forEach((e) {
+        _listIdToppingShowDetail.add(e.id);
+      });
+      emit(state.copyWith(
+          listLinkFood: response?.items,
+          listIdToppingShowDetail: _listIdToppingShowDetail));
     } on DioException catch (e) {
       log("getAllTopping error: ${e.message}");
     }
@@ -578,12 +584,12 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
   }
 
   toppingShowOrHideDetail(int id) {
-    final listIdHide = List.of(state.listIdToppingHideDetail);
+    final listIdHide = List.of(state.listIdToppingShowDetail);
     if (listIdHide.contains(id)) {
       listIdHide.remove(id);
     } else {
       listIdHide.add(id);
     }
-    emit(state.copyWith(listIdToppingHideDetail: listIdHide));
+    emit(state.copyWith(listIdToppingShowDetail: listIdHide));
   }
 }

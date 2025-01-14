@@ -20,4 +20,8 @@ class GrMenuRegisterRequest {
       'parentId': parentId,
     };
   }
+
+  Map<String, dynamic> removeNullValues() {
+    return toJson()..removeWhere((key, value) => value == null);
+  }
 }

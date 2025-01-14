@@ -100,6 +100,9 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                 arguments: state.detailFoodData, complete: (value) {
               if (value) {
                 bloc.getAllMenu();
+                if (state.isShowSearch) {
+                  bloc.searchFoodByMenu(bloc.searchController.text);
+                }
               }
             });
           }

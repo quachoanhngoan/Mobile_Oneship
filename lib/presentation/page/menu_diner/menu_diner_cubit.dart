@@ -195,7 +195,9 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   }
 
   hideOrShowMenuFood(MenuFoodResponseItem item,
-      {bool isHide = true, required int productCategoryId}) async {
+      {bool isHide = true,
+      required int productCategoryId,
+      bool isSearch = false}) async {
     try {
       emit(state.copyWith(isLoading: true));
       final request = FoodRegisterMenuRequest(
@@ -210,6 +212,9 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
           await repository.updateFoodInMenu(request, id: item.id);
       if (httpRequest != null) {
         await getAllMenu();
+        if (isSearch) {
+          searchFoodByMenu(searchController.text);
+        }
         emit(state.copyWith(isLoading: false));
       } else {
         emit(state.copyWith(
@@ -241,12 +246,15 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     }
   }
 
-  deleteMenuFood({required int id}) async {
+  deleteMenuFood({required int id, bool isSearch = false}) async {
     try {
       emit(state.copyWith(isLoading: true));
       final httpRequest = await repository.deleteFood(id);
       if (httpRequest != null) {
         await getAllMenu();
+        if (isSearch) {
+          searchFoodByMenu(searchController.text);
+        }
         emit(state.copyWith(textErrorToast: "Xoá món thành công"));
       } else {
         emit(state.copyWith(errorEditTopping: "Không thể xoá món"));
@@ -321,6 +329,8 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   }
 
   hideOrShowSearch() {
-    emit(state.copyWith(isShowSearch: !state.isShowSearch));
+    searchController.clear();
+    emit(state
+        .copyWith(isShowSearch: !state.isShowSearch, listResultSearch: []));
   }
 }
