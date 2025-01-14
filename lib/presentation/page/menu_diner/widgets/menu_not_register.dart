@@ -47,12 +47,13 @@ class MenuNotRegisteredBody extends StatelessWidget {
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.only(
-                              right: ActionNotRegisterType.values.length - 1 !=
-                                      it
-                                  ? 8
-                                  : 0),
+                              right:
+                                  ActionNotRegisterType.values.length - 1 != it
+                                      ? 8
+                                      : 0),
                           child: GestureDetector(
                             onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               switch (itemAction) {
                                 case ActionNotRegisterType.advertisement:
                                   log("advertisement click");
@@ -67,7 +68,8 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                               bloc.hideOrShowMenuFood(item,
                                                   productCategoryId:
                                                       listItem[it].id,
-                                                  isHide: false);
+                                                  isHide: false,
+                                                  isSearch: true);
                                             }
                                             Get.back();
                                           },
@@ -119,6 +121,7 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8)),
                                 child: Text(
                                   itemAction.title,
+                                  textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall
@@ -288,16 +291,15 @@ class MenuNotRegisteredBody extends StatelessWidget {
                       height: 40,
                       child: Row(
                         children: List.generate(
-                            ActionNotRegisterType.values.length, (index) {
-                          final itemAction =
-                              ActionNotRegisterType.values[index];
+                            ActionNotRegisterType.values.length, (it) {
+                          final itemAction = ActionNotRegisterType.values[it];
                           return Expanded(
                             flex: 1,
                             child: Padding(
                               padding: EdgeInsets.only(
                                   right:
                                       ActionNotRegisterType.values.length - 1 !=
-                                              index
+                                              it
                                           ? 8
                                           : 0),
                               child: GestureDetector(
@@ -370,6 +372,7 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Text(
                                       itemAction.title,
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

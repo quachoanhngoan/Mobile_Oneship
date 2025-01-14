@@ -32,6 +32,8 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   late ToppingItemDomain toppingEdit;
   GrAddToppingResponse? dataEditGroupTopping;
 
+  // List<ProductAddTopping> _listIdLinkFoodSellected = [];
+
   init({GrAddToppingResponse? topping}) {
     getLinkFood();
     if (topping != null) {
@@ -301,6 +303,41 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
       }
       listId.add(ProductAddTopping(id: id));
     }
-    emit(state.copyWith(listIdLinkFoodSellected: listId));
+    // _listIdLinkFoodSellected.addAll(_filterDuplicateProducts(listId));
+    emit(state.copyWith(
+        listIdLinkFoodSellectedDraft: _filterDuplicateProducts(listId)));
+  }
+
+  List<ProductAddTopping> _filterDuplicateProducts(
+      List<ProductAddTopping> products) {
+    final seenIds = <int>{};
+    return products.where((product) => seenIds.add(product.id)).toList();
+  }
+
+  clearListIdLinkFood() {
+    // _listIdLinkFoodSellected.clear();
+    emit(state.copyWith(listIdLinkFoodSellectedDraft: []));
+  }
+
+  listIdLinkFoodSellectConfirm() {
+    List<String> listNameSellect = [];
+    final listIdSellect = List.of(state.listIdLinkFoodSellectedDraft);
+    for (var product in listIdSellect) {
+      for (var linkFoodMain in state.listLinkFood) {
+        if (linkFoodMain.id == product.id) {
+          listNameSellect.add(linkFoodMain.name);
+        } else {
+          if (linkFoodMain.products != null &&
+              linkFoodMain.products?.isNotEmpty == true) {
+            for (var detail in linkFoodMain.products!) {
+              if (detail.id == product.id) {
+                listNameSellect.add(detail.name);
+              }
+            }
+          }
+        }
+      }
+    }
+    // emit(state.copyWith(listIdLinkFoodSellected: _listIdLinkFoodSellected));
   }
 }

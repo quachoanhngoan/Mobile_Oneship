@@ -743,7 +743,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                   child: ListView.builder(
                       itemCount: widget.listItem.length,
                       itemBuilder: (context, index) {
-                        final isSellectMainId = state.listIdLinkFoodSellected
+                        final isSellectMainId = state.listIdLinkFoodSellectedDraft
                                 .firstWhereOrNull(
                                     (e) => e.id == widget.listItem[index].id) !=
                             null;

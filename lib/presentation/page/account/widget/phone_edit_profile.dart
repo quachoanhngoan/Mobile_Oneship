@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/constant/constant.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
+import 'package:oneship_merchant_app/presentation/page/account/cubit/edit_profile_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/account/cubit/edit_profile_state.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field.dart';
 
@@ -15,9 +18,9 @@ import '../../register/widget/pinput_widget.dart';
 import '../../register_store/widget/app_text_form_field.dart';
 
 class PhoneEditProfile extends StatefulWidget {
-  final String phone;
+  final UserM userData;
 
-  const PhoneEditProfile({super.key, required this.phone});
+  const PhoneEditProfile({super.key, required this.userData});
 
   @override
   State<PhoneEditProfile> createState() => _PhoneEditProfileState();
@@ -29,7 +32,6 @@ class _PhoneEditProfileState extends State<PhoneEditProfile> {
 
   int indexPage = 0;
   var titleAppBar = "Số điện thoại";
-  var emailUser = "email";
 
   @override
   void initState() {
@@ -40,18 +42,33 @@ class _PhoneEditProfileState extends State<PhoneEditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisterCubit, RegisterState>(builder: (context, state) {
+    return BlocConsumer<EditProfileCubit, EditProfileState>(
+        listener: (context, state) {
+      if (state.isContinueStep == true) {
+        if (indexPage < 3) {
+          pageController.nextPage(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut);
+        } else {
+          context.read<EditProfileCubit>().resetState();
+          context.popScreen(result: state.phoneResponseSuccess);
+        }
+      }
+      if (state.titleFailedDialog != null) {
+        context.showErrorDialog(state.titleFailedDialog!, context);
+      }
+    }, builder: (context, state) {
       return Scaffold(
         appBar: AppBarAuth(
             title: titleAppBar,
             onPressed: () {
-              if (indexPage == 0) {
-                context.popScreen();
-              } else {
-                pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut);
-              }
+              // if (indexPage == 0) {
+              context.popScreen();
+              // } else {
+              //   pageController.previousPage(
+              //       duration: const Duration(milliseconds: 300),
+              //       curve: Curves.easeInOut);
+              // }
             }),
         body: Column(
           children: <Widget>[
@@ -104,34 +121,37 @@ class _PhoneEditProfileState extends State<PhoneEditProfile> {
               },
               children: <Widget>[
                 _CurrentPhonePage(
-                  phone: widget.phone,
+                  phone: widget.userData.phone ?? "",
                   editPhonePress: () {
-                    pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut);
+                    if (widget.userData.email.isNotNullOrEmpty) {
+                      pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut);
+                    } else {
+                      context.showErrorDialog(
+                          "Bạn chưa cập nhật email", context);
+                    }
                   },
                 ),
                 _EmailBodyPage(
-                  phoneNode: _phoneNode,
-                  isNextStep: (email) {
-                    emailUser = email;
-                    // context.read<RegisterCubit>().submitPhoneOrEmail(email.trim(), isReSent: false);
-                    pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut);
+                  email: widget.userData.email ?? "Chưa cập nhật",
+                  isNextStep: () {
+                    context.read<EditProfileCubit>().submitEmailToGetOTP();
                   },
                 ),
                 _OTPBodyPage(
-                  // phone: widget.phone,
+                  state: state,
                   isNextButton: () {
-                    pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut);
+                    context
+                        .read<EditProfileCubit>()
+                        .sentOtp(email: widget.userData.email, isPhone: false);
                   },
-                  email: emailUser,
+                  email: widget.userData.email ?? "",
                 ),
                 _UpdatePhoneBodyPage(
-                  continuePressed: (value) {},
+                  continuePressed: (value) {
+                    context.read<EditProfileCubit>().sendPhoneUpdate(value);
+                  },
                 )
               ],
             ))
@@ -212,40 +232,35 @@ class _CurrentPhonePage extends StatelessWidget {
   }
 }
 
-class _EmailBodyPage extends StatefulWidget {
-  final FocusNode phoneNode;
-  final Function(String) isNextStep;
+// class _EmailBodyPage extends StatefulWidget {
+//   final FocusNode phoneNode;
+//   final String email;
+//   final Function() isNextStep;
 
-  const _EmailBodyPage({required this.phoneNode, required this.isNextStep});
+//   const _EmailBodyPage(
+//       {required this.phoneNode, required this.isNextStep, required this.email});
 
-  @override
-  State<_EmailBodyPage> createState() => _EmailBodyPageState();
-}
+//   @override
+//   State<_EmailBodyPage> createState() => _EmailBodyPageState();
+// }
 
-class _EmailBodyPageState extends State<_EmailBodyPage> {
-  late TextEditingController emailController;
-  bool isEnableContinue = false;
+// class _EmailBodyPageState extends State<_EmailBodyPage> {
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
 
-  void isEmailFormat(String? email) {
-    if (email != null) {
-      final RegExp emailRegex =
-          RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-      final isEmail = emailRegex.hasMatch(email!);
-      setState(() {
-        isEnableContinue = isEmail;
-      });
-    } else {
-      setState(() {
-        isEnableContinue = false;
-      });
-    }
-  }
+//   @override
+//   Widget build(BuildContext context) {
 
-  @override
-  void initState() {
-    emailController = TextEditingController();
-    super.initState();
-  }
+//   }
+// }
+
+class _EmailBodyPage extends StatelessWidget {
+  final String email;
+  final Function() isNextStep;
+  const _EmailBodyPage(
+      {super.key, required this.email, required this.isNextStep});
 
   @override
   Widget build(BuildContext context) {
@@ -260,44 +275,25 @@ class _EmailBodyPageState extends State<_EmailBodyPage> {
                 color: AppColors.color723, fontWeight: FontWeight.w500),
           ),
           const VSpacing(spacing: 20),
-          RegisterStoreFormField(
-              isRequired: true,
-              hintText: emailController.text.isNotEmpty
-                  ? "Email"
-                  : "Nhập email của quán",
-              controller: emailController,
-              onChanged: (value) {
-                isEmailFormat(value.trim());
-              },
-              suffix: emailController.text.isNullOrEmpty
-                  ? IconButton(
-                      onPressed: () {
-                        emailController.clear();
-                      },
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        size: 16,
-                        color: AppColors.black.withOpacity(0.6),
-                      ))
-                  : const SizedBox.shrink()),
+          AppTextFormField(
+            isRequired: true,
+            readOnly: true,
+            hintText: "Email",
+            initialValue: email,
+            onChanged: (value) {},
+          ),
           const VSpacing(spacing: 20),
           AppButton(
             text: "Tiếp tục",
-            textColor:
-                isEnableContinue == true ? AppColors.white : AppColors.colorA4A,
+            textColor: AppColors.white,
             onPressed: () {
-              if (isEnableContinue) {
-                widget.isNextStep(emailController.text);
-                // widget.emailController.clear();
-              }
+              isNextStep();
             },
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
             isSafeArea: false,
-            backgroundColor: isEnableContinue == true
-                ? AppColors.color988
-                : AppColors.color8E8,
-            isEnable: isEnableContinue == true,
+            backgroundColor: AppColors.color988,
+            isEnable: true,
           ),
           const VSpacing(spacing: 20),
           Container(
@@ -326,29 +322,15 @@ class _EmailBodyPageState extends State<_EmailBodyPage> {
   }
 }
 
-class _OTPBodyPage extends StatefulWidget {
-  // final String  state;
+class _OTPBodyPage extends StatelessWidget {
   final Function isNextButton;
+  final EditProfileState state;
   final String email;
-
   const _OTPBodyPage(
       {super.key,
-      // required this.state,
+      required this.email,
       required this.isNextButton,
-      required this.email});
-
-  @override
-  State<_OTPBodyPage> createState() => _OTPBodyPageState();
-}
-
-class _OTPBodyPageState extends State<_OTPBodyPage> {
-  bool isEnableContinue = false;
-
-  void verifyOtp(String value) {
-    setState(() {
-      isEnableContinue = value.length >= 6;
-    });
-  }
+      required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -357,34 +339,41 @@ class _OTPBodyPageState extends State<_OTPBodyPage> {
       child: Column(
         children: <Widget>[
           Text(
-            "Mã xác thực OTP đã được gửi đến ${widget.email} của bạn",
+            "Mã xác thực OTP đã được gửi đến $email của bạn",
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppColors.color723, fontWeight: FontWeight.w500),
           ),
           const VSpacing(spacing: 20),
           PinputWidget(
-            timeOutPressed: () {},
-            onDone: (value) {
-              verifyOtp(value);
+            timeOutPressed: () {
+              context
+                  .read<EditProfileCubit>()
+                  .submitEmailToGetOTP(isResent: true);
             },
-            timeOutListener: () {},
+            onDone: (value) {
+              context.read<EditProfileCubit>().validateOtp(value);
+            },
+            timeOutListener: () {
+              context.read<EditProfileCubit>().timeOutOtp();
+            },
           ),
           AppButton(
             text: "Tiếp tục",
-            textColor:
-                isEnableContinue == true ? AppColors.white : AppColors.colorA4A,
+            textColor: state.isEnableContinue == true
+                ? AppColors.white
+                : AppColors.colorA4A,
             onPressed: () {
-              if (isEnableContinue) {
-                widget.isNextButton();
+              if (state.isEnableContinue) {
+                isNextButton();
               }
             },
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
             isSafeArea: false,
-            backgroundColor: isEnableContinue == true
+            backgroundColor: state.isEnableContinue == true
                 ? AppColors.color988
                 : AppColors.color8E8,
-            isEnable: isEnableContinue == true,
+            isEnable: state.isEnableContinue == true,
           )
         ],
       ),

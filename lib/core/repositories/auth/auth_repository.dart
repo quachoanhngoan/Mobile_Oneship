@@ -11,6 +11,8 @@ import 'package:oneship_merchant_app/domain/requests/register_phone/phone_regist
 import 'package:oneship_merchant_app/domain/responses/response_domain.dart';
 
 import '../../../domain/requests/register_email/email_register_request.dart';
+import '../../../injector.dart';
+import '../../../service/pref_manager.dart';
 
 abstract class AuthRepositoy {
   init();
@@ -41,6 +43,15 @@ abstract class AuthRepositoy {
 
   Future<DataState<ResponseDomain>> createForgotPassWithEmail(
       PasswordEmailRequest request);
+
+  Future<DataState<ResponseDomain>> updateEmailProfile(String email);
+
+  Future<DataState<ResponseDomain>> updatePhoneProfile(
+      String phone, String otp);
+
+  Future<DataState<ResponseDomain>> submitEmailGetOTPUpdatePhone();
+
+  Future<DataState<ResponseDomain>> sentOtpWithEmailProfile(OtpRequest request);
 }
 
 class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
@@ -182,6 +193,47 @@ class AuthRepositoryImpl extends BaseApiRepository implements AuthRepositoy {
     return getStateOf(request: () async {
       return await _authApiService.forgotPassWithPhone(
           {"idToken": idToken ?? "", "password": password});
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> updateEmailProfile(String email) async {
+    return getStateOf(request: () async {
+      return await _authApiService
+          .updateEmailProfile("Bearer ${injector<PrefManager>().token}", {
+        "idToken": idToken ?? "",
+        "email": email.trim(),
+      });
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> submitEmailGetOTPUpdatePhone() async {
+    return getStateOf(request: () async {
+      return await _authApiService
+          .getOTPByEmailProfile("Bearer ${injector<PrefManager>().token}");
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> updatePhoneProfile(
+      String phone, String otp) {
+    return getStateOf(request: () async {
+      return await _authApiService
+          .updatePhoneProfile("Bearer ${injector<PrefManager>().token}", {
+        "phone": phone,
+        "otp": otp.trim(),
+      });
+    });
+  }
+
+  @override
+  Future<DataState<ResponseDomain>> sentOtpWithEmailProfile(
+      OtpRequest request) {
+    return getStateOf<ResponseDomain>(request: () async {
+      return await _authApiService.checkOtpEmailProfile(
+          // "Bearer ${injector<PrefManager>().token}", 
+          request);
     });
   }
 }

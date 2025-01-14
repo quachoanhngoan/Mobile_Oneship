@@ -13,6 +13,8 @@ import 'package:oneship_merchant_app/app.dart';
 import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/my_http.dart';
+import 'package:oneship_merchant_app/presentation/page/account/cubit/edit_profile_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/account/edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
@@ -49,6 +51,10 @@ Future<void> main() async {
         BlocProvider(
           create: (context) => RegisterCubit(),
           child: const RegisterPage(),
+        ),
+        BlocProvider(
+          create: (context) => EditProfileCubit(),
+          child: const EditProfilePage(),
         ),
         // BlocProvider(create: (context) => injector<ToppingCustomCubit>()),
       ], child: const MerchantApp()),

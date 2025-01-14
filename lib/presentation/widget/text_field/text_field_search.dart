@@ -11,6 +11,7 @@ class TextFieldSearch extends StatelessWidget {
   final Function clearTextClicked;
   final Function(String) onChange;
   final bool showClearButton;
+  final FocusNode? focusNode;
   const TextFieldSearch(
       {super.key,
       this.controller,
@@ -18,7 +19,8 @@ class TextFieldSearch extends StatelessWidget {
       this.colorPrefixIcon,
       required this.clearTextClicked,
       required this.onChange,
-      required this.showClearButton});
+      required this.showClearButton,
+      this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class TextFieldSearch extends StatelessWidget {
       height: 40,
       child: TextFormField(
         controller: controller,
+        focusNode: focusNode,
         onChanged: (value) {
           onChange(value);
         },
@@ -34,6 +37,7 @@ class TextFieldSearch extends StatelessWidget {
               fontWeight: FontWeight.w500,
               color: AppColors.textColor,
             ),
+        autofocus: false,
         decoration: InputDecoration(
             hintText: hintText,
             hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(

@@ -33,6 +33,7 @@ class AppErrorString {
   static const String kPasswordVietnameses = "Mật khẩu không chứa chữ có dấu";
   static const String kRePassIsNotCorrect = "Nhập lại mật khẩu chưa chính xác";
   static const String kPhoneInvalid = "Số điện thoại hoặc email\nkhông hợp lệ";
+  static const String kTimeOutOtp = "Bạn đã thử nhiều lần";
   static const String kOTPInvalid = "Mã xác thực sai.";
   static const String kPhoneConflictType = "PHONE_CONFLICT";
   static const String kEmailConflictType = "EMAIL_CONFLICT";

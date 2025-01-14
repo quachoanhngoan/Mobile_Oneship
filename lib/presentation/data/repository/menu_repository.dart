@@ -148,7 +148,7 @@ class MenuRepositoryImp implements MenuRepository {
       GrMenuRegisterRequest request) async {
     try {
       final httpRequest = await _clientDio.post(AuthUrl.productCategories,
-          data: request.toJson());
+          data: request.removeNullValues());
       return GrMenuRegisterResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;

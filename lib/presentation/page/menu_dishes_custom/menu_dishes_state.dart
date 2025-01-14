@@ -21,6 +21,7 @@ class MenuDishesState extends Equatable {
   final List<GrAddToppingResponse> listLinkFood;
   final List<ProductAddTopping> listIdLinkFoodSellected;
   final String? imageId;
+  final List<int> listIdToppingShowDetail;
 
   const MenuDishesState({
     this.isLoading = false,
@@ -39,6 +40,7 @@ class MenuDishesState extends Equatable {
     this.imageId,
     this.isShowClearTopping = false,
     this.isShowClearCategory = false,
+    this.listIdToppingShowDetail = const [],
   });
 
   MenuDishesState copyWith({
@@ -58,6 +60,7 @@ class MenuDishesState extends Equatable {
     List<ProductAddTopping>? listIdLinkFoodSellected,
     bool? isShowClearTopping,
     bool? isShowClearCategory,
+    List<int>? listIdToppingShowDetail,
   }) {
     return MenuDishesState(
       isLoading: isLoading ?? false,
@@ -77,6 +80,8 @@ class MenuDishesState extends Equatable {
           listIdLinkFoodSellected ?? this.listIdLinkFoodSellected,
       isShowClearTopping: isShowClearTopping ?? this.isShowClearTopping,
       isShowClearCategory: isShowClearCategory ?? this.isShowClearCategory,
+      listIdToppingShowDetail:
+          listIdToppingShowDetail ?? this.listIdToppingShowDetail,
     );
   }
 
@@ -106,5 +111,6 @@ class MenuDishesState extends Equatable {
         isShowClearTopping,
         imageId,
         isShowClearCategory,
+        listIdToppingShowDetail,
       ];
 }

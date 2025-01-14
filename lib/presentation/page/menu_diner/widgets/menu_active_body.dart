@@ -53,6 +53,7 @@ class MenuActiveBody extends StatelessWidget {
                                   : 0),
                           child: GestureDetector(
                             onTap: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               switch (itemAction) {
                                 case DetailMenuActionType.advertisement:
                                   log("advertisement click");
@@ -66,7 +67,8 @@ class MenuActiveBody extends StatelessWidget {
                                               bloc.hideOrShowMenuFood(item,
                                                   isHide: true,
                                                   productCategoryId:
-                                                      listItem[index].id);
+                                                      listItem[index].id,
+                                                  isSearch: true);
                                             }
                                             Get.back();
                                           },
@@ -97,6 +99,7 @@ class MenuActiveBody extends StatelessWidget {
                                 child: itemAction.title != null
                                     ? Text(
                                         itemAction.title!,
+                                        textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall
@@ -301,6 +304,7 @@ class MenuActiveBody extends StatelessWidget {
                                     child: itemAction.title != null
                                         ? Text(
                                             itemAction.title!,
+                                            textAlign: TextAlign.center,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall
