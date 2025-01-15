@@ -7,6 +7,7 @@ class RequestUpdateAddress {
   final double? lat;
   final double? lng;
   final String? type;
+  final String? note;
 
   const RequestUpdateAddress({
     this.address,
@@ -15,6 +16,7 @@ class RequestUpdateAddress {
     this.lat,
     this.lng,
     this.type,
+    this.note,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class RequestUpdateAddress {
       'lat': lat,
       'lng': lng,
       'type': type,
+      'note': note,
     };
   }
 
@@ -55,6 +58,7 @@ class RequestUpdateAddress {
     double? lat,
     double? lng,
     String? type,
+    String? note,
   }) {
     return RequestUpdateAddress(
       address: address ?? this.address,
@@ -63,6 +67,7 @@ class RequestUpdateAddress {
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       type: type ?? this.type,
+      note: note ?? this.note,
     );
   }
 }

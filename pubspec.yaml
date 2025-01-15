@@ -67,6 +67,7 @@ dependencies:
   flutter_multi_formatter: ^2.13.0
   flutter_slidable: ^3.1.0
   carousel_slider: ^5.0.0
+  animated_toggle_switch: ^0.8.4
   # modal_bottom_sheet: ^3.0.0-pre
   # gradient_like_css: ^1.0.1
 

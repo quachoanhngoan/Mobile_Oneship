@@ -53,6 +53,11 @@ class AppTextFormFieldDate extends StatelessWidget {
             color: AppColors.borderColor,
           ),
         ),
+        disabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppColors.borderColor,
+          ),
+        ),
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColors.borderColor,

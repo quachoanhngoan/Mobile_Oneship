@@ -243,6 +243,7 @@ class DioUtil {
 
     if (isAuth) {
       final apiToken = _pref.token;
+
       if (apiToken == null) {
         throw authException;
       }

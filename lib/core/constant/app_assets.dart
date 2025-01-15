@@ -108,6 +108,8 @@ class AppAssets {
 
   static const String imagesIconsCircleInformation = "assets/images/icons/circle-information.png";
 
+  static const String imagesIconsClockEight = "assets/images/icons/clock-eight.png";
+
   static const String imagesIconsCurrentLocation = "assets/images/icons/Current-location.png";
 
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";
@@ -169,6 +171,8 @@ class AppAssets {
   static const String imagesIconsStarCopy = "assets/images/icons/star-copy.png";
 
   static const String imagesIconsTeenyiconsTickCircleSolid = "assets/images/icons/teenyicons_tick-circle-solid.png";
+
+  static const String imagesIconsTrashAlt = "assets/images/icons/trash-alt.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
 

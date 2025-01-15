@@ -1,4 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 
 mixin EStoreApprovalStatus {
   static const String draft = 'draft';
@@ -49,19 +50,21 @@ class StoreModel {
   Province? province;
   District? district;
   District? ward;
-
-  StoreModel(
-      {this.id,
-      this.createdAt,
-      this.name,
-      this.address,
-      this.status,
-      this.approvalStatus,
-      this.storeAvatarId,
-      this.province,
-      this.district,
-      this.rejectReason,
-      this.ward});
+  List<WorkingTime>? workingTimes;
+  StoreModel({
+    this.id,
+    this.createdAt,
+    this.name,
+    this.address,
+    this.status,
+    this.approvalStatus,
+    this.storeAvatarId,
+    this.province,
+    this.district,
+    this.rejectReason,
+    this.ward,
+    this.workingTimes,
+  });
 
   StoreModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -77,6 +80,12 @@ class StoreModel {
     district =
         json['district'] != null ? District.fromJson(json['district']) : null;
     ward = json['ward'] != null ? District.fromJson(json['ward']) : null;
+    if (json['workingTimes'] != null) {
+      workingTimes = <WorkingTime>[];
+      json['workingTimes'].forEach((v) {
+        workingTimes!.add(WorkingTime.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {

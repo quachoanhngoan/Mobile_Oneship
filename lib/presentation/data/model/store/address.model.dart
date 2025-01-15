@@ -4,8 +4,8 @@ class AddressStoreM {
   String? address;
   String? building;
   String? gate;
-  int? lat;
-  int? lng;
+  double? lat;
+  double? lng;
   String? type;
   String? note;
   Store? store;

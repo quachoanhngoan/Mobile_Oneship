@@ -95,7 +95,7 @@ class StepBankInformation extends StatelessWidget {
                     controller: bloc.selectBankController,
                     isRequired: true,
                     enabled: false,
-                    hintText: 'Nhập tên chủ tài khoản',
+                    hintText: 'Chọn ngân hàng',
                     onTap: () {
                       Get.dialog(
                         Dialog(

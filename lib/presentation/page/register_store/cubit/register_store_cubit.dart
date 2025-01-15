@@ -12,6 +12,7 @@ import 'package:oneship_merchant_app/presentation/data/model/store/bank.model.da
 import 'package:oneship_merchant_app/presentation/data/model/store/store_model.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
+import 'package:oneship_merchant_app/presentation/page/register_store/widget/work_time_page.dart';
 import 'package:oneship_merchant_app/service/dialog.dart';
 
 import '../../../data/model/register_store/group_service_model.dart';
@@ -178,6 +179,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
       setStoreCoverId(data.storeCoverId);
       setStoreFrontId(data.storeFrontId);
       setStoreMenuId(data.storeMenuId);
+      setWorkingTime(data.workingTimes);
 
       setStatusState(EState.success);
     }, failure: (error) {
@@ -187,6 +189,28 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
 
   resetState() {
     emit(const RegisterStoreState());
+  }
+
+  setWorkingTime(List<WorkingTime> value) {
+    for (var el in value) {
+      if (el.dayOfWeek != null) {
+        final finedDayOfWeek = state.data
+            .firstWhere((element) => element.dayOfWeekNumber == el.dayOfWeek);
+        final index = state.data.indexOf(finedDayOfWeek);
+
+        //asign new value
+        var newData = List<WorkTimeModel>.from(state.data);
+        var wkts = List<WKT>.from(newData[index].wkt);
+        wkts.add(WKT(
+          dayOfWeek: el.dayOfWeek!,
+          openTime: el.openTime!,
+          closeTime: el.closeTime!,
+        ));
+        newData[index] = newData[index].copyWith(wkt: wkts);
+
+        emit(state.copyWith(data: newData));
+      }
+    }
   }
 
   setAcceptTermsAndConditions(bool value) {
@@ -448,6 +472,19 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
     }
 
     setRegisterStatus(EState.loading);
+    final List<WKT> listWorkingTimes = [];
+    for (var element in state.data) {
+      listWorkingTimes.addAll(element.wkt);
+    }
+
+    final workingTimesParse = listWorkingTimes
+        .map((e) => WorkingTime(
+              dayOfWeek: e.dayOfWeek,
+              openTime: e.openTime,
+              closeTime: e.closeTime,
+            ))
+        .toList();
+
     final request = StoreRequestModel(
       isDraft: state.currentPage == ERegisterPageType.reviewInformation
           ? false
@@ -469,6 +506,7 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
       storeCoverId: state.storeCoverId,
       storeFrontId: state.storeFrontId,
       storeMenuId: state.storeMenuId,
+      workingTimes: workingTimesParse,
     );
 
     if (idStore == null) {
@@ -539,5 +577,17 @@ class RegisterStoreCubit extends Cubit<RegisterStoreState> {
 
   setWards(List<DistrictModel> value) {
     emit(state.copyWith(listWard: value));
+  }
+
+  setDayOfWeek(WorkTimeModel value) {
+    final finedDayOfWeek = state.data.firstWhere(
+        (element) => element.dayOfWeekNumber == value.dayOfWeekNumber);
+    final index = state.data.indexOf(finedDayOfWeek);
+
+    //asign new value
+    var newData = List<WorkTimeModel>.from(state.data);
+    newData[index] = value;
+
+    emit(state.copyWith(data: newData));
   }
 }

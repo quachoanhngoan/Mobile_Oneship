@@ -17,6 +17,7 @@ enum ERegisterPageType {
   //hình ảnh quán
   storeImages,
   //xem lại thông tin
+  workTime,
   reviewInformation;
 
   String get title {
@@ -37,6 +38,8 @@ enum ERegisterPageType {
         return 'Hình ảnh quán';
       case ERegisterPageType.reviewInformation:
         return 'Thông tin tổng quan';
+      case ERegisterPageType.workTime:
+        return 'Thời gian làm việc';
       default:
         return '';
     }
@@ -73,7 +76,7 @@ class RegisterStoreState {
   final String? storeCoverId;
   final String? storeFrontId;
   final String? storeMenuId;
-
+  final List<WorkTimeModel> data;
   const RegisterStoreState({
     this.showHintNameStore = true,
     this.status = EState.initial,
@@ -104,6 +107,43 @@ class RegisterStoreState {
     this.storeCoverId,
     this.storeFrontId,
     this.storeMenuId,
+    this.data = const [
+      WorkTimeModel(
+        dayOfWeek: "Thứ 2",
+        dayOfWeekNumber: 1,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Thứ 3",
+        dayOfWeekNumber: 2,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Thứ 4",
+        dayOfWeekNumber: 3,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Thứ 5",
+        dayOfWeekNumber: 4,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Thứ 6",
+        dayOfWeekNumber: 5,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Thứ 7",
+        dayOfWeekNumber: 6,
+        isOff: false,
+      ),
+      WorkTimeModel(
+        dayOfWeek: "Chủ nhật",
+        dayOfWeekNumber: 0,
+        isOff: false,
+      ),
+    ],
   });
 
   RegisterStoreState copyWith({
@@ -137,6 +177,7 @@ class RegisterStoreState {
     String? storeFrontId,
     String? storeMenuId,
     String? nameService,
+    List<WorkTimeModel>? data,
   }) {
     return RegisterStoreState(
       representative: representative ?? this.representative,
@@ -169,6 +210,7 @@ class RegisterStoreState {
       storeFrontId: storeFrontId ?? this.storeFrontId,
       storeMenuId: storeMenuId ?? this.storeMenuId,
       nameService: nameService ?? this.nameService,
+      data: data ?? this.data,
     );
   }
 
@@ -191,6 +233,8 @@ class RegisterStoreState {
             storeCoverId != null &&
             storeFrontId != null &&
             storeMenuId != null;
+      case ERegisterPageType.workTime:
+        return true;
       case ERegisterPageType.reviewInformation:
         return true;
       default:

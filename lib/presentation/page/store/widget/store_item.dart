@@ -32,6 +32,7 @@ class StoreItem extends StatelessWidget {
               ))?.then((value) {
             Get.context?.read<StoreCubit>().getAll();
           });
+          return;
         }
 
         if (data.getButtonType() == EStoreButtonType.pendingAndViewButton) {
@@ -41,7 +42,12 @@ class StoreItem extends StatelessWidget {
               ));
           return;
         }
-        Get.context?.read<StoreCubit>().loginStore(data);
+        if (data.getButtonType() == EStoreButtonType.none &&
+            data.approvalStatus == EStoreApprovalStatus.approved) {
+          Get.context?.read<StoreCubit>().loginStore(data);
+
+          return;
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(

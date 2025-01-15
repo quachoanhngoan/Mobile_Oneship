@@ -304,7 +304,8 @@ class AuthCubit extends Cubit<AuthState> {
         ));
     response.when(success: (data) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        dialogService.showNotificationSuccess("Thông tin được cập nhật thành công");
+        dialogService
+            .showNotificationSuccess("Thông tin được cập nhật thành công");
       });
       getProfile();
     }, failure: (error) {

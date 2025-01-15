@@ -68,7 +68,7 @@ class AuthImpl implements AuthRepository {
     final httpResponse = await _clientDio.patch(AuthUrl.profile,
         data: {
           if (name != null) "name": name,
-          "avatarId": avatarS,
+          if (avatar != null) "avatarId": avatarS,
         },
         // isShowError: false,
         isTranformData: true,
