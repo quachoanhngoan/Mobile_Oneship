@@ -28,8 +28,8 @@ class _AddressStorePageState extends State<AddressStorePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffF5F5F5),
-        appBar: AppBarAuth(
+        backgroundColor: const Color(0xffF5F5F5),
+        appBar: const AppBarAuth(
           title: "Địa chỉ",
         ),
         body: BlocBuilder<EditAddressBloc, EditAddressState>(

@@ -50,3 +50,13 @@ class ToppingItemDomain {
     return null;
   }
 }
+
+class ToppingSellectDomain {
+  final String? name;
+  final int id;
+  ToppingSellectDomain({required this.id, this.name});
+
+  ProductAddTopping convertTopping() {
+    return ProductAddTopping(id: id);
+  }
+}

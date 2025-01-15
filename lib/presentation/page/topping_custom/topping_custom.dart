@@ -228,46 +228,6 @@ class _AddGroupTopping extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomLeft,
             children: <Widget>[
-              SizedBox(
-                height: 36,
-                child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    itemCount: state.listIdLinkFoodSellected.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final item = state.listIdLinkFoodSellected[index];
-                      final nameItem = state.listLinkFood
-                          .firstWhereOrNull((e) => e.id == item.id)
-                          ?.name;
-                      if (nameItem != null) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6),
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                              color: AppColors.color880.withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(6)),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                nameItem,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.color988,
-                                    ),
-                              ),
-                              const HSpacing(spacing: 4),
-                              const Icon(Icons.clear,
-                                  color: AppColors.color988, size: 16)
-                            ],
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }),
-              ),
               AppTextFormFieldSelect(
                 controller: bloc.linkFoodController,
                 enabled: false,
@@ -278,8 +238,15 @@ class _AddGroupTopping extends StatelessWidget {
                 onChanged: (value) {
                   bloc.checkFilledInfomation();
                 },
+                suffixIcon: state.listIdLinkFoodSellected.isNotEmpty
+                    ? const SizedBox.shrink()
+                    : const Icon(Icons.expand_more,
+                        color: AppColors.color2B3, size: 24),
+              ),
+              GestureDetector(
                 onTap: () {
                   if (state.listLinkFood.isNotEmpty) {
+                    bloc.initSheetTopping();
                     showModalBottomSheet(
                         context: context,
                         builder: (_) {
@@ -290,10 +257,45 @@ class _AddGroupTopping extends StatelessWidget {
                         });
                   }
                 },
-                suffixIcon: state.listIdLinkFoodSellected.isNotEmpty
-                    ? const SizedBox.shrink()
-                    : const Icon(Icons.expand_more,
-                        color: AppColors.color2B3, size: 24),
+                child: Container(
+                  color: AppColors.transparent,
+                  height: 36,
+                  child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      itemCount: state.listIdLinkFoodSellected.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        final item = state.listIdLinkFoodSellected[index];
+                        if (item.name != null) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                                color: AppColors.color880.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(6)),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  item.name!,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.color988,
+                                      ),
+                                ),
+                                const HSpacing(spacing: 4),
+                                const Icon(Icons.clear,
+                                    color: AppColors.color988, size: 16)
+                              ],
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+                ),
               ),
             ],
           ),
@@ -743,10 +745,17 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                   child: ListView.builder(
                       itemCount: widget.listItem.length,
                       itemBuilder: (context, index) {
-                        final isSellectMainId = state.listIdLinkFoodSellectedDraft
-                                .firstWhereOrNull(
+                        final isSellectMainId =
+                            state.listIdLinkFoodSellectedDraft.firstWhereOrNull(
                                     (e) => e.id == widget.listItem[index].id) !=
-                            null;
+                                null;
+
+                        final isShowDetail = state.listIdToppingShowDetail
+                                    .firstWhereOrNull((e) =>
+                                        e == state.listLinkFood[index].id) !=
+                                null &&
+                            state.listLinkFood[index].products?.isNotEmpty ==
+                                true;
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 4),
@@ -797,45 +806,43 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                                 fontWeight: FontWeight.w600),
                                       ),
                                       const Spacer(),
-                                      Icon(
-                                        widget.listItem[index].products
-                                                    ?.isNotEmpty ==
-                                                true
-                                            ? Icons.keyboard_arrow_down_outlined
-                                            : Icons
-                                                .keyboard_arrow_right_outlined,
-                                        color: AppColors.color988,
-                                        size: 30,
+                                      GestureDetector(
+                                        onTap: () {
+                                          _bloc.toppingShowOrHideDetail(
+                                              state.listLinkFood[index].id);
+                                        },
+                                        child: Icon(
+                                          isShowDetail
+                                              ? Icons
+                                                  .keyboard_arrow_down_outlined
+                                              : Icons
+                                                  .keyboard_arrow_right_outlined,
+                                          color: AppColors.color988,
+                                          size: 30,
+                                        ),
                                       )
                                     ],
                                   ),
                                 ),
                               ),
-                              // widget.listItem[index].products?.isNotEmpty ==
-                              //         true
-                              //     ? const VSpacing(spacing: 12)
-                              //     : Container(),
-                              state.listLinkFood[index].products?.isNotEmpty ==
-                                      true
+                              isShowDetail
                                   ? const VSpacing(spacing: 6)
                                   : Container(),
-                              state.listLinkFood[index].products?.isNotEmpty ==
-                                      true
+                              isShowDetail
                                   ? Divider(
                                       color:
                                           AppColors.textGray.withOpacity(0.3),
                                       height: 16,
                                       thickness: 1.2)
                                   : Container(),
-                              if (widget.listItem[index].products?.isNotEmpty ==
-                                  true) ...[
+                              if (isShowDetail) ...[
                                 ...List.generate(
                                     widget.listItem[index].products!.length,
                                     (inxChild) {
                                   final childItem = widget
                                       .listItem[index].products![inxChild];
                                   final isSellectChildId = state
-                                          .listIdLinkFoodSellected
+                                          .listIdLinkFoodSellectedDraft
                                           .firstWhereOrNull(
                                               (e) => e.id == childItem.id) !=
                                       null;
@@ -850,8 +857,6 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                           },
                                           child: Container(
                                             color: AppColors.transparent,
-                                            // margin:
-                                            //     const EdgeInsets.only(left: 30),
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 6),
                                             child: Row(
@@ -904,64 +909,6 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                                 height: 16,
                                                 thickness: 1.2)
                                             : Container()
-                                        // GestureDetector(
-                                        //   onTap: () {
-                                        //     _bloc.listIdLinkFoodSellect(
-                                        //         childItem.id);
-                                        //   },
-                                        //   child: Container(
-                                        //     color: AppColors.transparent,
-                                        //     padding: const EdgeInsets.symmetric(
-                                        //         vertical: 6),
-                                        //     child: Row(
-                                        //       children: <Widget>[
-                                        //         Container(
-                                        //           width: 16,
-                                        //           height: 16,
-                                        //           decoration: BoxDecoration(
-                                        //               color: isSellectChildId
-                                        //                   ? AppColors.color988
-                                        //                   : AppColors
-                                        //                       .transparent,
-                                        //               borderRadius:
-                                        //                   BorderRadius.circular(
-                                        //                       4),
-                                        //               border: Border.all(
-                                        //                   color: isSellectChildId
-                                        //                       ? AppColors
-                                        //                           .transparent
-                                        //                       : AppColors
-                                        //                           .textGray,
-                                        //                   width: 1)),
-                                        //           child: const Icon(
-                                        //             Icons.check_outlined,
-                                        //             color: AppColors.white,
-                                        //             size: 12,
-                                        //           ),
-                                        //         ),
-                                        //         const HSpacing(spacing: 8),
-                                        //         Text(
-                                        //           childItem.name,
-                                        //           style: Theme.of(context)
-                                        //               .textTheme
-                                        //               .bodySmall
-                                        //               ?.copyWith(
-                                        //                   fontWeight:
-                                        //                       FontWeight.w500),
-                                        //         ),
-                                        //       ],
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        // widget.listItem[index].products!
-                                        //                 .length -
-                                        //             1 !=
-                                        //         inxChild
-                                        //     ? const Divider(
-                                        //         color: AppColors.textGray,
-                                        //         height: 1,
-                                        //         thickness: 1)
-                                        //     : Container()
                                       ],
                                     ),
                                   );
@@ -992,6 +939,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
+                              _bloc.clearListIdLinkFood();
                               Get.back();
                             },
                             child: Container(
@@ -1018,6 +966,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
+                              _bloc.listIdLinkFoodSellectConfirm();
                               Get.back();
                             },
                             child: Container(

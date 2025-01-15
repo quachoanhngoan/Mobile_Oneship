@@ -14,7 +14,7 @@ UpdateEmailResDomain _$UpdateEmailResDomainFromJson(
       deletedAt: json['deletedAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
       name: json['name'] as String?,
-      avatarId: (json['avatarId'] as num?)?.toInt(),
+      avatarId: (json['avatarId'] as String?),
       phone: json['phone'] as String?,
       email: json['email'] as String?,
       emailVerifiedAt: json['emailVerifiedAt'] as String?,
