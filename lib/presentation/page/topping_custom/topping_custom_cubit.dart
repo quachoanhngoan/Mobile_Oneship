@@ -201,12 +201,18 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
             }
           }
 
+          List<ProductAddTopping> products = [];
+
+          for (var element in state.listIdLinkFoodSellected) {
+            products.add(element.convertTopping());
+          }
+
           final requestBody = GrToppingRequest(
               name: nameGroupToppingController.text,
               isMultiple: state.indexOptionTopping != 0,
               status: "active",
               options: convertListAddTopping,
-              products: state.listIdLinkFoodSellected);
+              products: products);
           final response = await repository.addGroupTopping(requestBody,
               id: dataEditGroupTopping!.id);
           if (response != null) {
@@ -266,14 +272,21 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
         approvalStatus: "approved",
       );
       final response = await repository.getListMenu(request);
-      emit(state.copyWith(listLinkFood: response?.items));
+      List<int> _listIdToppingShowDetail = [];
+      response?.items.forEach((e) {
+        _listIdToppingShowDetail.add(e.id);
+      });
+      emit(state.copyWith(
+          listLinkFood: response?.items,
+          listIdToppingShowDetail: _listIdToppingShowDetail));
     } on DioException catch (e) {
       log("error getLinkFood: ${e.message}");
     }
   }
 
   listIdLinkFoodSellect(int id, {bool isAll = false}) {
-    final listId = List<ProductAddTopping>.from(state.listIdLinkFoodSellected);
+    final listId =
+        List<ProductAddTopping>.from(state.listIdLinkFoodSellectedDraft);
     final listLinkFood = state.listLinkFood;
     final isSellected = listId.firstWhereOrNull((e) => e.id == id) != null;
     if (isSellected) {
@@ -303,7 +316,6 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
       }
       listId.add(ProductAddTopping(id: id));
     }
-    // _listIdLinkFoodSellected.addAll(_filterDuplicateProducts(listId));
     emit(state.copyWith(
         listIdLinkFoodSellectedDraft: _filterDuplicateProducts(listId)));
   }
@@ -319,25 +331,52 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
     emit(state.copyWith(listIdLinkFoodSellectedDraft: []));
   }
 
+  initSheetTopping() {
+    List<ProductAddTopping> listIdLinkFoodSellectedDraft = [];
+    for (var e in state.listIdLinkFoodSellected) {
+      listIdLinkFoodSellectedDraft.add(e.convertTopping());
+    }
+    emit(state.copyWith(
+        listIdLinkFoodSellectedDraft: listIdLinkFoodSellectedDraft));
+  }
+
   listIdLinkFoodSellectConfirm() {
-    List<String> listNameSellect = [];
+    List<ToppingSellectDomain> listNameSellect = [];
     final listIdSellect = List.of(state.listIdLinkFoodSellectedDraft);
     for (var product in listIdSellect) {
       for (var linkFoodMain in state.listLinkFood) {
         if (linkFoodMain.id == product.id) {
-          listNameSellect.add(linkFoodMain.name);
+          log("confirm list link food: ${linkFoodMain.name}",
+              name: "ToppingCustomCubit");
+
+          listNameSellect.add(ToppingSellectDomain(
+              name: linkFoodMain.name, id: linkFoodMain.id));
         } else {
           if (linkFoodMain.products != null &&
               linkFoodMain.products?.isNotEmpty == true) {
             for (var detail in linkFoodMain.products!) {
               if (detail.id == product.id) {
-                listNameSellect.add(detail.name);
+                log("confirm list link food: ${detail.name}",
+                    name: "ToppingCustomCubit");
+                listNameSellect.add(
+                    ToppingSellectDomain(name: detail.name, id: detail.id));
               }
             }
           }
         }
       }
     }
-    // emit(state.copyWith(listIdLinkFoodSellected: _listIdLinkFoodSellected));
+
+    emit(state.copyWith(listIdLinkFoodSellected: listNameSellect));
+  }
+
+  toppingShowOrHideDetail(int id) {
+    final listIdHide = List.of(state.listIdToppingShowDetail);
+    if (listIdHide.contains(id)) {
+      listIdHide.remove(id);
+    } else {
+      listIdHide.add(id);
+    }
+    emit(state.copyWith(listIdToppingShowDetail: listIdHide));
   }
 }

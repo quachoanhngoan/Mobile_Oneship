@@ -284,15 +284,19 @@ class _MenuItem extends StatelessWidget {
           child: ImageAssetWidget(image: image, height: 15),
         ),
         const SizedBox(width: 20),
-        Text(
-          title,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: AppColors.textColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+        Expanded(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: AppColors.textColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+            overflow: TextOverflow.visible,
+          ),
         ),
-        const Spacer(),
+        // const Spacer(),
+        const HSpacing(spacing: 10),
         const ImageAssetWidget(
           image: AppAssets.imagesIconsArrowRight01,
           height: 18,

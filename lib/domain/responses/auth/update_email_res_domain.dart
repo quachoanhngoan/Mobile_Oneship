@@ -9,7 +9,7 @@ class UpdateEmailResDomain {
   final String? deletedAt;
   final String? updatedAt;
   final String? name;
-  final int? avatarId;
+  final String? avatarId;
   final String? phone;
   final String? email;
   final String? emailVerifiedAt;
@@ -45,7 +45,7 @@ class UpdateEmailResDomain {
       deletedAt: json['deletedAt'] as String?,
       updatedAt: json['updatedAt'] as String? ?? '',
       name: json['name'] as String?,
-      avatarId: json['avatarId'] as int?,
+      avatarId: json['avatarId'] as String?,
       phone: json['phone'] as String? ?? '',
       email: json['email'] as String? ?? '',
       emailVerifiedAt: json['emailVerifiedAt'] as String?,
