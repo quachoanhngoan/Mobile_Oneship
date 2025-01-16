@@ -127,8 +127,7 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                             Expanded(
                                 child: TextFieldSearch(
                                     controller: bloc.searchController,
-                                    showClearButton: bloc
-                                        .searchController.text.isNotNullOrEmpty,
+                                    showClearButton: state.isShowClearSearch,
                                     onChange: (value) {
                                       if (state.menuMainType ==
                                           MenuMainType.menu) {
@@ -136,9 +135,11 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                                       } else {
                                         bloc.searchTopping(value);
                                       }
+                                      bloc.checkShowClearSearch();
                                     },
                                     clearTextClicked: () {
                                       bloc.searchController.clear();
+                                      bloc.checkShowClearSearch();
                                     },
                                     hintText: "Tìm kiếm tên sản phẩm")),
                             const HSpacing(spacing: 8),
@@ -481,39 +482,43 @@ class CardDetailMenu extends StatelessWidget {
                     isBaseUrl: true, fit: BoxFit.fill),
               ),
               const HSpacing(spacing: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    item.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  const VSpacing(spacing: 4),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text("${item.price} vnđ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.colorD33)),
-                      // Text("50.000 vnđ",
-                      //     style: Theme.of(context)
-                      //         .textTheme
-                      //         .bodySmall
-                      //         ?.copyWith(
-                      //             fontWeight: FontWeight.w400,
-                      //             fontSize: 10,
-                      //             color: AppColors.color373,
-                      //             decoration: TextDecoration.lineThrough)),
-                    ],
-                  )
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      item.name,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const VSpacing(spacing: 4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("${item.price} vnđ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.colorD33)),
+                        // Text("50.000 vnđ",
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .bodySmall
+                        //         ?.copyWith(
+                        //             fontWeight: FontWeight.w400,
+                        //             fontSize: 10,
+                        //             color: AppColors.color373,
+                        //             decoration: TextDecoration.lineThrough)),
+                      ],
+                    )
+                  ],
+                ),
               )
             ],
           ),

@@ -21,6 +21,7 @@ class MenuDinerState extends Equatable {
   final bool isShowSearch;
   final List<ResultSearchMenuTypeDomain> listResultSearchMenu;
   final List<DataToppingTypeDomain> listResultSearchTopping;
+  final bool isShowClearSearch;
 
   const MenuDinerState({
     this.toppingType = ToppingType.active,
@@ -40,6 +41,7 @@ class MenuDinerState extends Equatable {
     this.isShowSearch = false,
     this.listResultSearchMenu = const [],
     this.listResultSearchTopping = const [],
+    this.isShowClearSearch = false,
   });
 
   MenuDinerState copyWith({
@@ -58,6 +60,7 @@ class MenuDinerState extends Equatable {
     bool? showClearNameEditMenu,
     bool? editNameGroupSuccess,
     bool? isShowSearch,
+    bool? isShowClearSearch,
     List<ResultSearchMenuTypeDomain>? listResultSearchMenu,
     List<DataToppingTypeDomain>? listResultSearchTopping,
   }) {
@@ -80,6 +83,7 @@ class MenuDinerState extends Equatable {
       listResultSearchMenu: listResultSearchMenu ?? this.listResultSearchMenu,
       listResultSearchTopping:
           listResultSearchTopping ?? this.listResultSearchTopping,
+      isShowClearSearch: isShowClearSearch ?? this.isShowClearSearch,
     );
   }
 
@@ -102,5 +106,6 @@ class MenuDinerState extends Equatable {
         isShowSearch,
         listResultSearchMenu,
         listResultSearchTopping,
+        isShowClearSearch,
       ];
 }

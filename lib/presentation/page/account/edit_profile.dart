@@ -10,6 +10,7 @@ import 'package:oneship_merchant_app/presentation/page/account/widget/email_edit
 import 'package:oneship_merchant_app/presentation/page/account/widget/phone_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/widget/time_sellect_sheet.dart';
+import 'package:oneship_merchant_app/presentation/page/register/widget/register_arg.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
@@ -205,9 +206,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         AppButton(
                           isEnable: true,
                           onPressed: () {
-                            context.pushWithNamed(context,
-                                routerName: AppRoutes.registerpage,
-                                arguments: false);
+                            if (state.userData != null) {
+                              context.pushWithNamed(context,
+                                  routerName: AppRoutes.registerpage,
+                                  arguments: RegisterArg(
+                                      isRegister: false,
+                                      userData: state.userData));
+                            }
                           },
                           margin: const EdgeInsets.only(top: 10),
                           padding: const EdgeInsets.symmetric(

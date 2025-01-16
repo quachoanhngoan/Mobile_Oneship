@@ -459,6 +459,7 @@ class MenuDishesCubit extends Cubit<MenuDishesState> {
           name: nameFoodController.text,
           price: numericPrice,
           imageId: state.imageId!,
+          status: _idFoodUpdate == null ? "active" : null,
           productCategoryId: state.categoryStoreSellect!.id,
           isNormalTime: state.typeTime == TimeSellType.timeStore,
           productWorkingTimes: _listTimeSellect,

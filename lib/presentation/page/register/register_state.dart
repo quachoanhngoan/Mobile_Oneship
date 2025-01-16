@@ -11,19 +11,21 @@ class RegisterState extends Equatable {
   final bool? isLoading;
   final String? titleFailedDialog;
   final bool? isPhone;
+  final String? errorUserName;
 
-  const RegisterState(
-      {this.title = 'Nhập SĐT/Email',
-      this.isEnableContinue,
-      this.showHintTextPass = true,
-      this.showHintTextRePass = true,
-      this.errorPass,
-      this.errorRepass,
-      this.isContinueStep = false,
-      this.isLoading,
-      this.titleFailedDialog,
-      this.isPhone
-      });
+  const RegisterState({
+    this.title = 'Nhập SĐT/Email',
+    this.isEnableContinue,
+    this.showHintTextPass = true,
+    this.showHintTextRePass = true,
+    this.errorPass,
+    this.errorRepass,
+    this.isContinueStep = false,
+    this.isLoading,
+    this.titleFailedDialog,
+    this.isPhone,
+    this.errorUserName,
+  });
 
   RegisterState copyWith({
     String? title,
@@ -36,19 +38,21 @@ class RegisterState extends Equatable {
     bool? isLoading,
     String? titleFailedDialog,
     bool? isPhone,
+    String? errorUserName,
   }) {
     return RegisterState(
-        title: title ?? this.title,
-        isEnableContinue: isEnableContinue ?? this.isEnableContinue,
-        showHintTextPass: showHintTextPass ?? this.showHintTextPass,
-        showHintTextRePass: showHintTextRePass ?? this.showHintTextRePass,
-        errorPass: errorPass,
-        errorRepass: errorRepass,
-        isContinueStep: isContinueStep ?? this.isContinueStep,
-        isLoading: isLoading,
-        titleFailedDialog: titleFailedDialog,
-        isPhone: isPhone ?? this.isPhone
-        );
+      title: title ?? this.title,
+      isEnableContinue: isEnableContinue ?? this.isEnableContinue,
+      showHintTextPass: showHintTextPass ?? this.showHintTextPass,
+      showHintTextRePass: showHintTextRePass ?? this.showHintTextRePass,
+      errorPass: errorPass,
+      errorRepass: errorRepass,
+      isContinueStep: isContinueStep ?? this.isContinueStep,
+      isLoading: isLoading,
+      titleFailedDialog: titleFailedDialog,
+      isPhone: isPhone ?? this.isPhone,
+      errorUserName: errorUserName,
+    );
   }
 
   @override
@@ -62,6 +66,7 @@ class RegisterState extends Equatable {
         isContinueStep,
         isLoading,
         titleFailedDialog,
-        isPhone
+        isPhone,
+        errorUserName,
       ];
 }

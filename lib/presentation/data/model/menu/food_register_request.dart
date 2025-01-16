@@ -2,7 +2,7 @@ class FoodRegisterMenuRequest {
   String? name;
   String? description;
   double? price;
-  String status;
+  String? status;
   int? productCategoryId;
   String? imageId;
   bool? isNormalTime;
@@ -13,7 +13,7 @@ class FoodRegisterMenuRequest {
     this.name,
     this.description,
     this.price,
-    this.status = "active",
+    this.status,
     this.productCategoryId,
     this.imageId,
     this.isNormalTime,

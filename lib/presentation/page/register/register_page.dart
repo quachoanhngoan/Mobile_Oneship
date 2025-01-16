@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
+import 'package:oneship_merchant_app/presentation/page/register/widget/register_arg.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/text_field_base.dart';
@@ -50,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isRegister = Get.arguments as bool;
+    final argument = Get.arguments as RegisterArg;
 
     return BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
@@ -60,12 +62,17 @@ class _RegisterPageState extends State<RegisterPage> {
               duration: const Duration(milliseconds: 300),
               curve: Curves.linear);
         } else {
-          context.popScreen();
-          Future.delayed(const Duration(seconds: 3), () {
-            Get.back();
-            Get.toNamed(AppRoutes.loginPage);
-          });
-          createAccountSuccessDialog(isRegister);
+          if (argument.userData != null) {
+            context.read<AuthCubit>().logout();
+            context.showToastDialog("Bạn đã thay đổi mật khẩu thành công");
+          } else {
+            context.popScreen();
+            Future.delayed(const Duration(seconds: 3), () {
+              Get.back();
+              Get.toNamed(AppRoutes.loginPage);
+            });
+            createAccountSuccessDialog(argument.isRegister);
+          }
         }
       }
       if (state.titleFailedDialog != null) {
@@ -119,6 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         PhoneRegister(
                             focusNode: _phoneNode,
                             isForcus: state.isEnableContinue ?? false,
+                            errorText: state.errorUserName,
                             suffixClick: () {
                               _phoneController.clear();
                               context
@@ -126,9 +134,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   .validateUserName(null);
                             },
                             onChange: (value) {
-                              context
-                                  .read<RegisterCubit>()
-                                  .validateUserName(value);
+                              if (argument.userData != null) {
+                                context
+                                    .read<RegisterCubit>()
+                                    .validateUserNameChangePass(
+                                        argument.userData!, value);
+                              } else {
+                                context
+                                    .read<RegisterCubit>()
+                                    .validateUserName(value);
+                              }
                             },
                             phoneController: _phoneController),
                         OtpRegister(
@@ -140,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             context.read<RegisterCubit>().submitPhoneOrEmail(
                                 _phoneController.text.trim(),
                                 isReSent: true,
-                                isRegister: isRegister);
+                                isRegister: argument.isRegister);
                           },
                           onDone: (value) {
                             context.read<RegisterCubit>().validateOtp(value);
@@ -168,7 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           context.read<RegisterCubit>().submitPhoneOrEmail(
                               _phoneController.text.trim(),
                               isReSent: false,
-                              isRegister: isRegister);
+                              isRegister: argument.isRegister);
                           break;
                         case 1:
                           context
@@ -178,7 +193,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         case 2:
                           _passNode.unfocus();
                           _rePassNode.unfocus();
-                          if (isRegister) {
+                          if (argument.isRegister) {
                             context
                                 .read<RegisterCubit>()
                                 .createPasswordWithPhoneOrEmail(
@@ -204,32 +219,34 @@ class _RegisterPageState extends State<RegisterPage> {
                     isEnable: state.isEnableContinue == true,
                   ),
                   const VSpacing(spacing: 20),
-                  GestureDetector(
-                    onTap: () {
-                      context.popScreen();
-                      context.pushWithNamed(context,
-                          routerName: AppRoutes.loginPage);
-                    },
-                    child: RichText(
-                        text: TextSpan(children: [
-                      TextSpan(
-                        text: "Đã có tài khoản? ",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: AppColors.colorC5C),
-                      ),
-                      TextSpan(
-                          text: "Đăng nhập",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  color: AppColors.color988,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: AppColors.color988))
-                    ])),
-                  )
+                  argument.userData == null
+                      ? GestureDetector(
+                          onTap: () {
+                            context.popScreen();
+                            context.pushWithNamed(context,
+                                routerName: AppRoutes.loginPage);
+                          },
+                          child: RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                              text: "Đã có tài khoản? ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppColors.colorC5C),
+                            ),
+                            TextSpan(
+                                text: "Đăng nhập",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        color: AppColors.color988,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: AppColors.color988))
+                          ])),
+                        )
+                      : const SizedBox.shrink()
                 ],
               ),
               Visibility(
@@ -299,6 +316,7 @@ class PhoneRegister extends StatelessWidget {
   final Function suffixClick;
   final String? hintText;
   final String? title;
+  final String? errorText;
 
   const PhoneRegister(
       {super.key,
@@ -308,7 +326,8 @@ class PhoneRegister extends StatelessWidget {
       required this.suffixClick,
       required this.focusNode,
       this.hintText,
-      this.title});
+      this.title,
+      this.errorText});
 
   @override
   Widget build(BuildContext context) {
@@ -325,6 +344,7 @@ class PhoneRegister extends StatelessWidget {
           focusNode: focusNode,
           controller: phoneController,
           hintText: hintText ?? "Nhập SĐT hoặc email",
+          errorText: errorText,
           onChanged: (value) {
             onChange(value);
           },

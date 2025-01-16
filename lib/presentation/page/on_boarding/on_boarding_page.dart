@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/model/banner/banner.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
+import 'package:oneship_merchant_app/presentation/page/register/widget/register_arg.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/slide_images.dart';
 
@@ -157,7 +158,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       text: "Đăng ký",
                       isEnable: true,
                       onPressed: () {
-                        Get.toNamed(AppRoutes.registerpage, arguments: true);
+                        Get.toNamed(AppRoutes.registerpage,
+                            arguments: RegisterArg(isRegister: true));
                       },
                     ),
                   ),

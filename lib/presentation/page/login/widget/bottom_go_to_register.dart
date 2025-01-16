@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/page/register/widget/register_arg.dart';
 
 class BottomGoToRegister extends StatelessWidget {
   const BottomGoToRegister({
@@ -25,7 +26,8 @@ class BottomGoToRegister extends StatelessWidget {
         SizedBox(width: AppDimensions.paddingSmall),
         GestureDetector(
           onTap: () {
-            Get.toNamed(AppRoutes.registerpage, arguments: true);
+            Get.toNamed(AppRoutes.registerpage,
+                arguments: RegisterArg(isRegister: true));
           },
           child: Text(
             'Đăng ký',

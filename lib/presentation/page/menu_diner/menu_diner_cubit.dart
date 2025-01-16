@@ -134,6 +134,11 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     }
   }
 
+  checkShowClearSearch() {
+    emit(state.copyWith(
+        isShowClearSearch: searchController.text.isNotNullOrEmpty));
+  }
+
   searchFoodByMenu(String value) async {
     try {
       List<ResultSearchMenuTypeDomain> listResultSearch = [];
@@ -232,7 +237,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       final response = await repository.removeGroupTopping(id);
       if (response != null) {
         await getAllTopping();
-        if(isSearch){
+        if (isSearch) {
           searchTopping(searchController.text);
         }
         emit(state.copyWith(isLoading: false));

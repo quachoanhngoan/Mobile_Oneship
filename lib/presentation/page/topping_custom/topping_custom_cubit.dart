@@ -32,8 +32,6 @@ class ToppingCustomCubit extends Cubit<ToppingCustomState> {
   late ToppingItemDomain toppingEdit;
   GrAddToppingResponse? dataEditGroupTopping;
 
-  // List<ProductAddTopping> _listIdLinkFoodSellected = [];
-
   init({GrAddToppingResponse? topping}) {
     getLinkFood();
     if (topping != null) {

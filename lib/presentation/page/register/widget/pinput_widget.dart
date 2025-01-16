@@ -10,11 +10,13 @@ class PinputWidget extends StatefulWidget {
   final Function(String) onDone;
   final Function() timeOutPressed;
   final Function() timeOutListener;
+  final TextEditingController? controller;
   const PinputWidget(
       {super.key,
       required this.onDone,
       required this.timeOutPressed,
-      required this.timeOutListener});
+      required this.timeOutListener,
+      this.controller});
 
   @override
   State<PinputWidget> createState() => _PinputWidgetState();
@@ -46,6 +48,7 @@ class _PinputWidgetState extends State<PinputWidget> {
         children: [
           Pinput(
             length: 6,
+            controller: widget.controller,
             defaultPinTheme: PinTheme(
               width: 40,
               height: 40,

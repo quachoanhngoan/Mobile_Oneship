@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
+import 'package:oneship_merchant_app/core/constant/error_strings.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
@@ -27,6 +28,7 @@ class EmailEditProfile extends StatefulWidget {
 
 class _EmailEditProfileState extends State<EmailEditProfile> {
   late PageController pageController;
+  final TextEditingController pinController = TextEditingController();
 
   int indexPage = 0;
   var titleAppBar = "Email";
@@ -52,6 +54,9 @@ class _EmailEditProfileState extends State<EmailEditProfile> {
         }
       }
       if (state.titleFailedDialog != null) {
+        if (state.titleFailedDialog == AppErrorString.kOTPInvalid) {
+          pinController.clear();
+        }
         context.showErrorDialog(state.titleFailedDialog!, context);
       }
     }, builder: (context, state) {
@@ -134,6 +139,7 @@ class _EmailEditProfileState extends State<EmailEditProfile> {
                     ),
                     _OTPBodyPage(
                       state: state,
+                      controller: pinController,
                       phone: widget.userData.phone!,
                     ),
                     _UpdateEmailBodyPage(continuePressed: (email) {
@@ -270,7 +276,7 @@ class _PhoneBodyPageState extends State<_PhoneBodyPage> {
                 text: TextSpan(children: [
                   TextSpan(
                       text:
-                          "Nếu bạn chưa có đăng ký số điện thoại, vui lòng liên hệ qua. Tổng đài GOO+ ",
+                          "Nếu bạn chưa có đăng ký số điện thoại, vui lòng liên hệ qua tổng đài GOO+ ",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 14, fontWeight: FontWeight.w500)),
                   TextSpan(
@@ -290,10 +296,11 @@ class _PhoneBodyPageState extends State<_PhoneBodyPage> {
 class _OTPBodyPage extends StatelessWidget {
   final String phone;
   final EditProfileState state;
+  final TextEditingController controller;
   const _OTPBodyPage({
-    super.key,
     required this.phone,
     required this.state,
+    required this.controller,
   });
 
   @override
@@ -309,6 +316,7 @@ class _OTPBodyPage extends StatelessWidget {
           ),
           const VSpacing(spacing: 20),
           PinputWidget(
+            controller: controller,
             timeOutPressed: () {
               context.read<EditProfileCubit>().submitPhoneToGetOTP(
                     phone,

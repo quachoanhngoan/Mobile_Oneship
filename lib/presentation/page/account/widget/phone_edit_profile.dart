@@ -6,14 +6,12 @@ import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dar
 import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
 import 'package:oneship_merchant_app/presentation/page/account/cubit/edit_profile_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/account/cubit/edit_profile_state.dart';
-import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field.dart';
 
 import '../../../../config/theme/color.dart';
 import '../../../../core/helper/validate.dart';
 import '../../../widget/appbar/appbar_common.dart';
 import '../../../widget/button/app_button.dart';
-import '../../register/register_cubit.dart';
 import '../../register/widget/pinput_widget.dart';
 import '../../register_store/widget/app_text_form_field.dart';
 
@@ -28,6 +26,7 @@ class PhoneEditProfile extends StatefulWidget {
 
 class _PhoneEditProfileState extends State<PhoneEditProfile> {
   late PageController pageController;
+  final TextEditingController pinController = TextEditingController();
   late final FocusNode _phoneNode;
 
   int indexPage = 0;
@@ -55,6 +54,9 @@ class _PhoneEditProfileState extends State<PhoneEditProfile> {
         }
       }
       if (state.titleFailedDialog != null) {
+        if (state.titleFailedDialog == AppErrorString.kOTPInvalid) {
+          pinController.clear();
+        }
         context.showErrorDialog(state.titleFailedDialog!, context);
       }
     }, builder: (context, state) {
@@ -141,6 +143,7 @@ class _PhoneEditProfileState extends State<PhoneEditProfile> {
                 ),
                 _OTPBodyPage(
                   state: state,
+                  controller: pinController,
                   isNextButton: () {
                     context
                         .read<EditProfileCubit>()
@@ -232,35 +235,11 @@ class _CurrentPhonePage extends StatelessWidget {
   }
 }
 
-// class _EmailBodyPage extends StatefulWidget {
-//   final FocusNode phoneNode;
-//   final String email;
-//   final Function() isNextStep;
-
-//   const _EmailBodyPage(
-//       {required this.phoneNode, required this.isNextStep, required this.email});
-
-//   @override
-//   State<_EmailBodyPage> createState() => _EmailBodyPageState();
-// }
-
-// class _EmailBodyPageState extends State<_EmailBodyPage> {
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//   }
-// }
-
 class _EmailBodyPage extends StatelessWidget {
   final String email;
   final Function() isNextStep;
-  const _EmailBodyPage(
-      {super.key, required this.email, required this.isNextStep});
+
+  const _EmailBodyPage({required this.email, required this.isNextStep});
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +284,7 @@ class _EmailBodyPage extends StatelessWidget {
                 text: TextSpan(children: [
                   TextSpan(
                       text:
-                          "Nếu bạn chưa có đăng ký tài khoản Email, vui lòng liên hệ qua. Tổng đài GOO+ ",
+                          "Nếu bạn chưa có đăng ký tài khoản Email, vui lòng liên hệ qua tổng đài GOO+ ",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontSize: 14, fontWeight: FontWeight.w500)),
                   TextSpan(
@@ -324,13 +303,16 @@ class _EmailBodyPage extends StatelessWidget {
 
 class _OTPBodyPage extends StatelessWidget {
   final Function isNextButton;
+  final TextEditingController controller;
   final EditProfileState state;
   final String email;
+
   const _OTPBodyPage(
       {super.key,
       required this.email,
       required this.isNextButton,
-      required this.state});
+      required this.state,
+      required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -345,6 +327,7 @@ class _OTPBodyPage extends StatelessWidget {
           ),
           const VSpacing(spacing: 20),
           PinputWidget(
+            controller: controller,
             timeOutPressed: () {
               context
                   .read<EditProfileCubit>()
@@ -434,6 +417,7 @@ class _UpdatePhoneBodyPageState extends State<_UpdatePhoneBodyPage> {
               onChanged: (value) {
                 validatePhone(value);
               },
+              keyboardType: TextInputType.number,
               suffix: !phoneController.text.isNullOrEmpty
                   ? IconButton(
                       onPressed: () {

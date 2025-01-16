@@ -1,3 +1,4 @@
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/constant/error_strings.dart';
 import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
@@ -123,7 +124,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       if (response.data != null) {
         emit(state.copyWith(phoneResponseSuccess: phone, isContinueStep: true));
       } else {
-        emit(state.copyWith(titleFailedDialog: "Không thể đổi số điện thoại"));
+        var titleFailedDialog = "Không thể đổi số điện thoại";
+        // log("check error: ${response.error?.message}");
+        if (response.error?.response?.data['message'] == "PHONE_CONFLICT") {
+          titleFailedDialog = "Số điện thoại đã được sử dụng";
+        }
+        emit(state.copyWith(titleFailedDialog: titleFailedDialog));
       }
     }
   }

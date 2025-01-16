@@ -319,7 +319,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   logout() {
     prefManager.logout();
-    Get.offAllNamed(AppRoutes.onBoardingPage);
+    Get.offAllNamed(AppRoutes.loginPage);
   }
 
   countDownTime() {

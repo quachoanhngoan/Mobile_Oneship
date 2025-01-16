@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/core/resources/data_state.dart';
 import 'package:oneship_merchant_app/domain/requests/register_email/email_password_request.dart';
 import 'package:oneship_merchant_app/domain/requests/register_email/email_register_request.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/data/model/user/user_model.dart';
 import 'package:oneship_merchant_app/presentation/data/validations/user_validation.dart';
 import 'package:oneship_merchant_app/presentation/page/register/register_state.dart';
 
@@ -45,6 +46,15 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   void validateUserName(String? value) {
     emit(state.copyWith(isEnableContinue: value.isNotNullOrEmpty));
+  }
+
+  void validateUserNameChangePass(UserM userData, String? value) {
+    if (value == userData.email || value == userData.phone) {
+      emit(state.copyWith(errorUserName: null, isEnableContinue: true));
+    } else {
+      emit(state.copyWith(
+          errorUserName: "SĐT hoặc email không đúng", isEnableContinue: false));
+    }
   }
 
   void timeOutOtp() {

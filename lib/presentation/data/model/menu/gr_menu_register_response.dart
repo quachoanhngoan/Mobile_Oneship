@@ -1,9 +1,9 @@
 class GrMenuRegisterResponse {
   final String name;
-  final int storeId;
-  final int serviceGroupId;
+  final dynamic storeId;
+  final dynamic serviceGroupId;
   final String? description;
-  final int id;
+  final dynamic id;
   final String createdAt;
   final String? deletedAt;
   final String updatedAt;

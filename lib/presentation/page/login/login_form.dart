@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/page/login/widget/login_form_field.dart';
+import 'package:oneship_merchant_app/presentation/page/register/widget/register_arg.dart';
 import 'package:oneship_merchant_app/presentation/widget/widget.dart';
 
 class LoginForm extends StatelessWidget {
@@ -92,7 +93,8 @@ class LoginForm extends StatelessWidget {
                     SizedBox(width: AppDimensions.paddingSmall),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(AppRoutes.registerpage, arguments: false);
+                        Get.toNamed(AppRoutes.registerpage,
+                            arguments: RegisterArg(isRegister: false));
                       },
                       child: Text(
                         'Quên?',

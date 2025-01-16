@@ -126,7 +126,6 @@ class MenuActiveBody extends StatelessWidget {
       }
       return const EmptySearchMenu();
     }
-    log("vao day");
     return ListView.builder(
         itemCount: listItem.length,
         itemBuilder: (context, index) {
