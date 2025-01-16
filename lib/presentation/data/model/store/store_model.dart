@@ -1,4 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
 
 mixin EStoreApprovalStatus {
@@ -41,6 +42,8 @@ class StoresResponse {
 class StoreModel {
   int? id;
   String? createdAt;
+  bool? isPause;
+  bool? isSpecialWorkingTime;
   String? name;
   String? address;
   String? status;
@@ -51,20 +54,23 @@ class StoreModel {
   District? district;
   District? ward;
   List<WorkingTime>? workingTimes;
-  StoreModel({
-    this.id,
-    this.createdAt,
-    this.name,
-    this.address,
-    this.status,
-    this.approvalStatus,
-    this.storeAvatarId,
-    this.province,
-    this.district,
-    this.rejectReason,
-    this.ward,
-    this.workingTimes,
-  });
+  List<SpecialWorkingTime>? specialWorkingTimes;
+  StoreModel(
+      {this.id,
+      this.createdAt,
+      this.name,
+      this.address,
+      this.status,
+      this.approvalStatus,
+      this.storeAvatarId,
+      this.province,
+      this.district,
+      this.rejectReason,
+      this.ward,
+      this.workingTimes,
+      this.isPause,
+      this.specialWorkingTimes,
+      this.isSpecialWorkingTime});
 
   StoreModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -86,6 +92,14 @@ class StoreModel {
         workingTimes!.add(WorkingTime.fromJson(v));
       });
     }
+    if (json['specialWorkingTimes'] != null) {
+      specialWorkingTimes = <SpecialWorkingTime>[];
+      json['specialWorkingTimes'].forEach((v) {
+        specialWorkingTimes!.add(SpecialWorkingTime.fromMap(v));
+      });
+    }
+    isPause = json['isPause'];
+    isSpecialWorkingTime = json['isSpecialWorkingTime'];
   }
 
   Map<String, dynamic> toJson() {
@@ -107,6 +121,16 @@ class StoreModel {
     if (ward != null) {
       data['ward'] = ward!.toJson();
     }
+    if (workingTimes != null) {
+      data['workingTimes'] = workingTimes!.map((v) => v.toJson()).toList();
+    }
+    data['isPause'] = isPause;
+    if (specialWorkingTimes != null) {
+      data['specialWorkingTimes'] =
+          specialWorkingTimes!.map((v) => v.toJson()).toList();
+    }
+    data['isSpecialWorkingTime'] = isSpecialWorkingTime;
+
     return data;
   }
 
@@ -145,6 +169,40 @@ class StoreModel {
 
   String getAddress() {
     return '${address ?? ''}, ${ward?.name ?? ''}, ${district?.name ?? ''}, ${province?.name ?? ''}';
+  }
+
+  StoreModel copyWith({
+    int? id,
+    String? createdAt,
+    bool? isPause,
+    String? name,
+    String? address,
+    String? status,
+    String? approvalStatus,
+    String? storeAvatarId,
+    String? rejectReason,
+    Province? province,
+    District? district,
+    District? ward,
+    List<WorkingTime>? workingTimes,
+    List<SpecialWorkingTime>? specialWorkingTimes,
+  }) {
+    return StoreModel(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      isPause: isPause ?? this.isPause,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      status: status ?? this.status,
+      approvalStatus: approvalStatus ?? this.approvalStatus,
+      storeAvatarId: storeAvatarId ?? this.storeAvatarId,
+      rejectReason: rejectReason ?? this.rejectReason,
+      province: province ?? this.province,
+      district: district ?? this.district,
+      ward: ward ?? this.ward,
+      workingTimes: workingTimes ?? this.workingTimes,
+      specialWorkingTimes: specialWorkingTimes ?? this.specialWorkingTimes,
+    );
   }
 }
 

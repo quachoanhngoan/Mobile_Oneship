@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:oneship_merchant_app/presentation/data/model/register_store/district_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/group_service_model.dart';
 import 'package:oneship_merchant_app/presentation/data/model/register_store/store_request_model.dart';
@@ -45,6 +43,8 @@ abstract class StoreRepository {
       int id, StoreRequestModel request);
   Future<bool> deleteStore(int id);
   Future<CreateStoreResponse> getStoreById(int id);
+  Future<StoreModel> getStoreModelById(int id);
+
   Future<ResponseLoginStoreModel?> loginStore(int idStore);
 
   Future<List<AddressStoreM>> getAddresss();
@@ -133,6 +133,16 @@ class StoreImpl implements StoreRepository {
       isTranformData: true,
     );
     return CreateStoreResponse.fromJson(result.data ?? {});
+  }
+
+  @override
+  Future<StoreModel> getStoreModelById(int id) async {
+    final result = await _clientDio.get(
+      '${AuthUrl.register}/$id',
+      // data: request.removeNullValues(),
+      isTranformData: true,
+    );
+    return StoreModel.fromJson(result.data ?? {});
   }
 
   @override

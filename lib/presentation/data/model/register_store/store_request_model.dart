@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_request.dart';
 
 class StoreRequestModel {
@@ -16,8 +21,11 @@ class StoreRequestModel {
   String? storeAvatarId;
   String? storeCoverId;
   String? storeFrontId;
+  bool? isPause;
+  bool? isSpecialWorkingTime;
   String? storeMenuId;
   List<WorkingTime>? workingTimes;
+  List<SpecialWorkingTime>? specialWorkingTimes;
   Representative? representative;
   List<BankRequest>? banks;
 
@@ -41,6 +49,9 @@ class StoreRequestModel {
     this.workingTimes,
     this.representative,
     this.banks,
+    this.isPause,
+    this.isSpecialWorkingTime,
+    this.specialWorkingTimes,
   });
 
   StoreRequestModel copyWith({
@@ -49,7 +60,7 @@ class StoreRequestModel {
     int? businessAreaId,
     int? serviceTypeId,
     String? name,
-    int? parkingFee,
+    num? parkingFee,
     String? specialDish,
     String? streetName,
     int? serviceGroupId,
@@ -59,8 +70,11 @@ class StoreRequestModel {
     String? storeAvatarId,
     String? storeCoverId,
     String? storeFrontId,
+    bool? isPause,
+    bool? isSpecialWorkingTime,
     String? storeMenuId,
     List<WorkingTime>? workingTimes,
+    List<SpecialWorkingTime>? specialWorkingTimes,
     Representative? representative,
     List<BankRequest>? banks,
   }) {
@@ -80,8 +94,11 @@ class StoreRequestModel {
       storeAvatarId: storeAvatarId ?? this.storeAvatarId,
       storeCoverId: storeCoverId ?? this.storeCoverId,
       storeFrontId: storeFrontId ?? this.storeFrontId,
+      isPause: isPause ?? this.isPause,
+      isSpecialWorkingTime: isSpecialWorkingTime ?? this.isSpecialWorkingTime,
       storeMenuId: storeMenuId ?? this.storeMenuId,
       workingTimes: workingTimes ?? this.workingTimes,
+      specialWorkingTimes: specialWorkingTimes ?? this.specialWorkingTimes,
       representative: representative ?? this.representative,
       banks: banks ?? this.banks,
     );
@@ -91,6 +108,7 @@ class StoreRequestModel {
     return StoreRequestModel(
       isDraft: json['isDraft'],
       isAlcohol: json['isAlcohol'],
+      isPause: json['isPause'],
       businessAreaId: json['businessAreaId'],
       serviceTypeId: json['serviceTypeId'],
       name: json['name'],
@@ -113,6 +131,10 @@ class StoreRequestModel {
           : null,
       banks: (json['banks'] as List<dynamic>?)
           ?.map((e) => BankRequest.fromJson(e))
+          .toList(),
+      isSpecialWorkingTime: json['isSpecialWorkingTime'],
+      specialWorkingTimes: (json['specialWorkingTimes'] as List<dynamic>?)
+          ?.map((e) => SpecialWorkingTime.fromJson(e))
           .toList(),
     );
   }
@@ -138,12 +160,95 @@ class StoreRequestModel {
       'workingTimes': workingTimes?.map((e) => e.toJson()).toList(),
       'representative': representative?.removeNullValues(),
       'banks': banks?.map((e) => e.removeNullValues()).toList(),
+      'isPause': isPause,
+      'isSpecialWorkingTime': isSpecialWorkingTime,
+      'specialWorkingTimes':
+          specialWorkingTimes?.map((e) => e.toMap()).toList(),
     };
   }
 
   Map<String, dynamic> removeNullValues() {
     return toJson()..removeWhere((key, value) => value == null);
   }
+}
+
+class SpecialWorkingTime {
+  String? date;
+  int? startTime;
+  int? endTime;
+  String? startTimeStr;
+  String? endTimeStr;
+  late TextEditingController openTimeController;
+  late TextEditingController closeTimeController;
+  late TextEditingController dateController;
+  SpecialWorkingTime({
+    this.date,
+    this.startTime,
+    this.endTime,
+    this.startTimeStr,
+    this.endTimeStr,
+  }) {
+    {
+      //open time 360 => 6:00
+      //close time 362 => 6:02
+      if (startTime != null && startTime! >= 0) {
+        startTimeStr = "${(startTime! / 60).floor()}:${startTime! % 60}";
+
+        openTimeController = TextEditingController(text: startTimeStr);
+      } else {
+        openTimeController = TextEditingController();
+      }
+      if (endTime != null && endTime! >= 0) {
+        endTimeStr = "${(endTime! / 60).floor()}:${endTime! % 60}";
+        closeTimeController = TextEditingController(text: endTimeStr);
+      } else {
+        closeTimeController = TextEditingController();
+      }
+      if (date != null && date!.isNotEmpty) {
+        final dateStr = DateFormat('dd/MM/yyyy').format(DateTime.parse(date!));
+        dateController = TextEditingController(text: dateStr);
+      } else {
+        dateController = TextEditingController();
+      }
+    }
+  }
+
+  SpecialWorkingTime copyWith({
+    String? date,
+    int? startTime,
+    int? endTime,
+    String? startTimeStr,
+    String? endTimeStr,
+  }) {
+    return SpecialWorkingTime(
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      startTimeStr: startTimeStr ?? this.startTimeStr,
+      endTimeStr: endTimeStr ?? this.endTimeStr,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'date': date,
+      'startTime': startTime,
+      'endTime': endTime,
+    };
+  }
+
+  factory SpecialWorkingTime.fromMap(Map<String, dynamic> map) {
+    return SpecialWorkingTime(
+      date: map['date'],
+      startTime: map['startTime']?.toInt(),
+      endTime: map['endTime']?.toInt(),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SpecialWorkingTime.fromJson(String source) =>
+      SpecialWorkingTime.fromMap(json.decode(source));
 }
 
 class WorkingTime {
@@ -180,6 +285,7 @@ class WorkingTime {
       'closeTime': closeTime,
     };
   }
+
 // }
 
 // class BankRegister {
