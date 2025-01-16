@@ -130,7 +130,12 @@ class _MenuDinerPageState extends State<MenuDinerPage> {
                                     showClearButton: bloc
                                         .searchController.text.isNotNullOrEmpty,
                                     onChange: (value) {
-                                      bloc.searchFoodByMenu(value);
+                                      if (state.menuMainType ==
+                                          MenuMainType.menu) {
+                                        bloc.searchFoodByMenu(value);
+                                      } else {
+                                        bloc.searchTopping(value);
+                                      }
                                     },
                                     clearTextClicked: () {
                                       bloc.searchController.clear();
@@ -699,6 +704,7 @@ class _GroupToppingWidget extends StatelessWidget {
                     switch (item) {
                       case ToppingType.active:
                         return ToppingActiveBody(
+                          state: state,
                           bloc: bloc,
                           listItem: data!,
                         );
@@ -706,6 +712,7 @@ class _GroupToppingWidget extends StatelessWidget {
                         return ToppingNotRegisteredBody(
                           bloc: bloc,
                           listItem: data!,
+                          state: state,
                         );
                     }
                   }

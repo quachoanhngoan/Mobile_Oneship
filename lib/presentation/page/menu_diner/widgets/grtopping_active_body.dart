@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_page.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 
@@ -11,9 +14,65 @@ import '../../../data/model/menu/gr_topping_response.dart';
 
 class ToppingActiveBody extends StatelessWidget {
   final List<GrAddToppingResponse> listItem;
+  final MenuDinerState state;
   final MenuDinerCubit bloc;
 
-  const ToppingActiveBody({super.key, required this.bloc, required this.listItem});
+  const ToppingActiveBody(
+      {super.key,
+      required this.bloc,
+      required this.listItem,
+      required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      final listResultSearch = state.listResultSearchTopping
+          .firstWhereOrNull((e) => e.type == ToppingType.active);
+      if (listResultSearch?.data != null &&
+          listResultSearch!.data!.isNotEmpty) {
+        return _ItemGrToppingActive(
+            listItem: listResultSearch.data!,
+            hideShowClick: (value) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              bloc.hideOrShowTopping(value, isHide: true, isSearch: true);
+            },
+            editClick: (value) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
+                  ?.then((value) {
+                if (value) {
+                  bloc.getAllTopping();
+                  bloc.searchTopping(bloc.searchController.text);
+                }
+              });
+            });
+      }
+      return const EmptySearchMenu();
+    }
+    return _ItemGrToppingActive(
+        listItem: listItem,
+        hideShowClick: (value) {
+          bloc.hideOrShowTopping(value, isHide: true);
+        },
+        editClick: (value) {
+          Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
+              ?.then((value) {
+            if (value) {
+              bloc.getAllTopping();
+            }
+          });
+        });
+  }
+}
+
+class _ItemGrToppingActive extends StatelessWidget {
+  final List<GrAddToppingResponse> listItem;
+  final Function(GrAddToppingResponse) hideShowClick;
+  final Function(GrAddToppingResponse) editClick;
+  const _ItemGrToppingActive(
+      {required this.listItem,
+      required this.hideShowClick,
+      required this.editClick});
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +120,7 @@ class ToppingActiveBody extends StatelessWidget {
                                   return DialogChangeStatus(
                                     done: (isOk) {
                                       if (isOk) {
-                                        bloc.hideOrShowTopping(listItem[index],
-                                            isHide: true);
+                                        hideShowClick(listItem[index]);
                                       }
                                       Get.back();
                                     },
@@ -95,13 +153,7 @@ class ToppingActiveBody extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Get.toNamed(AppRoutes.menuCustomTopping,
-                                    arguments: listItem[index])
-                                ?.then((value) {
-                              if (value) {
-                                bloc.getAllTopping();
-                              }
-                            });
+                            editClick(listItem[index]);
                           },
                           child: Container(
                             alignment: Alignment.center,

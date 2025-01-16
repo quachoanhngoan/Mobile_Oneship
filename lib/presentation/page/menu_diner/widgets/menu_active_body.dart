@@ -27,7 +27,7 @@ class MenuActiveBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
-      final listResultSearch = state.listResultSearch
+      final listResultSearch = state.listResultSearchMenu
           .firstWhereOrNull((e) => e.type == MenuType.active);
       if (listResultSearch?.listResult != null &&
           listResultSearch!.listResult.isNotEmpty) {
@@ -126,6 +126,7 @@ class MenuActiveBody extends StatelessWidget {
       }
       return const EmptySearchMenu();
     }
+    log("vao day");
     return ListView.builder(
         itemCount: listItem.length,
         itemBuilder: (context, index) {

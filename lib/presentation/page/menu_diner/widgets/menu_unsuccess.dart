@@ -27,7 +27,7 @@ class MenuItemUnSuccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
-      final listResultSearch = state.listResultSearch
+      final listResultSearch = state.listResultSearchMenu
           .firstWhereOrNull((e) => e.type == MenuType.unsuccessful);
       if (listResultSearch?.listResult != null &&
           listResultSearch!.listResult.isNotEmpty) {
@@ -146,7 +146,8 @@ class MenuItemUnSuccess extends StatelessWidget {
                                       return DialogChangeStatus(
                                         done: (isOk) {
                                           if (isOk) {
-                                            bloc.deleteMenuFood(id: item.id);
+                                            bloc.deleteMenuFood(
+                                                id: item.id, isSearch: true);
                                           }
                                           Get.back();
                                         },

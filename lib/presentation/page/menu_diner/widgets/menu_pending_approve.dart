@@ -22,7 +22,7 @@ class MenuPendingApprove extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
-      final listResultSearch = state.listResultSearch
+      final listResultSearch = state.listResultSearchMenu
           .firstWhereOrNull((e) => e.type == MenuType.pendingApproval);
       if (listResultSearch?.listResult != null &&
           listResultSearch!.listResult.isNotEmpty) {

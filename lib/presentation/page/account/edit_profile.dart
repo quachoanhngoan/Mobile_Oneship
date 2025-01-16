@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/helper/validate.dart';
+import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/avatar_user.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/email_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/account/widget/phone_edit_profile.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/widget/time_sellect_sheet.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
@@ -202,7 +205,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         AppButton(
                           isEnable: true,
                           onPressed: () {
-                            // Get.toNamed(AppRoutes.changePassword);
+                            context.pushWithNamed(context,
+                                routerName: AppRoutes.registerpage,
+                                arguments: false);
                           },
                           margin: const EdgeInsets.only(top: 10),
                           padding: const EdgeInsets.symmetric(
