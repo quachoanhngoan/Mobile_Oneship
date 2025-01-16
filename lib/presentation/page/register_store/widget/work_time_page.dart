@@ -43,8 +43,8 @@ class WorkTimeModel {
 
 class WKT {
   final int dayOfWeek;
-  final int openTime;
-  final int closeTime;
+  final int? openTime;
+  final int? closeTime;
   String? openTimeStr;
   String? closeTimeStr;
   late TextEditingController openTimeController;
@@ -58,10 +58,20 @@ class WKT {
   }) {
     //open time 360 => 6:00
     //close time 362 => 6:02
-    openTimeStr = "${(openTime / 60).floor()}:${openTime % 60}";
-    closeTimeStr = "${(closeTime / 60).floor()}:${closeTime % 60}";
-    openTimeController = TextEditingController(text: openTimeStr);
-    closeTimeController = TextEditingController(text: closeTimeStr);
+    if (openTime != null && openTime! >= 0) {
+      openTimeStr = "${(openTime! / 60).floor()}:${openTime! % 60}";
+
+      openTimeController = TextEditingController(text: openTimeStr);
+    } else {
+      openTimeController = TextEditingController();
+    }
+    if (closeTime != null && closeTime! >= 0) {
+      closeTimeStr = "${(closeTime! / 60).floor()}:${closeTime! % 60}";
+
+      closeTimeController = TextEditingController(text: closeTimeStr);
+    } else {
+      closeTimeController = TextEditingController();
+    }
   }
 
   WKT copyWith({

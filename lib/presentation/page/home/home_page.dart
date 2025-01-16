@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   void getBanners() async {
     bloc.getBanners();
+    context.read<StoreCubit>().getStoreById();
   }
 
   @override

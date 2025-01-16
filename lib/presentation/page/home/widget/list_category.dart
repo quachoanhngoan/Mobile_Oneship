@@ -60,7 +60,9 @@ class _ListCategoryState extends State<ListCategory> {
                 icon: AppAssets.imagesIconsNotes01,
               ),
               _Category(
-                onTap: () {},
+                onTap: () { 
+                  Get.toNamed(AppRoutes.workingTime);
+                },
                 title: "Đánh giá",
                 icon: AppAssets.imagesIconsMedal,
               ),

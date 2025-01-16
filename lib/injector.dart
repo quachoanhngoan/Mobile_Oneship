@@ -103,6 +103,7 @@ void blocModule() {
 
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
   injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
+  // injector.registerFactory<WorkingTimeBloc>(() => WorkingTimeBloc(injector()));
 }
 
 PrefManager get prefManager => injector<PrefManager>();

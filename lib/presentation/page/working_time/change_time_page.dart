@@ -1,17 +1,19 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/widget/work_time_page.dart';
+import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/working_time/app_text_form_field_select.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
@@ -46,67 +48,68 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Thứ 2',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          )),
-                  Container(
-                    color: Colors.transparent,
-                    child: DefaultTextStyle.merge(
-                      child: IconTheme.merge(
-                          data: const IconThemeData(color: Colors.white),
-                          child: AnimatedToggleSwitch<bool>.dual(
-                            current: positive,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            inactiveOpacityDuration:
-                                const Duration(milliseconds: 100),
-                            iconAnimationDuration:
-                                const Duration(milliseconds: 100),
-                            styleAnimationType: AnimationType.onSelected,
-                            first: false,
-                            second: true,
-                            clipBehavior: Clip.none,
-                            spacing: 5.0,
-                            animationCurve: Curves.easeInOut,
-                            fittingMode: FittingMode.none,
-                            style: const ToggleStyle(
-                              borderColor: Colors.transparent,
-                              indicatorColor: Colors.white,
-                              backgroundColor: Colors.black,
-                            ),
-                            styleBuilder: (value) => ToggleStyle(
-                                backgroundColor: value
-                                    ? Colors.green
-                                    : Colors.grey.shade500),
-                            borderWidth: 3.0,
-                            indicatorSize: const Size.fromWidth(21.0),
-                            height: 25.0,
-                            loadingIconBuilder: (context, global) =>
-                                CupertinoActivityIndicator(
-                                    color: Color.lerp(Colors.red[800],
-                                        Colors.green, global.position)),
-                            onChanged: (value) {
-                              print(value);
-                              setState(() {
-                                positive = value;
-                              });
-                            },
-                          )),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Thứ 2',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            )),
+                    Container(
+                      color: Colors.transparent,
+                      child: DefaultTextStyle.merge(
+                        child: IconTheme.merge(
+                            data: const IconThemeData(color: Colors.white),
+                            child: AnimatedToggleSwitch<bool>.dual(
+                              current: positive,
+                              animationDuration:
+                                  const Duration(milliseconds: 300),
+                              inactiveOpacityDuration:
+                                  const Duration(milliseconds: 100),
+                              iconAnimationDuration:
+                                  const Duration(milliseconds: 100),
+                              styleAnimationType: AnimationType.onSelected,
+                              first: false,
+                              second: true,
+                              clipBehavior: Clip.none,
+                              spacing: 5.0,
+                              animationCurve: Curves.easeInOut,
+                              fittingMode: FittingMode.none,
+                              style: const ToggleStyle(
+                                borderColor: Colors.transparent,
+                                indicatorColor: Colors.white,
+                                backgroundColor: Colors.black,
+                              ),
+                              styleBuilder: (value) => ToggleStyle(
+                                  backgroundColor: value
+                                      ? Colors.green
+                                      : Colors.grey.shade500),
+                              borderWidth: 3.0,
+                              indicatorSize: const Size.fromWidth(21.0),
+                              height: 25.0,
+                              loadingIconBuilder: (context, global) =>
+                                  CupertinoActivityIndicator(
+                                      color: Color.lerp(Colors.red[800],
+                                          Colors.green, global.position)),
+                              onChanged: (value) {
+                                setState(() {
+                                  positive = value;
+                                });
+                              },
+                            )),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Column(
                   children: [
                     ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
                         separatorBuilder: (context, index) => const SizedBox(
                               height: 10,
                             ),
@@ -160,7 +163,7 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                                       AppColors.borderColor2, // Add this line
                                 ), // Add this line
                                 SizedBox(height: 5.sp),
-                                AppTextFormFieldSelect(
+                                AppTextFormFieldWorkTime(
                                     controller: data[index].openTimeController,
                                     isRequired: true,
                                     onTap: () async {
@@ -186,19 +189,52 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                                         });
                                       }
                                     },
-                                    suffixIcon: const Row(
+                                    suffixIcon: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        ImageAssetWidget(
+                                        Builder(
+                                          builder: (context) {
+                                            if (data[index]
+                                                .openTimeController
+                                                .text
+                                                .isNotEmpty) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  data[index]
+                                                      .openTimeController
+                                                      .clear();
+                                                  setState(() {});
+                                                  data[index] =
+                                                      data[index].copyWith(
+                                                    openTimeStr: '',
+                                                    openTime: -1,
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    const ImageAssetWidget(
+                                                      image: AppAssets
+                                                          .imagesIconsCloseOutline,
+                                                      height: 15,
+                                                    ),
+                                                    SizedBox(width: 5.sp),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return const SizedBox();
+                                          },
+                                        ),
+                                        const ImageAssetWidget(
                                           image:
                                               AppAssets.imagesIconsClockEight,
                                           height: 15,
                                         ),
                                       ],
                                     ),
-                                    hintText: 'Nhập giờ bắt đầu*'),
+                                    hintText: 'Thời gian từ'),
                                 const SizedBox(height: 10),
-                                AppTextFormFieldSelect(
+                                AppTextFormFieldWorkTime(
                                     controller: data[index].closeTimeController,
                                     onTap: () async {
                                       final pickerTimer = await picker
@@ -226,7 +262,40 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                                     suffixIcon: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        ImageAssetWidget(
+                                        Builder(
+                                          builder: (context) {
+                                            if (data[index]
+                                                .closeTimeController
+                                                .text
+                                                .isNotEmpty) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  data[index]
+                                                      .closeTimeController
+                                                      .clear();
+                                                  setState(() {});
+                                                  data[index] =
+                                                      data[index].copyWith(
+                                                    closeTimeStr: '',
+                                                    closeTime: -1,
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    const ImageAssetWidget(
+                                                      image: AppAssets
+                                                          .imagesIconsCloseOutline,
+                                                      height: 15,
+                                                    ),
+                                                    SizedBox(width: 5.sp),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return const SizedBox();
+                                          },
+                                        ),
+                                        const ImageAssetWidget(
                                           image:
                                               AppAssets.imagesIconsClockEight,
                                           height: 15,
@@ -234,7 +303,7 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                                       ],
                                     ),
                                     isRequired: true,
-                                    hintText: 'Nhập giờ kết thúc*'),
+                                    hintText: 'Thời gian đến'),
                               ],
                             ),
                           );
@@ -265,42 +334,48 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                     ),
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: 20.sp),
+              ],
+            ),
           ),
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 5,
-                offset: const Offset(0, -4),
+        bottomNavigationBar: BlocBuilder<StoreCubit, StoreState>(
+          builder: (context, state) {
+            return Container(
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 0,
+                    blurRadius: 5,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: AppButton(
-            isCheckLastPress: false,
-            // isLoading: state.isLoading(),
-            isEnable: true,
-            padding: EdgeInsets.symmetric(
-              vertical: 10.sp,
-              horizontal: 12.sp,
-            ),
-            onPressed: () {
-              //save
-
-              Get.back(
-                result: widget.param.copyWith(
-                  wkt: data,
-                  isOff: positive,
+              child: AppButton(
+                isCheckLastPress: false,
+                // isLoading: state.isLoading(),
+                isEnable: true,
+                isLoading: state.updateStore.isLoading,
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.sp,
+                  horizontal: 12.sp,
                 ),
-              );
-            },
-            text: "Lưu thông tin",
-          ),
+                onPressed: () {
+                  //save
+                  context.read<StoreCubit>().setDayOfWeek(
+                        widget.param.copyWith(
+                          wkt: data,
+                          isOff: positive,
+                        ),
+                      );
+                  context.read<StoreCubit>().registerStorePress();
+                },
+                text: "Lưu thông tin",
+              ),
+            );
+          },
         ));
   }
 }

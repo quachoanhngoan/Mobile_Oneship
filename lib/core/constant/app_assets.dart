@@ -110,6 +110,8 @@ class AppAssets {
 
   static const String imagesIconsClockEight = "assets/images/icons/clock-eight.png";
 
+  static const String imagesIconsCloseOutline = "assets/images/icons/Close--outline.png";
+
   static const String imagesIconsCurrentLocation = "assets/images/icons/Current-location.png";
 
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";

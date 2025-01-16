@@ -14,8 +14,10 @@ import 'package:oneship_merchant_app/presentation/page/splash_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 import 'package:oneship_merchant_app/presentation/page/welcome/welcome_page.dart';
+import 'package:oneship_merchant_app/presentation/page/working_time/work_time_page_day_of_week.dart';
 
 import '../../presentation/page/register/register_page.dart';
+import '../../presentation/page/working_time/work_time_page.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -28,6 +30,7 @@ class AppRoutes {
   static const String registerStorePage = '/registerStorePage';
   static const String store = '/store';
   static const String menuPage = '/menuPage';
+  static const String workingTime = '/workingTime';
   static const String menuCustomTopping = '/menuCustomTopping';
   static const String menuCustomPage = '/menuCustomPage';
   static const String editProfile = '/editProfile';
@@ -130,6 +133,12 @@ class AppRoutes {
     GetPage(
         name: AppRoutes.addressStore,
         page: () => const AddressStorePage(),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft,
+        curve: Curves.easeOutExpo),
+    GetPage(
+        name: AppRoutes.workingTime,
+        page: () => const WorkTimePage(),
         transitionDuration: const Duration(milliseconds: 300),
         transition: Transition.rightToLeft,
         curve: Curves.easeOutExpo),
