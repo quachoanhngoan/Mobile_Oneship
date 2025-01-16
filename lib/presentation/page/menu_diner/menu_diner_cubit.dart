@@ -137,6 +137,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
   searchFoodByMenu(String value) async {
     try {
       List<ResultSearchMenuTypeDomain> listResultSearch = [];
+      bool _enableChangePage = true;
       if (value.isNotNullOrEmpty) {
         for (var type in MenuType.values) {
           final request = ListMenuFoodRequest(
@@ -146,16 +147,59 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
           );
           final response = await repository.detailFoodByMenu(request);
           if (response != null) {
+            if (response.items.isNotEmpty && _enableChangePage) {
+              log("result focus: $type", name: "MenuDinerCubit");
+              _enableChangePage = false;
+              changePageMenu(type.index, type);
+            }
+            if (_enableChangePage) {
+              log("focus active", name: "MenuDinerCubit");
+              changePageMenu(0, MenuType.active);
+            }
             listResultSearch.add(ResultSearchMenuTypeDomain(
                 type: type, listResult: response.items));
           }
         }
+        emit(state.copyWith(listResultSearchMenu: listResultSearch));
       }
-
-      emit(state.copyWith(listResultSearch: listResultSearch));
+      // else {
+      //   Timer(const Duration(milliseconds: 500), () {
+      //     emit(state.copyWith(listResultSearchMenu: []));
+      //     changePageMenu(0, MenuType.active);
+      //   });
+      // }
     } on DioException catch (e) {
       log("getAllMenu error: ${e.message}");
     }
+  }
+
+  searchTopping(String value) async {
+    List<DataToppingTypeDomain> listResultSearch = [];
+    bool _enableChangePage = true;
+    if (value.isNotNullOrEmpty) {
+      for (var type in ToppingType.values) {
+        final request =
+            GetGroupToppingRequest(status: type.status, search: value);
+        final response = await repository.getGroupTopping(request);
+        if (_enableChangePage && response?.items.isNotEmpty == true) {
+          _enableChangePage = false;
+          changeGroupTopping(type.index, type);
+        }
+        if (_enableChangePage) {
+          changeGroupTopping(0, ToppingType.active);
+        }
+        listResultSearch.add(DataToppingTypeDomain(response?.items, type));
+      }
+      emit(state.copyWith(listResultSearchTopping: listResultSearch));
+    }
+    // else {
+    //   Timer(const Duration(milliseconds: 500), () {
+    //     emit(state.copyWith(listResultSearchTopping: [
+    //       DataToppingTypeDomain([], ToppingType.active)
+    //     ]));
+    //     changeGroupTopping(0, ToppingType.active);
+    //   });
+    // }
   }
 
   hideOrShowTopping(GrAddToppingResponse topping, {bool isHide = true}) async {
@@ -330,7 +374,10 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
 
   hideOrShowSearch() {
     searchController.clear();
-    emit(state
-        .copyWith(isShowSearch: !state.isShowSearch, listResultSearch: []));
+    emit(state.copyWith(
+      isShowSearch: !state.isShowSearch,
+      listResultSearchMenu: [],
+      listResultSearchTopping: [],
+    ));
   }
 }

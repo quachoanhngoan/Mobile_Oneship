@@ -135,7 +135,7 @@ class GetGroupToppingRequest {
   String? status;
 
   GetGroupToppingRequest({
-    this.limit = 10,
+    this.limit = 0,
     this.page = 1,
     this.search,
     this.status,

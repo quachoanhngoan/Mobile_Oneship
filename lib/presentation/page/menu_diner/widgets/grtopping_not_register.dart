@@ -4,15 +4,81 @@ import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:oneship_merchant_app/presentation/data/model/menu/gr_topping_response.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_page.dart';
+import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_state.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/topping_custom/topping_custom.dart';
 
 class ToppingNotRegisteredBody extends StatelessWidget {
   final List<GrAddToppingResponse> listItem;
   final MenuDinerCubit bloc;
+  final MenuDinerState state;
 
-  const ToppingNotRegisteredBody({super.key, required this.bloc, required this.listItem});
+  const ToppingNotRegisteredBody(
+      {super.key,
+      required this.bloc,
+      required this.listItem,
+      required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      final listResultSearch = state.listResultSearchTopping
+          .firstWhereOrNull((e) => e.type == ToppingType.notRegistered);
+      if (listResultSearch?.data != null &&
+          listResultSearch!.data!.isNotEmpty) {
+        return _ItemGrToppingNotRegister(
+          showItemClick: (value) {
+            bloc.hideOrShowTopping(value, isHide: false);
+          },
+          listItem: listResultSearch.data!,
+          editItemClick: (value) {
+            Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
+                ?.then((value) {
+              if (value) {
+                bloc.getAllTopping();
+              }
+            });
+          },
+          removeItemClick: (value) {
+            bloc.deleteGroupTopping(value.id);
+          },
+        );
+      }
+      return const EmptySearchMenu();
+    }
+    return _ItemGrToppingNotRegister(
+      showItemClick: (value) {
+        bloc.hideOrShowTopping(value, isHide: false);
+      },
+      listItem: listItem,
+      editItemClick: (value) {
+        Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
+            ?.then((value) {
+          if (value) {
+            bloc.getAllTopping();
+          }
+        });
+      },
+      removeItemClick: (value) {
+        bloc.deleteGroupTopping(value.id);
+      },
+    );
+  }
+}
+
+class _ItemGrToppingNotRegister extends StatelessWidget {
+  final List<GrAddToppingResponse> listItem;
+  final Function(GrAddToppingResponse) showItemClick;
+  final Function(GrAddToppingResponse) editItemClick;
+  final Function(GrAddToppingResponse) removeItemClick;
+  const _ItemGrToppingNotRegister(
+      {required this.listItem,
+      required this.editItemClick,
+      required this.removeItemClick,
+      required this.showItemClick});
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +126,9 @@ class ToppingNotRegisteredBody extends StatelessWidget {
                                   return DialogChangeStatus(
                                     done: (isOk) {
                                       if (isOk) {
-                                        bloc.hideOrShowTopping(listItem[index],
-                                            isHide: false);
+                                        showItemClick(listItem[index]);
+                                        // bloc.hideOrShowTopping(listItem[index],
+                                        //     isHide: false);
                                       }
                                       Get.back();
                                     },
@@ -94,13 +161,7 @@ class ToppingNotRegisteredBody extends StatelessWidget {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            Get.toNamed(AppRoutes.menuCustomTopping,
-                                    arguments: listItem[index])
-                                ?.then((value) {
-                              if (value) {
-                                bloc.getAllTopping();
-                              }
-                            });
+                            editItemClick(listItem[index]);
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -130,8 +191,7 @@ class ToppingNotRegisteredBody extends StatelessWidget {
                                   return DialogChangeStatus(
                                     done: (isOk) {
                                       if (isOk) {
-                                        bloc.deleteGroupTopping(
-                                            listItem[index].id);
+                                        removeItemClick(listItem[index]);
                                       }
                                       Get.back();
                                     },
