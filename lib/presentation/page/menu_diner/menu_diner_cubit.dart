@@ -202,7 +202,8 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     // }
   }
 
-  hideOrShowTopping(GrAddToppingResponse topping, {bool isHide = true}) async {
+  hideOrShowTopping(GrAddToppingResponse topping,
+      {bool isHide = true, bool isSearch = false}) async {
     try {
       emit(state.copyWith(isLoading: true));
       final request =
@@ -211,6 +212,9 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
           await repository.addGroupTopping(request, id: topping.id);
       if (response != null) {
         await getAllTopping();
+        if (isSearch) {
+          searchTopping(searchController.text);
+        }
         emit(state.copyWith(isLoading: false));
       } else {
         emit(state.copyWith(
@@ -222,12 +226,15 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     }
   }
 
-  deleteGroupTopping(int id) async {
+  deleteGroupTopping(int id, {bool isSearch = false}) async {
     emit(state.copyWith(isLoading: true));
     try {
       final response = await repository.removeGroupTopping(id);
       if (response != null) {
         await getAllTopping();
+        if(isSearch){
+          searchTopping(searchController.text);
+        }
         emit(state.copyWith(isLoading: false));
       } else {
         emit(state.copyWith(errorEditTopping: "Không thể xoá topping"));

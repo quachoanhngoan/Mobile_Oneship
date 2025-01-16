@@ -31,19 +31,23 @@ class ToppingNotRegisteredBody extends StatelessWidget {
           listResultSearch!.data!.isNotEmpty) {
         return _ItemGrToppingNotRegister(
           showItemClick: (value) {
+            FocusManager.instance.primaryFocus?.unfocus();
             bloc.hideOrShowTopping(value, isHide: false);
           },
           listItem: listResultSearch.data!,
           editItemClick: (value) {
+            FocusManager.instance.primaryFocus?.unfocus();
             Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
                 ?.then((value) {
               if (value) {
                 bloc.getAllTopping();
+                bloc.searchTopping(bloc.searchController.text);
               }
             });
           },
           removeItemClick: (value) {
-            bloc.deleteGroupTopping(value.id);
+            FocusManager.instance.primaryFocus?.unfocus();
+            bloc.deleteGroupTopping(value.id, isSearch: true);
           },
         );
       }

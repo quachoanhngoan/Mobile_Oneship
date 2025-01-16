@@ -33,13 +33,16 @@ class ToppingActiveBody extends StatelessWidget {
         return _ItemGrToppingActive(
             listItem: listResultSearch.data!,
             hideShowClick: (value) {
-              bloc.hideOrShowTopping(value, isHide: true);
+              FocusManager.instance.primaryFocus?.unfocus();
+              bloc.hideOrShowTopping(value, isHide: true, isSearch: true);
             },
             editClick: (value) {
+              FocusManager.instance.primaryFocus?.unfocus();
               Get.toNamed(AppRoutes.menuCustomTopping, arguments: value)
                   ?.then((value) {
                 if (value) {
                   bloc.getAllTopping();
+                  bloc.searchTopping(bloc.searchController.text);
                 }
               });
             });

@@ -92,7 +92,8 @@ class MenuNotRegisteredBody extends StatelessWidget {
                                         return DialogChangeStatus(
                                           done: (isOk) {
                                             if (isOk) {
-                                              bloc.deleteMenuFood(id: item.id);
+                                              bloc.deleteMenuFood(
+                                                  id: item.id, isSearch: true);
                                             }
                                             Get.back();
                                           },
