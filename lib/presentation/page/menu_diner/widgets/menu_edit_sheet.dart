@@ -12,6 +12,7 @@ import '../menu_diner_cubit.dart';
 class MenuEditSheet extends StatefulWidget {
   final MenuDinerCubit bloc;
   final ItemLinkFood item;
+
   const MenuEditSheet({super.key, required this.bloc, required this.item});
 
   @override
@@ -24,7 +25,7 @@ class _MenuEditSheetState extends State<MenuEditSheet> {
   @override
   void initState() {
     _bloc = widget.bloc;
-    _bloc.nameMenuEditController.text = widget.item.name;
+    _bloc.nameMenuEditController.text = widget.item.name ?? "";
     super.initState();
   }
 

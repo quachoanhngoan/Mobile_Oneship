@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
-import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/domain/menu_domain.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
@@ -472,22 +471,24 @@ class CardDetailMenu extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Container(
-                width: 58,
-                height: 46,
-                decoration: BoxDecoration(
-                    color: AppColors.transparent,
-                    borderRadius: BorderRadius.circular(8)),
-                child: NetworkImageWithLoader(item.imageId,
-                    isBaseUrl: true, fit: BoxFit.fill),
-              ),
+              item.imageId != null
+                  ? Container(
+                      width: 58,
+                      height: 46,
+                      decoration: BoxDecoration(
+                          color: AppColors.transparent,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: NetworkImageWithLoader(item.imageId!,
+                          isBaseUrl: true, fit: BoxFit.fill),
+                    )
+                  : const SizedBox.shrink(),
               const HSpacing(spacing: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      item.name,
+                      item.name ?? "",
                       overflow: TextOverflow.ellipsis,
                       softWrap: false,
                       style: Theme.of(context)

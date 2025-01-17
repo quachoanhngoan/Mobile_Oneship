@@ -173,17 +173,35 @@ class DataMenuTypeDomain {
       {this.data, this.type = MenuType.active, this.totalProducts});
 }
 
-class ListFoodByMenuDomain {
-  final List<MenuFoodResponseItem>? listFoodByMenu;
-  final MenuType? type;
-  final int? idSellected;
+// class ListFoodByMenuDomain {
+//   final List<MenuFoodResponseItem>? listFoodByMenu;
+//   final MenuType? type;
+//   final int? idSellected;
+//
+//   ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
+// }
 
-  ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
+class ShowDetailMenuDomain {
+  final MenuType type;
+  final int idShow;
+
+  ShowDetailMenuDomain({required this.idShow, required this.type});
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShowDetailMenuDomain) return false;
+    return other.idShow == idShow && other.type == type;
+  }
+
+  @override
+  int get hashCode => Object.hash(idShow, type);
 }
 
 class ResultSearchMenuTypeDomain {
   final MenuType type;
   final List<MenuFoodResponseItem> listResult;
+
   ResultSearchMenuTypeDomain(
       {this.listResult = const [], this.type = MenuType.active});
 }

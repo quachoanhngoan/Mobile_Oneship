@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -39,7 +38,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     nameMenuEditController = TextEditingController();
     searchController = TextEditingController();
     await getAllTopping();
-    await getAllMenu();
+    await getAllMenu(isInit: true);
     emit(state.copyWith(isLoading: false));
   }
 
@@ -81,57 +80,83 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
     }
   }
 
-  getAllMenu() async {
+  getAllMenu({bool isInit = false}) async {
     try {
       List<DataMenuTypeDomain> listAllMenu = [];
       for (var type in MenuType.values) {
         final request = LinkFoodRequest(
             status: "active",
             productStatus: type.productStatus,
+            includeProducts: true,
             approvalStatus: type.approvalStatus);
         final response = await repository.getListMenu(request);
-        // log("check json: ${response?.toJson()}");
         listAllMenu.add(DataMenuTypeDomain(
             data: response?.items,
             type: type,
             totalProducts: response?.totalProducts));
       }
-      emit(state.copyWith(
+      if (isInit) {
+        List<ShowDetailMenuDomain> listIdMenuShowFood = [];
+        for (var menu in listAllMenu) {
+          if (menu.data != null) {
+            for (var e in menu.data!) {
+              listIdMenuShowFood
+                  .add(ShowDetailMenuDomain(idShow: e.id, type: menu.type));
+            }
+          }
+        }
+        emit(state.copyWith(
+            listMenu: listAllMenu, listIdMenuShowFood: listIdMenuShowFood));
+      } else {
+        emit(state.copyWith(
           listMenu: listAllMenu,
-          listFoodByMenu: ListFoodByMenuDomain(
-              idSellected: null, type: null, listFoodByMenu: [])));
+          // listFoodByMenu: ListFoodByMenuDomain(
+          //     idSellected: null, type: null, listFoodByMenu: [])
+        ));
+      }
     } on DioException catch (e) {
       log("getAllMenu error: ${e.message}");
     }
   }
 
-  getListFoodByMenu(
-      {required MenuType type, required int productCategoryId}) async {
-    try {
-      emit(state.copyWith(isLoading: true));
-      if (state.listFoodByMenu?.type == type &&
-          state.listFoodByMenu?.idSellected == productCategoryId) {
-        emit(state.copyWith(isHideListFoodByMenu: !state.isHideListFoodByMenu));
-      } else {
-        final request = ListMenuFoodRequest(
-            status: type.productStatus,
-            approvalStatus: type.approvalStatus,
-            productCategoryId: productCategoryId);
-        final response = await repository.detailFoodByMenu(request);
-        await Future.delayed(const Duration(milliseconds: 500));
-        emit(state.copyWith(
-            listFoodByMenu: ListFoodByMenuDomain(
-                idSellected: productCategoryId,
-                type: type,
-                listFoodByMenu: response?.items),
-            isHideListFoodByMenu: false,
-            textErrorToast:
-                response?.items.isNotEmpty == true ? null : "Không có món ăn"));
-      }
-    } on DioException catch (e) {
-      log("getListMenuFood error: ${e.message}");
-      emit(state.copyWith(textErrorToast: e.message));
+  // getListFoodByMenu(
+  //     {required MenuType type, required int productCategoryId}) async {
+  //   try {
+  //     emit(state.copyWith(isLoading: true));
+  // if (state.listFoodByMenu?.type == type &&
+  //     state.listFoodByMenu?.idSellected == productCategoryId) {
+  //       emit(state.copyWith(isHideListFoodByMenu: !state.isHideListFoodByMenu));
+  //     } else {
+  //       final request = ListMenuFoodRequest(
+  //           status: type.productStatus,
+  //           approvalStatus: type.approvalStatus,
+  //           productCategoryId: productCategoryId);
+  //       final response = await repository.detailFoodByMenu(request);
+  //       await Future.delayed(const Duration(milliseconds: 500));
+  //       emit(state.copyWith(
+  //           listFoodByMenu: ListFoodByMenuDomain(
+  //               idSellected: productCategoryId,
+  //               type: type,
+  //               listFoodByMenu: response?.items),
+  //           isHideListFoodByMenu: false,
+  //           textErrorToast:
+  //               response?.items.isNotEmpty == true ? null : "Không có món ăn"));
+  //     }
+  // } on DioException catch (e) {
+  //   log("getListMenuFood error: ${e.message}");
+  //   emit(state.copyWith(textErrorToast: e.message));
+  // }
+  // }
+
+  hideOrShowListFoodByMenu({required ShowDetailMenuDomain food}) {
+    final currentListShow = List.of(state.listIdMenuShowFood);
+    final isShow = currentListShow.contains(food);
+    if (isShow) {
+      currentListShow.remove(food);
+    } else {
+      currentListShow.add(food);
     }
+    emit(state.copyWith(listIdMenuShowFood: currentListShow));
   }
 
   checkShowClearSearch() {
@@ -259,7 +284,7 @@ class MenuDinerCubit extends Cubit<MenuDinerState> {
       final request = FoodRegisterMenuRequest(
         status: isHide ? "inactive" : "active",
         name: item.name,
-        price: item.price.toDouble(),
+        price: item.price?.toDouble(),
         imageId: item.imageId,
         productCategoryId: productCategoryId,
       );

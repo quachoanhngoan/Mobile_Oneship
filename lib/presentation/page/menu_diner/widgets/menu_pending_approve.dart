@@ -47,11 +47,15 @@ class MenuPendingApprove extends StatelessWidget {
     return ListView.builder(
         itemCount: listItem.length,
         itemBuilder: (context, index) {
-          final isShowDetail = state.listFoodByMenu != null &&
-              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
-              state.listFoodByMenu?.type == MenuType.pendingApproval &&
-              state.listFoodByMenu?.idSellected == listItem[index].id &&
-              !state.isHideListFoodByMenu;
+          // final isShowDetail = state.listFoodByMenu != null &&
+          //     state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+          //     state.listFoodByMenu?.type == MenuType.pendingApproval &&
+          //     state.listFoodByMenu?.idSellected == listItem[index].id &&
+          //     !state.isHideListFoodByMenu;
+
+          final isShowDetail = state.listIdMenuShowFood.contains(
+              ShowDetailMenuDomain(
+                  idShow: listItem[index].id, type: MenuType.pendingApproval));
 
           return Column(
             children: <Widget>[
@@ -61,9 +65,10 @@ class MenuPendingApprove extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  bloc.getListFoodByMenu(
-                      type: MenuType.pendingApproval,
-                      productCategoryId: listItem[index].id);
+                  bloc.hideOrShowListFoodByMenu(
+                      food: ShowDetailMenuDomain(
+                          idShow: listItem[index].id,
+                          type: MenuType.pendingApproval));
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -89,11 +94,10 @@ class MenuPendingApprove extends StatelessWidget {
                   ),
                 ),
               ),
-              if (isShowDetail) ...[
-                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
-                    (inxDetail) {
-                  final itemDetail =
-                      state.listFoodByMenu!.listFoodByMenu![inxDetail];
+              if (isShowDetail && listItem[index].products != null) ...[
+                ...List.generate(listItem[index].products!.length, (inxDetail) {
+                  final itemDetail = listItem[index].products![inxDetail];
+
                   return CardDetailMenu(
                     item: itemDetail,
                     actionWidget: Text(

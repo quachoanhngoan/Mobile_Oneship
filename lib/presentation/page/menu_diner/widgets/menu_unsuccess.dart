@@ -55,21 +55,23 @@ class MenuItemUnSuccess extends StatelessWidget {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Container(
-                          width: 58,
-                          height: 46,
-                          decoration: BoxDecoration(
-                              color: AppColors.transparent,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: NetworkImageWithLoader(item.imageId,
-                              isBaseUrl: true, fit: BoxFit.fill),
-                        ),
+                        item.imageId != null
+                            ? Container(
+                                width: 58,
+                                height: 46,
+                                decoration: BoxDecoration(
+                                    color: AppColors.transparent,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: NetworkImageWithLoader(item.imageId!,
+                                    isBaseUrl: true, fit: BoxFit.fill),
+                              )
+                            : const SizedBox.shrink(),
                         const HSpacing(spacing: 8),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              item.name,
+                              item.name ?? "",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -200,11 +202,15 @@ class MenuItemUnSuccess extends StatelessWidget {
     return ListView.builder(
         itemCount: listItem.length,
         itemBuilder: (context, index) {
-          final isShowDetail = state.listFoodByMenu != null &&
-              state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
-              state.listFoodByMenu?.type == MenuType.unsuccessful &&
-              state.listFoodByMenu?.idSellected == listItem[index].id &&
-              !state.isHideListFoodByMenu;
+          // final isShowDetail = state.listFoodByMenu != null &&
+          //     state.listFoodByMenu?.listFoodByMenu?.isNotEmpty == true &&
+          //     state.listFoodByMenu?.type == MenuType.unsuccessful &&
+          //     state.listFoodByMenu?.idSellected == listItem[index].id &&
+          //     !state.isHideListFoodByMenu;
+
+          final isShowDetail = state.listIdMenuShowFood.contains(
+              ShowDetailMenuDomain(
+                  idShow: listItem[index].id, type: MenuType.unsuccessful));
 
           return Column(
             children: <Widget>[
@@ -272,9 +278,10 @@ class MenuItemUnSuccess extends StatelessWidget {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    bloc.getListFoodByMenu(
-                        type: MenuType.unsuccessful,
-                        productCategoryId: listItem[index].id);
+                    bloc.hideOrShowListFoodByMenu(
+                        food: ShowDetailMenuDomain(
+                            idShow: listItem[index].id,
+                            type: MenuType.unsuccessful));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -301,11 +308,10 @@ class MenuItemUnSuccess extends StatelessWidget {
                   ),
                 ),
               ),
-              if (isShowDetail) ...[
-                ...List.generate(state.listFoodByMenu!.listFoodByMenu!.length,
-                    (inxDetail) {
-                  final itemDetail =
-                      state.listFoodByMenu!.listFoodByMenu![inxDetail];
+              if (isShowDetail && listItem[index].products != null) ...[
+                ...List.generate(listItem[index].products!.length, (inxDetail) {
+                  final itemDetail = listItem[index].products![inxDetail];
+
                   return Container(
                     decoration: BoxDecoration(
                       color: AppColors.white,
@@ -326,21 +332,25 @@ class MenuItemUnSuccess extends StatelessWidget {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Container(
-                              width: 58,
-                              height: 46,
-                              decoration: BoxDecoration(
-                                  color: AppColors.transparent,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: NetworkImageWithLoader(itemDetail.imageId,
-                                  isBaseUrl: true, fit: BoxFit.fill),
-                            ),
+                            itemDetail.imageId != null
+                                ? Container(
+                                    width: 58,
+                                    height: 46,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.transparent,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: NetworkImageWithLoader(
+                                        itemDetail.imageId!,
+                                        isBaseUrl: true,
+                                        fit: BoxFit.fill),
+                                  )
+                                : const SizedBox.shrink(),
                             const HSpacing(spacing: 8),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  itemDetail.name,
+                                  itemDetail.name ?? "",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall

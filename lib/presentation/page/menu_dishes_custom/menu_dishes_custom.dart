@@ -1088,7 +1088,7 @@ class __ListCategoryStoreState extends State<_ListCategoryStore> {
                                           ),
                                           const HSpacing(spacing: 8),
                                           Text(
-                                            item.name,
+                                            item.name ?? "",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium

@@ -9,8 +9,10 @@ class MenuDinerState extends Equatable {
   final ToppingType toppingType;
   final List<DataToppingTypeDomain>? listTopping;
   final List<DataMenuTypeDomain>? listMenu;
-  final ListFoodByMenuDomain? listFoodByMenu;
-  final bool isHideListFoodByMenu;
+
+  // final ListFoodByMenuDomain? listFoodByMenu;
+  // final bool isHideListFoodByMenu;
+  final List<ShowDetailMenuDomain> listIdMenuShowFood;
   final String? errorEditTopping;
   final bool editNameGroupSuccess;
   final bool isLoading;
@@ -23,26 +25,26 @@ class MenuDinerState extends Equatable {
   final List<DataToppingTypeDomain> listResultSearchTopping;
   final bool isShowClearSearch;
 
-  const MenuDinerState({
-    this.toppingType = ToppingType.active,
-    this.menuMainType = MenuMainType.menu,
-    this.menuType = MenuType.active,
-    this.listTopping = const [],
-    this.listMenu = const [],
-    this.listFoodByMenu,
-    this.isHideListFoodByMenu = true,
-    this.errorEditTopping,
-    this.isLoading = false,
-    this.errorRemoveGroup = false,
-    this.textErrorToast,
-    this.detailFoodData,
-    this.showClearNameEditMenu = true,
-    this.editNameGroupSuccess = false,
-    this.isShowSearch = false,
-    this.listResultSearchMenu = const [],
-    this.listResultSearchTopping = const [],
-    this.isShowClearSearch = false,
-  });
+  const MenuDinerState(
+      {this.toppingType = ToppingType.active,
+      this.menuMainType = MenuMainType.menu,
+      this.menuType = MenuType.active,
+      this.listTopping = const [],
+      this.listMenu = const [],
+      // this.listFoodByMenu,
+      // this.isHideListFoodByMenu = true,
+      this.errorEditTopping,
+      this.isLoading = false,
+      this.errorRemoveGroup = false,
+      this.textErrorToast,
+      this.detailFoodData,
+      this.showClearNameEditMenu = true,
+      this.editNameGroupSuccess = false,
+      this.isShowSearch = false,
+      this.listResultSearchMenu = const [],
+      this.listResultSearchTopping = const [],
+      this.isShowClearSearch = false,
+      this.listIdMenuShowFood = const []});
 
   MenuDinerState copyWith({
     ToppingType? toppingType,
@@ -50,8 +52,8 @@ class MenuDinerState extends Equatable {
     MenuType? menuType,
     List<DataToppingTypeDomain>? listTopping,
     List<DataMenuTypeDomain>? listMenu,
-    ListFoodByMenuDomain? listFoodByMenu,
-    bool? isHideListFoodByMenu,
+    // ListFoodByMenuDomain? listFoodByMenu,
+    // bool? isHideListFoodByMenu,
     String? errorEditTopping,
     bool? errorRemoveGroup,
     bool? isLoading,
@@ -63,6 +65,7 @@ class MenuDinerState extends Equatable {
     bool? isShowClearSearch,
     List<ResultSearchMenuTypeDomain>? listResultSearchMenu,
     List<DataToppingTypeDomain>? listResultSearchTopping,
+    List<ShowDetailMenuDomain>? listIdMenuShowFood,
   }) {
     return MenuDinerState(
       toppingType: toppingType ?? this.toppingType,
@@ -70,8 +73,8 @@ class MenuDinerState extends Equatable {
       menuType: menuType ?? this.menuType,
       listTopping: listTopping ?? this.listTopping,
       listMenu: listMenu ?? this.listMenu,
-      listFoodByMenu: listFoodByMenu ?? this.listFoodByMenu,
-      isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
+      // listFoodByMenu: listFoodByMenu ?? this.listFoodByMenu,
+      // isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
       errorEditTopping: errorEditTopping,
       errorRemoveGroup: errorRemoveGroup ?? false,
       isLoading: isLoading ?? false,
@@ -84,6 +87,7 @@ class MenuDinerState extends Equatable {
       listResultSearchTopping:
           listResultSearchTopping ?? this.listResultSearchTopping,
       isShowClearSearch: isShowClearSearch ?? this.isShowClearSearch,
+      listIdMenuShowFood: listIdMenuShowFood ?? this.listIdMenuShowFood,
     );
   }
 
@@ -94,8 +98,8 @@ class MenuDinerState extends Equatable {
         menuType,
         listTopping,
         listMenu,
-        listFoodByMenu,
-        isHideListFoodByMenu,
+        // listFoodByMenu,
+        // isHideListFoodByMenu,
         errorEditTopping,
         errorRemoveGroup,
         isLoading,
@@ -107,5 +111,6 @@ class MenuDinerState extends Equatable {
         listResultSearchMenu,
         listResultSearchTopping,
         isShowClearSearch,
+        listIdMenuShowFood,
       ];
 }

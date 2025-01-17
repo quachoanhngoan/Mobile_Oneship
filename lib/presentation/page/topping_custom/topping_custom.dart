@@ -887,7 +887,7 @@ class _LinkedFoodSheetState extends State<_LinkedFoodSheet> {
                                                 ),
                                                 const HSpacing(spacing: 8),
                                                 Text(
-                                                  childItem.name,
+                                                  childItem.name ?? "",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodySmall

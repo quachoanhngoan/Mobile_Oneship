@@ -1,3 +1,5 @@
+import 'list_menu_food_response.dart';
+
 class LinkfoodResponse {
   List<ItemLinkFood> items;
   int total;
@@ -29,14 +31,14 @@ class LinkfoodResponse {
 
 class ItemLinkFood {
   int id;
-  String name;
+  String? name;
   int? storeId;
-  List<DetailLinkFood>? products;
+  List<MenuFoodResponseItem>? products;
   int? totalProducts;
 
   ItemLinkFood({
     required this.id,
-    required this.name,
+    this.name,
     this.storeId,
     this.products,
     this.totalProducts,
@@ -45,8 +47,8 @@ class ItemLinkFood {
   factory ItemLinkFood.fromJson(Map<String, dynamic> json) {
     var productList =
         json['products'] != null ? json['products'] as List : null;
-    List<DetailLinkFood>? products =
-        productList?.map((p) => DetailLinkFood.fromJson(p)).toList();
+    List<MenuFoodResponseItem>? products =
+        productList?.map((p) => MenuFoodResponseItem.fromJson(p)).toList();
 
     return ItemLinkFood(
       id: json['id'],
@@ -68,23 +70,54 @@ class ItemLinkFood {
   }
 }
 
-class DetailLinkFood {
-  int id;
-  String name;
-
-  DetailLinkFood({required this.id, required this.name});
-
-  factory DetailLinkFood.fromJson(Map<String, dynamic> json) {
-    return DetailLinkFood(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
-}
+// class DetailLinkFood {
+//   int id;
+//   String name;
+//   int? sold;
+//   int? viewed;
+//   int? liked;
+//   int? price;
+//   String? status;
+//   String? imageId;
+//   String? reason;
+//
+//   DetailLinkFood({
+//     required this.id,
+//     required this.name,
+//     this.imageId,
+//     this.liked,
+//     this.price,
+//     this.sold,
+//     this.status,
+//     this.viewed,
+//     this.reason,
+//   });
+//
+//   factory DetailLinkFood.fromJson(Map<String, dynamic> json) {
+//     return DetailLinkFood(
+//       id: json['id'],
+//       name: json['name'],
+//       imageId: json['imageId'],
+//       liked: json['liked'],
+//       price: json['price'],
+//       sold: json['sold'],
+//       status: json['status'],
+//       viewed: json['viewed'],
+//       reason: json['reason'],
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'id': id,
+//       'name': name,
+//       'imageId': imageId,
+//       'price': price,
+//       'liked': liked,
+//       'sold': sold,
+//       'status': status,
+//       'viewed': viewed,
+//       'reason': reason,
+//     };
+//   }
+// }

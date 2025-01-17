@@ -24,30 +24,30 @@ class ListMenuFoodResponse {
 }
 
 class MenuFoodResponseItem {
-  int sold;
-  int viewed;
-  int liked;
+  int? sold;
+  int? viewed;
+  int? liked;
   int id;
-  DateTime createdAt;
-  String name;
-  int price;
-  String status;
-  String approvalStatus;
+  DateTime? createdAt;
+  String? name;
+  int? price;
+  String? status;
+  String? approvalStatus;
   String? reason;
-  String imageId;
+  String? imageId;
 
   MenuFoodResponseItem({
-    required this.sold,
-    required this.viewed,
-    required this.liked,
+    this.sold,
+    this.viewed,
+    this.liked,
     required this.id,
-    required this.createdAt,
-    required this.name,
-    required this.price,
-    required this.status,
-    required this.approvalStatus,
+    this.createdAt,
+    this.name,
+    this.price,
+    this.status,
+    this.approvalStatus,
     this.reason,
-    required this.imageId,
+    this.imageId,
   });
 
   factory MenuFoodResponseItem.fromJson(Map<String, dynamic> json) {
@@ -56,7 +56,8 @@ class MenuFoodResponseItem {
       viewed: json['viewed'],
       liked: json['liked'],
       id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       name: json['name'],
       price: json['price'],
       status: json['status'],
@@ -72,7 +73,7 @@ class MenuFoodResponseItem {
       'viewed': viewed,
       'liked': liked,
       'id': id,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
       'name': name,
       'price': price,
       'status': status,
