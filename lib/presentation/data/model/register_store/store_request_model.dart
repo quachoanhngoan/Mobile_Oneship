@@ -197,6 +197,10 @@ class SpecialWorkingTime {
         startTimeStr = startTimeStr!.split(":")[1].length == 1
             ? "${startTimeStr!.split(":")[0]}:0${startTimeStr!.split(":")[1]}"
             : startTimeStr;
+        //add 0 if hour < 10
+        startTimeStr = startTimeStr!.split(":")[0].length == 1
+            ? "0$startTimeStr"
+            : startTimeStr;
         openTimeController = TextEditingController(text: startTimeStr);
       } else {
         openTimeController = TextEditingController();
@@ -207,6 +211,10 @@ class SpecialWorkingTime {
         endTimeStr = endTimeStr!.split(":")[1].length == 1
             ? "${endTimeStr!.split(":")[0]}:0${endTimeStr!.split(":")[1]}"
             : endTimeStr;
+        //add 0 if hour < 10
+        endTimeStr =
+            endTimeStr!.split(":")[0].length == 1 ? "0$endTimeStr" : endTimeStr;
+
         closeTimeController = TextEditingController(text: endTimeStr);
       } else {
         closeTimeController = TextEditingController();

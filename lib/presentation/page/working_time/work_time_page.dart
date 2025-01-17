@@ -36,7 +36,7 @@ class _WorkTimePageState extends State<WorkTimePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarAuth(
-        title: "Lịch làm việc hàng ngày",
+        title: "Thời gian làm việc",
         isShowHelpButton: false,
       ),
       body: Padding(

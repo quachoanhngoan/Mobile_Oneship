@@ -325,8 +325,8 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                         setState(() {
                           data.add(WKT(
                             dayOfWeek: widget.param.dayOfWeekNumber!,
-                            openTime: 0,
-                            closeTime: 0,
+                            openTime: null,
+                            closeTime: null,
                           ));
                         });
                       },
