@@ -53,7 +53,6 @@ class WorkTimeSpecial extends StatelessWidget {
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () {
-                      print("click");
                       Get.to(
                         () => const ChangeTimeSpecial(),
                       );
@@ -128,6 +127,10 @@ class WorkTimeSpecial extends StatelessWidget {
                                                           Colors.green,
                                                           global.position)),
                                               onChanged: (value) {
+                                                Get.to(
+                                                  () =>
+                                                      const ChangeTimeSpecial(),
+                                                );
                                                 // if (value == true) {
                                                 //   dialogService.showAlertDialog(
                                                 //     title: "Thông báo",

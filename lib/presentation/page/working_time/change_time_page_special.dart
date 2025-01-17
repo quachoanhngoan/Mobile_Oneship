@@ -33,7 +33,7 @@ class _ChangeTimeSpecialState extends State<ChangeTimeSpecial> {
       builder: (context, state) {
         return Scaffold(
             appBar: const AppBarAuth(
-              title: 'Thời gian làm việc',
+              title: 'Lịch đóng cửa dịp đặc biệt',
               isShowHelpButton: false,
             ),
             body: Padding(
