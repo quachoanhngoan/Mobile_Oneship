@@ -43,7 +43,7 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const AppBarAuth(
-          title: 'Thời gian làm việc',
+          title: 'Lịch làm việc hàng ngày',
           isShowHelpButton: false,
         ),
         body: Padding(
@@ -55,7 +55,7 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Thứ 2',
+                    Text(widget.param.dayOfWeek ?? '',
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontWeight: FontWeight.w600,
                             )),

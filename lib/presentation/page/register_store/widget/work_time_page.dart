@@ -60,14 +60,20 @@ class WKT {
     //close time 362 => 6:02
     if (openTime != null && openTime! >= 0) {
       openTimeStr = "${(openTime! / 60).floor()}:${openTime! % 60}";
-
+      //add 0 if minute < 10
+      openTimeStr = openTimeStr!.split(":")[1].length == 1
+          ? "${openTimeStr!.split(":")[0]}:0${openTimeStr!.split(":")[1]}"
+          : openTimeStr;
       openTimeController = TextEditingController(text: openTimeStr);
     } else {
       openTimeController = TextEditingController();
     }
     if (closeTime != null && closeTime! >= 0) {
       closeTimeStr = "${(closeTime! / 60).floor()}:${closeTime! % 60}";
-
+      //add 0 if minute < 10
+      closeTimeStr = closeTimeStr!.split(":")[1].length == 1
+          ? "${closeTimeStr!.split(":")[0]}:0${closeTimeStr!.split(":")[1]}"
+          : closeTimeStr;
       closeTimeController = TextEditingController(text: closeTimeStr);
     } else {
       closeTimeController = TextEditingController();

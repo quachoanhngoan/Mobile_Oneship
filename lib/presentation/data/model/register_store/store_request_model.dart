@@ -193,13 +193,20 @@ class SpecialWorkingTime {
       //close time 362 => 6:02
       if (startTime != null && startTime! >= 0) {
         startTimeStr = "${(startTime! / 60).floor()}:${startTime! % 60}";
-
+        //add 0 if minute < 10
+        startTimeStr = startTimeStr!.split(":")[1].length == 1
+            ? "${startTimeStr!.split(":")[0]}:0${startTimeStr!.split(":")[1]}"
+            : startTimeStr;
         openTimeController = TextEditingController(text: startTimeStr);
       } else {
         openTimeController = TextEditingController();
       }
       if (endTime != null && endTime! >= 0) {
         endTimeStr = "${(endTime! / 60).floor()}:${endTime! % 60}";
+        //add 0 if minute < 10
+        endTimeStr = endTimeStr!.split(":")[1].length == 1
+            ? "${endTimeStr!.split(":")[0]}:0${endTimeStr!.split(":")[1]}"
+            : endTimeStr;
         closeTimeController = TextEditingController(text: endTimeStr);
       } else {
         closeTimeController = TextEditingController();

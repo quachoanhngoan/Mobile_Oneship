@@ -51,7 +51,7 @@ class _ChangeTimePageState extends State<ChangeTimePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Thứ 2',
+                  Text(widget.param.dayOfWeek ?? '',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.w600,
                           )),

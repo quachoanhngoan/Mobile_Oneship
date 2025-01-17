@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/config.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/working_time/change_time_page_special.dart';
 import 'package:oneship_merchant_app/presentation/page/working_time/work_time_page_day_of_week.dart';
 import 'package:oneship_merchant_app/presentation/page/working_time/work_time_page_special.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
@@ -60,7 +61,7 @@ class _WorkTimePageState extends State<WorkTimePage> {
                 ),
                 _MenuItem(
                   onTap: () {
-                    Get.to(() => const WorkTimeSpecial());
+                    Get.to(() => const ChangeTimeSpecial());
                   },
                   title: 'Lịch đóng cửa dịp đặc biệt',
                 ),
