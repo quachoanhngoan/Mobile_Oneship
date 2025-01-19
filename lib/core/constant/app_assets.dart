@@ -102,8 +102,6 @@ class AppAssets {
 
   static const String imagesIconsBook = "assets/images/icons/book.png";
 
-  static const String imagesIconsCalendar = "assets/images/icons/Calendar.png";
-
   static const String imagesIconsCamera = "assets/images/icons/camera.png";
 
   static const String imagesIconsCircleInformation = "assets/images/icons/circle-information.png";
@@ -131,6 +129,10 @@ class AppAssets {
   static const String imagesIconsIcBasket = "assets/images/icons/ic_basket.png";
 
   static const String imagesIconsIcBook = "assets/images/icons/ic_book.png";
+
+  static const String imagesIconsIcCalendar = "assets/images/icons/ic_calendar.png";
+
+  static const String imagesIconsIcCartPaid = "assets/images/icons/ic_cart_paid.png";
 
   static const String imagesIconsIcFile = "assets/images/icons/ic_file.png";
 
@@ -177,6 +179,8 @@ class AppAssets {
   static const String imagesIconsTrashAlt = "assets/images/icons/trash-alt.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
+
+  static const String imagesImgCartEmpty = "assets/images/img_cart_empty.png";
 
   static const String imagesImgEmptySearch = "assets/images/img_empty_search.png";
 
