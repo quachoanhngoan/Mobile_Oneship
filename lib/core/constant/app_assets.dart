@@ -160,7 +160,11 @@ class AppAssets {
 
   static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 
+  static const String imagesIconsNotesEdit01 = "assets/images/icons/notes-edit-01.png";
+
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
+
+  static const String imagesIconsPhoneCall = "assets/images/icons/phone-call.png";
 
   static const String imagesIconsSearchAlt1 = "assets/images/icons/search-alt-1.png";
 

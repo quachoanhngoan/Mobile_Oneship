@@ -10,6 +10,8 @@ class NetworkImageWithLoader extends StatelessWidget {
   final bool isAuth;
   final bool isBaseUrl;
   final Widget? widgetErrorImage;
+  final double? width;
+  final double? height;
   const NetworkImageWithLoader(
     this.src, {
     super.key,
@@ -18,6 +20,8 @@ class NetworkImageWithLoader extends StatelessWidget {
     this.isAuth = true,
     this.widgetErrorImage,
     this.isBaseUrl = false,
+    this.width,
+    this.height,
   });
 
   final String src;
@@ -27,25 +31,29 @@ class NetworkImageWithLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     final url =
         isBaseUrl ? "${EnvManager.shared.api}/api/v1/uploads/$src" : src;
-    return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(radius)),
-      child: CachedNetworkImage(
-        httpHeaders: {
-          'Authorization': 'Bearer ${prefManager.token}',
-        },
-        fit: fit,
-        imageUrl: url,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: imageProvider,
-              fit: fit,
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+        child: CachedNetworkImage(
+          httpHeaders: {
+            'Authorization': 'Bearer ${prefManager.token}',
+          },
+          fit: fit,
+          imageUrl: url,
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: fit,
+              ),
             ),
           ),
+          placeholder: (context, url) => const Skeleton(),
+          errorWidget: (context, url, error) =>
+              widgetErrorImage ?? const Skeleton(),
         ),
-        placeholder: (context, url) => const Skeleton(),
-        errorWidget: (context, url, error) =>
-            widgetErrorImage ?? const Skeleton(),
       ),
     );
   }
