@@ -190,41 +190,23 @@ class SpecialWorkingTime {
   }) {
     {
       //open time 360 => 6:00
-      //close time 362 => 6:02
-      if (startTime != null && startTime! >= 0) {
-        startTimeStr = "${(startTime! / 60).floor()}:${startTime! % 60}";
-        //add 0 if minute < 10
-        startTimeStr = startTimeStr!.split(":")[1].length == 1
-            ? "${startTimeStr!.split(":")[0]}:0${startTimeStr!.split(":")[1]}"
-            : startTimeStr;
-        //add 0 if hour < 10
-        startTimeStr = startTimeStr!.split(":")[0].length == 1
-            ? "0$startTimeStr"
-            : startTimeStr;
-        openTimeController = TextEditingController(text: startTimeStr);
-      } else {
-        openTimeController = TextEditingController();
-      }
-      if (endTime != null && endTime! >= 0) {
-        endTimeStr = "${(endTime! / 60).floor()}:${endTime! % 60}";
-        //add 0 if minute < 10
-        endTimeStr = endTimeStr!.split(":")[1].length == 1
-            ? "${endTimeStr!.split(":")[0]}:0${endTimeStr!.split(":")[1]}"
-            : endTimeStr;
-        //add 0 if hour < 10
-        endTimeStr =
-            endTimeStr!.split(":")[0].length == 1 ? "0$endTimeStr" : endTimeStr;
+      //close time 362 => 6:02ư
 
-        closeTimeController = TextEditingController(text: endTimeStr);
-      } else {
-        closeTimeController = TextEditingController();
-      }
-      if (date != null && date!.isNotEmpty) {
-        final dateStr = DateFormat('dd/MM/yyyy').format(DateTime.parse(date!));
-        dateController = TextEditingController(text: dateStr);
-      } else {
-        dateController = TextEditingController();
-      }
+      // ...existing code...
+
+      // Time controllers initialization
+      openTimeController = TextEditingController(
+          text: startTime != null && startTime! >= 0
+              ? _formatTime(startTime)
+              : '');
+
+      closeTimeController = TextEditingController(
+          text: endTime != null && endTime! >= 0 ? _formatTime(endTime) : '');
+
+      dateController = TextEditingController(
+          text: date?.isNotEmpty == true
+              ? DateFormat('dd/MM/yyyy').format(DateTime.parse(date!))
+              : '');
     }
   }
 
@@ -349,4 +331,13 @@ class WorkingTime {
 //   }
 // }
 // //
+}
+
+String _formatTimeComponent(int value) => value.toString().padLeft(2, '0');
+
+String _formatTime(int? minutes) {
+  if (minutes == null || minutes < 0) return '';
+  final hours = (minutes / 60).floor();
+  final mins = minutes % 60;
+  return '${_formatTimeComponent(hours)}:${_formatTimeComponent(mins)}';
 }

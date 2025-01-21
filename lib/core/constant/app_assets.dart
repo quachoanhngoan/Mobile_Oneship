@@ -94,6 +94,8 @@ class AppAssets {
 
   static const String imagesIconOrderChild = "assets/images/icon_order_child.png";
 
+  static const String imagesIconStoreCheck = "assets/images/icon_store_check.png";
+
   static const String imagesIconsArrowLeft02Round = "assets/images/icons/arrow-left-02-round.png";
 
   static const String imagesIconsArrowRight01 = "assets/images/icons/arrow-right-01.png";
@@ -103,6 +105,8 @@ class AppAssets {
   static const String imagesIconsBook = "assets/images/icons/book.png";
 
   static const String imagesIconsCamera = "assets/images/icons/camera.png";
+
+  static const String imagesIconsCheckIcon = "assets/images/icons/check_icon.png";
 
   static const String imagesIconsCircleInformation = "assets/images/icons/circle-information.png";
 
@@ -152,6 +156,18 @@ class AppAssets {
 
   static const String imagesIconsIcon = "assets/images/icons/Icon.png";
 
+  static const String imagesIconsIconDriver = "assets/images/icons/icon_driver.png";
+
+  static const String imagesIconsIconDriverCheck = "assets/images/icons/icon_driver_check.png";
+
+  static const String imagesIconsIconLocation = "assets/images/icons/icon_location.png";
+
+  static const String imagesIconsIconLocationCheck = "assets/images/icons/icon_location_check.png";
+
+  static const String imagesIconsIconStore = "assets/images/icons/icon_store.png";
+
+  static const String imagesIconsIconUserCheck = "assets/images/icons/icon_user_check.png";
+
   static const String imagesIconsLocation = "assets/images/icons/location.png";
 
   static const String imagesIconsLocationSlash = "assets/images/icons/location-slash.png";
@@ -162,7 +178,11 @@ class AppAssets {
 
   static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 
+  static const String imagesIconsNotesEdit01 = "assets/images/icons/notes-edit-01.png";
+
   static const String imagesIconsPhone = "assets/images/icons/phone.png";
+
+  static const String imagesIconsPhoneCall = "assets/images/icons/phone-call.png";
 
   static const String imagesIconsSearchAlt1 = "assets/images/icons/search-alt-1.png";
 
@@ -179,6 +199,8 @@ class AppAssets {
   static const String imagesIconsTrashAlt = "assets/images/icons/trash-alt.png";
 
   static const String imagesIconsUserAlt2 = "assets/images/icons/user-alt-2.png";
+
+  static const String imagesIconsUserOrder = "assets/images/icons/user_order.png";
 
   static const String imagesImgCartEmpty = "assets/images/img_cart_empty.png";
 

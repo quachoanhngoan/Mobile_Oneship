@@ -11,6 +11,7 @@ import 'package:oneship_merchant_app/presentation/page/home/cubit/home_cubit.dar
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_banner.dart';
 import 'package:oneship_merchant_app/presentation/page/home/widget/list_category.dart';
 import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/order/order_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/images.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/network_image_loader.dart';
@@ -264,53 +265,58 @@ class RevenueWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              right: BorderSide(
-                                color: AppColors.borderColor2,
-                                width: 2,
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() => const OrderPage());
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 10),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  color: AppColors.borderColor2,
+                                  width: 2,
+                                ),
                               ),
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Đặt trước",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: const Color(0xff737373)),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "521",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: const Color(0xff2D2D2D)),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                color: AppColors.textGray,
-                                size: 18,
-                              ),
-                            ],
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Đặt trước",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: const Color(0xff737373)),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "521",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: const Color(0xff2D2D2D)),
+                                    ),
+                                  ],
+                                ),
+                                const Spacer(),
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: AppColors.textGray,
+                                  size: 18,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
