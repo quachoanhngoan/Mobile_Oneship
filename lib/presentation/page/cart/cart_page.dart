@@ -40,7 +40,6 @@ class _CartPageState extends State<CartPage> {
 
   @override
   dispose() {
-    log("dispose");
     bloc.dispose();
     super.dispose();
   }

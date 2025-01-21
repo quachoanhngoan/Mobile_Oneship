@@ -5,6 +5,7 @@ import 'package:oneship_merchant_app/core/datasource/auth_api_service.dart';
 import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/cart_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/address_store/bloc/edit_address_cubit.dart';
@@ -72,6 +73,8 @@ Future<void> repositoryModule() async {
     ),
   );
 
+  injector.registerSingleton<CartRepository>(CartRepositoryImp(injector()));
+
   injector.registerSingleton<MenuRepository>(MenuRepositoryImp(injector()));
 
   injector.registerSingleton<BannerRepository>(
@@ -104,7 +107,7 @@ void blocModule() {
 
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
   injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
-  injector.registerSingleton<CartCubit>(CartCubit());
+  injector.registerSingleton<CartCubit>(CartCubit(injector()));
   // injector.registerFactory<WorkingTimeBloc>(() => WorkingTimeBloc(injector()));
 }
 

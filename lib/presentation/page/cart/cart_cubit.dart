@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/cart_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_state.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit() : super(const CartState());
+  final CartRepository repository;
+
+  CartCubit(this.repository) : super(const CartState());
 
   late TextEditingController searchController;
   late PageController pageController;
@@ -28,9 +31,7 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  getAllCart(){
-
-  }
+  getAllCart() {}
 
   dispose() {
     searchController.dispose();
