@@ -3,11 +3,20 @@ import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
 
+import '../cart_cubit.dart';
+import '../cart_state.dart';
+
 class CartBodyBook extends StatelessWidget {
-  const CartBodyBook({super.key});
+  final CartState state;
+  final CartCubit bloc;
+
+  const CartBodyBook({super.key, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      return Container();
+    }
     return Container(
       color: AppColors.colorAFA,
       child: ListView.builder(

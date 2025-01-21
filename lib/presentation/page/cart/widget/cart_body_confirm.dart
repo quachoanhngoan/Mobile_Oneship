@@ -9,10 +9,14 @@ import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dar
 class CartBodyConfirm extends StatelessWidget {
   final CartState state;
   final CartCubit bloc;
+
   const CartBodyConfirm({super.key, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      return Container();
+    }
     return Container(
       color: AppColors.colorAFA,
       child: Column(

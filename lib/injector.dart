@@ -104,7 +104,7 @@ void blocModule() {
 
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
   injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
-  injector.registerFactory<CartCubit>(() => CartCubit());
+  injector.registerSingleton<CartCubit>(CartCubit());
   // injector.registerFactory<WorkingTimeBloc>(() => WorkingTimeBloc(injector()));
 }
 

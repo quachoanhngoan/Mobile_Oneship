@@ -5,11 +5,21 @@ import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
 
+import '../../../data/time_utils.dart';
+import '../cart_cubit.dart';
+import '../cart_state.dart';
+
 class CartBodyCancel extends StatelessWidget {
-  const CartBodyCancel({super.key});
+  final CartCubit bloc;
+  final CartState state;
+
+  const CartBodyCancel({super.key, required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      return Container();
+    }
     return Container(
       color: AppColors.colorAFA,
       child: Column(
@@ -23,23 +33,35 @@ class CartBodyCancel extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 12),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "24/12/25 - 28/12/25",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.color828,
-                        ),
+              child: GestureDetector(
+                onTap: () async {
+                  final timeSellect =
+                      await TimeUtils().rangeTimePicker(context);
+                  if (timeSellect != null) {
+                    bloc.sellectTimeRange(timeSellect, isComplete: false);
+                  }
+                },
+                child: Container(
+                  color: AppColors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        state.timeRangeTitleCancel ?? "",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.color828,
+                            ),
+                      ),
+                      const ImageAssetWidget(
+                        image: AppAssets.imagesIconsIcCalendar,
+                        width: 16,
+                        height: 16,
+                      )
+                    ],
                   ),
-                  const ImageAssetWidget(
-                    image: AppAssets.imagesIconsIcCalendar,
-                    width: 16,
-                    height: 16,
-                  )
-                ],
+                ),
               ),
             ),
           ),

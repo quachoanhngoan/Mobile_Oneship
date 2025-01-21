@@ -6,11 +6,16 @@ class CartState extends Equatable {
   final bool isShowClearSearch;
   final CartType cartTypeSellected;
   final CartConfirmType cartConfirmTypeSellected;
+  final String? timeRangeTitleComplete;
+  final String? timeRangeTitleCancel;
+
   const CartState({
     this.isShowSearch = false,
     this.isShowClearSearch = false,
     this.cartTypeSellected = CartType.book,
     this.cartConfirmTypeSellected = CartConfirmType.findDriver,
+    this.timeRangeTitleComplete,
+    this.timeRangeTitleCancel,
   });
 
   @override
@@ -18,7 +23,9 @@ class CartState extends Equatable {
         isShowSearch,
         isShowClearSearch,
         cartTypeSellected,
+        timeRangeTitleComplete,
         cartConfirmTypeSellected,
+        timeRangeTitleCancel,
       ];
 
   CartState copyWith({
@@ -26,6 +33,8 @@ class CartState extends Equatable {
     bool? isShowClearSearch,
     CartType? cartTypeSellected,
     CartConfirmType? cartConfirmTypeSellected,
+    String? timeRangeTitleComplete,
+    String? timeRangeTitleCancel,
   }) {
     return CartState(
       isShowSearch: isShowSearch ?? this.isShowSearch,
@@ -33,6 +42,9 @@ class CartState extends Equatable {
       cartTypeSellected: cartTypeSellected ?? this.cartTypeSellected,
       cartConfirmTypeSellected:
           cartConfirmTypeSellected ?? this.cartConfirmTypeSellected,
+      timeRangeTitleComplete:
+          timeRangeTitleComplete ?? this.timeRangeTitleComplete,
+      timeRangeTitleCancel: timeRangeTitleCancel ?? this.timeRangeTitleCancel,
     );
   }
 }

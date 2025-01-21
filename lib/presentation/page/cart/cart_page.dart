@@ -1,7 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
-import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_cubit.dart';
@@ -37,6 +38,13 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
+  @override
+  dispose() {
+    log("dispose");
+    bloc.dispose();
+    super.dispose();
+  }
+
   double calculateTextWidth(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
@@ -57,6 +65,7 @@ class _CartPageState extends State<CartPage> {
                 Row(
                   children: <Widget>[
                     IconButton(
+                        highlightColor: AppColors.transparent,
                         onPressed: () {
                           if (state.isShowSearch) {
                             bloc.hideOrShowSearch();
@@ -72,30 +81,13 @@ class _CartPageState extends State<CartPage> {
                               controller: bloc.searchController,
                               showClearButton: state.isShowClearSearch,
                               onChange: (value) {
-                                // if (state.cartTypeSellected == CartType.book) {
-                                //   bloc.searchFoodByMenu(value);
-                                // } else {
-                                //   bloc.searchTopping(value);
-                                // }
-                                // bloc.checkShowClearSearch();
+                                bloc.checkShowClearSearch();
                               },
                               clearTextClicked: () {
                                 bloc.searchController.clear();
                                 bloc.checkShowClearSearch();
                               },
-                              hintText: "Tìm kiếm tên sản phẩm")),
-                      const HSpacing(spacing: 8),
-                      GestureDetector(
-                          onTap: () {
-                            bloc.hideOrShowSearch();
-                          },
-                          child: Text(
-                            "Huỷ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(color: AppColors.color988),
-                          )),
+                              hintText: "Nhập mã đơn hàng, tên khách hàng")),
                       const HSpacing(spacing: 12)
                     ] else ...[
                       Expanded(
@@ -198,15 +190,15 @@ class _CartPageState extends State<CartPage> {
                           final itemBody = CartType.values[index];
                           switch (itemBody) {
                             case CartType.book:
-                              return const CartBodyBook();
+                              return CartBodyBook(state: state, bloc: bloc);
                             case CartType.newCart:
-                              return const CartBodyNew();
+                              return CartBodyNew(state: state, bloc: bloc);
                             case CartType.confirm:
                               return CartBodyConfirm(state: state, bloc: bloc);
                             case CartType.complete:
-                              return const CartBodyComplete();
+                              return CartBodyComplete(bloc: bloc, state: state);
                             case CartType.cancel:
-                              return const CartBodyCancel();
+                              return CartBodyCancel(bloc: bloc, state: state);
                           }
                           // return const _CartEmptyBody();
                         }))
@@ -245,6 +237,7 @@ class _CartEmptyBody extends StatelessWidget {
 class CartBodyItem extends StatelessWidget {
   final Widget bottomWidget;
   final bool isComplete;
+
   const CartBodyItem(
       {super.key, required this.bottomWidget, this.isComplete = false});
 

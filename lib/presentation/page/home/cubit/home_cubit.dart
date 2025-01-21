@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/core.dart';
 import 'package:oneship_merchant_app/core/execute/execute.dart';

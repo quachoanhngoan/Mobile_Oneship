@@ -2,11 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
 
+import '../cart_cubit.dart';
+import '../cart_state.dart';
+
 class CartBodyNew extends StatelessWidget {
-  const CartBodyNew({super.key});
+  final CartState state;
+  final CartCubit bloc;
+
+  const CartBodyNew({super.key, required this.state, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
+    if (state.isShowSearch) {
+      return Container();
+    }
     return Container(
       color: AppColors.colorAFA,
       margin: const EdgeInsets.symmetric(vertical: 6),
