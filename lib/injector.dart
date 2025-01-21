@@ -6,13 +6,15 @@ import 'package:oneship_merchant_app/core/repositories/auth/auth_repository.dart
 import 'package:oneship_merchant_app/presentation/data/repository/auth_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/banner_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/menu_repository.dart';
+import 'package:oneship_merchant_app/presentation/data/repository/order_repository.dart';
 import 'package:oneship_merchant_app/presentation/data/repository/store_repository.dart';
 import 'package:oneship_merchant_app/presentation/page/address_store/bloc/edit_address_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/bottom_tab/bottom_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/cart/cart_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
-import 'package:oneship_merchant_app/presentation/page/order/bloc/store_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/order/bloc/order_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
@@ -73,6 +75,7 @@ Future<void> repositoryModule() async {
   );
 
   injector.registerSingleton<MenuRepository>(MenuRepositoryImp(injector()));
+  injector.registerSingleton<OrderRepository>(OrderImpl(injector()));
 
   injector.registerSingleton<BannerRepository>(
     BannerImpl(
@@ -105,6 +108,7 @@ void blocModule() {
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
   injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
   injector.registerFactory<OrderCubit>(() => OrderCubit(injector()));
+  injector.registerFactory<CartCubit>(() => CartCubit());
   // injector.registerFactory<WorkingTimeBloc>(() => WorkingTimeBloc(injector()));
 }
 

@@ -5,11 +5,13 @@ class PriceValue extends StatelessWidget {
   final String title;
   final String price;
   final TextStyle? priceStyle;
+  final TextStyle? titleStyle;
   const PriceValue({
     super.key,
     required this.title,
     required this.price,
     this.priceStyle,
+    this.titleStyle,
   });
 
   @override
@@ -19,11 +21,12 @@ class PriceValue extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontSize: 14,
-                color: AppColors.color373,
-                fontWeight: FontWeight.w400,
-              ),
+          style: titleStyle ??
+              Theme.of(context).textTheme.bodySmall!.copyWith(
+                    fontSize: 14,
+                    color: AppColors.color373,
+                    fontWeight: FontWeight.w400,
+                  ),
         ),
         Text(
           price,

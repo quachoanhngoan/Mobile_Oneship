@@ -90,7 +90,6 @@ class OrderItem extends StatelessWidget {
                       price,
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             fontSize: 12,
-                            color: AppColors.primaryColor,
                           ),
                     ),
                   ],

@@ -10,7 +10,7 @@ class DetailPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         SizedBox(
           height: 10,
@@ -19,7 +19,6 @@ class DetailPrice extends StatelessWidget {
           title: 'Tạm tính (4 phần)',
           price: '100.000đ',
           priceStyle: TextStyle(
-            color: AppColors.primaryColor,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -56,10 +55,9 @@ class DetailPrice extends StatelessWidget {
           height: 5,
         ),
         PriceValue(
-          title: 'Tổng thanh toán',
+          title: 'Khách thanh toán',
           price: '120.000đ',
           priceStyle: TextStyle(
-            color: AppColors.primaryColor,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
