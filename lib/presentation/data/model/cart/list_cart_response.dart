@@ -5,7 +5,8 @@ class ListCartResponse {
   int? limit;
   int? totalPages;
 
-  ListCartResponse({this.orders, this.total, this.page, this.limit, this.totalPages});
+  ListCartResponse(
+      {this.orders, this.total, this.page, this.limit, this.totalPages});
 
   factory ListCartResponse.fromJson(Map<String, dynamic> json) {
     return ListCartResponse(
@@ -85,7 +86,8 @@ class OrderCartResponse {
       deliveryLatitude: json['deliveryLatitude'] as double?,
       deliveryLongitude: json['deliveryLongitude'] as double?,
       notes: json['notes'] as String?,
-      client: json['client'] != null ? ClientCart.fromJson(json['client']) : null,
+      client:
+          json['client'] != null ? ClientCart.fromJson(json['client']) : null,
       orderItems: (json['orderItems'] as List<dynamic>?)
           ?.map((item) => CartOrderItem.fromJson(item))
           .toList(),
@@ -247,7 +249,7 @@ class CartOrderItem {
 
 class CartProductOption {
   CartOptionGroup? optionGroup;
-  CartOptions? options;
+  List<CartOptions>? options;
 
   CartProductOption({this.optionGroup, this.options});
 
@@ -256,14 +258,16 @@ class CartProductOption {
       optionGroup: json['optionGroup'] != null
           ? CartOptionGroup.fromJson(json['optionGroup'])
           : null,
-      options: json['options'] != null ? CartOptions.fromJson(json['options']) : null,
+      options: (json['options'] as List<dynamic>?)
+          ?.map((e) => CartOptions.fromJson(e))
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'optionGroup': optionGroup?.toJson(),
-      'options': options?.toJson(),
+      'options': options?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -385,7 +389,8 @@ class CartActivity {
     return CartActivity(
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
-      deletedAt: json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
+      deletedAt:
+          json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
       updatedAt: DateTime.parse(json['updatedAt']),
       orderId: json['orderId'],
       status: json['status'],

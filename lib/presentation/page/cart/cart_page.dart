@@ -289,7 +289,9 @@ class CartBodyItem extends StatelessWidget {
           const DashedDivider(color: AppColors.color8E8),
           const VSpacing(spacing: 8),
           orderCart.orderItems != null
-              ? ListView.builder(
+              ? ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      const VSpacing(spacing: 8),
                   itemCount: orderCart.orderItems!.length,
                   shrinkWrap: true,
                   itemBuilder: (context, indexOther) {
@@ -302,7 +304,7 @@ class CartBodyItem extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: AppColors.transparent,
                               borderRadius: BorderRadius.circular(8)),
-                          child: const NetworkImageWithLoader("",
+                          child: NetworkImageWithLoader(item.productImage ?? "",
                               isBaseUrl: true, fit: BoxFit.fill),
                         ),
                         const HSpacing(spacing: 12),
@@ -316,7 +318,7 @@ class CartBodyItem extends StatelessWidget {
                                   color: AppColors.textGray, width: 1),
                               borderRadius: BorderRadius.circular(6)),
                           child: Text(
-                            "x$indexOther",
+                            "x${item.quantity}",
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       fontSize: 10,
