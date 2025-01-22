@@ -17,4 +17,9 @@ extension TimeExtention on DateTime? {
     }
     return DateFormat('EEEE', "vi").format(this!);
   }
+
+  String formatHHMMDD() {
+    if (this == null) return "";
+    return DateFormat('HH:mm, dd/MM/yyyy').format(this!);
+  }
 }

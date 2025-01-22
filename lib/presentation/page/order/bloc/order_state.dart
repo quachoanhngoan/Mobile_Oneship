@@ -2,34 +2,36 @@ part of 'order_cubit.dart';
 
 class OrderState {
   final EState status;
-  final EState loginState;
-  final EState updateStore;
-
-  final List<String> listCancelOrder;
+  final EState cancelState;
+  final EState confirmState;
+  final OrderM? order;
+  final List<CancelModel> listCancelOrder;
 
   OrderState({
     this.status = EState.initial,
-    this.loginState = EState.initial,
-    this.updateStore = EState.initial,
+    this.cancelState = EState.initial,
+    this.confirmState = EState.initial,
+    this.order,
     this.listCancelOrder = const [
-      "Khách hàng không muốn mua hàng nữa",
-      "Khách hàng không liên lạc được",
-      "Khách hàng không đồng ý với giá",
-      "Khách hàng không đồng ý với chất lượng sản phẩm",
-      "Khách hàng không đồng ý với thời gian giao hàng",
+      CancelModel(
+        id: 0,
+        name: 'Lý do khác',
+      ),
     ],
   });
 
   OrderState copyWith({
     EState? status,
-    EState? loginState,
-    EState? updateStore,
-    List<String>? listCancelOrder,
+    EState? cancelState,
+    EState? confirmState,
+    OrderM? order,
+    List<CancelModel>? listCancelOrder,
   }) {
     return OrderState(
       status: status ?? this.status,
-      loginState: loginState ?? this.loginState,
-      updateStore: updateStore ?? this.updateStore,
+      cancelState: cancelState ?? this.cancelState,
+      confirmState: confirmState ?? this.confirmState,
+      order: order ?? this.order,
       listCancelOrder: listCancelOrder ?? this.listCancelOrder,
     );
   }

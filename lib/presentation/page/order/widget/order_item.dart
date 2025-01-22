@@ -9,6 +9,8 @@ class OrderItem extends StatelessWidget {
   final String price;
   final String? description;
   final String? note;
+  final String? orderAvatar;
+  final int? quantity;
 
   const OrderItem({
     super.key,
@@ -16,6 +18,9 @@ class OrderItem extends StatelessWidget {
     this.description,
     required this.price,
     this.note,
+    required orderItem,
+    this.orderAvatar,
+    this.quantity,
   });
 
   @override
@@ -32,9 +37,10 @@ class OrderItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const NetworkImageWithLoader(
-            'https://hips.hearstapps.com/hmg-prod/images/roast-chicken-recipe-2-66b231ac9a8fb.jpg?crop=0.503xw:1.00xh;0.309xw,0&resize=1200:*',
-            isBaseUrl: false,
+          NetworkImageWithLoader(
+            orderAvatar ?? "",
+            isBaseUrl: true,
+            isAuth: true,
             height: 40,
             width: 40,
           ),
@@ -54,7 +60,7 @@ class OrderItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  'x2',
+                  'x$quantity',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontSize: 10,
                         color: AppColors.primary,

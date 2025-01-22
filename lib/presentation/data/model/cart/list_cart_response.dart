@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ListCartResponse {
   List<OrderCartResponse>? orders;
   int? total;
@@ -5,7 +7,8 @@ class ListCartResponse {
   int? limit;
   int? totalPages;
 
-  ListCartResponse({this.orders, this.total, this.page, this.limit, this.totalPages});
+  ListCartResponse(
+      {this.orders, this.total, this.page, this.limit, this.totalPages});
 
   factory ListCartResponse.fromJson(Map<String, dynamic> json) {
     return ListCartResponse(
@@ -85,7 +88,8 @@ class OrderCartResponse {
       deliveryLatitude: json['deliveryLatitude'] as double?,
       deliveryLongitude: json['deliveryLongitude'] as double?,
       notes: json['notes'] as String?,
-      client: json['client'] != null ? ClientCart.fromJson(json['client']) : null,
+      client:
+          json['client'] != null ? ClientCart.fromJson(json['client']) : null,
       orderItems: (json['orderItems'] as List<dynamic>?)
           ?.map((item) => CartOrderItem.fromJson(item))
           .toList(),
@@ -210,6 +214,10 @@ class CartOrderItem {
     this.note,
     this.cartProductOptions,
   });
+  String? formattedPrice() {
+    return NumberFormat.currency(locale: 'vi', symbol: 'đ')
+        .format(double.tryParse(price ?? "0"));
+  }
 
   factory CartOrderItem.fromJson(Map<String, dynamic> json) {
     return CartOrderItem(
@@ -256,7 +264,9 @@ class CartProductOption {
       optionGroup: json['optionGroup'] != null
           ? CartOptionGroup.fromJson(json['optionGroup'])
           : null,
-      options: json['options'] != null ? CartOptions.fromJson(json['options']) : null,
+      options: json['options'] != null
+          ? CartOptions.fromJson(json['options'])
+          : null,
     );
   }
 
@@ -385,7 +395,8 @@ class CartActivity {
     return CartActivity(
       id: json['id'],
       createdAt: DateTime.parse(json['createdAt']),
-      deletedAt: json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
+      deletedAt:
+          json['deletedAt'] != null ? DateTime.parse(json['deletedAt']) : null,
       updatedAt: DateTime.parse(json['updatedAt']),
       orderId: json['orderId'],
       status: json['status'],
