@@ -61,4 +61,28 @@ class TimeUtils {
     } catch (_) {}
     return null;
   }
+
+  String convertIsoDateToHourMinutes(String? isoDate) {
+    try {
+      if (isoDate != null) {
+        DateTime dateTime = DateTime.parse(isoDate);
+        String formattedTime =
+            "${dateTime.hour.toString().padLeft(2, '0')} : ${dateTime.minute.toString().padLeft(2, '0')}";
+        return formattedTime;
+      }
+    } catch (_) {}
+    return "--";
+  }
+
+  String? convertIsoDateToDate(String? isoDate) {
+    try {
+      if (isoDate != null) {
+        DateTime dateTime = DateTime.parse(isoDate);
+        String formattedTime =
+            "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString().padLeft(2, '0')}";
+        return formattedTime;
+      }
+    } catch (_) {}
+    return null;
+  }
 }

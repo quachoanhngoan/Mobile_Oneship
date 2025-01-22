@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 
 import '../model/cart/list_cart_request.dart';
 import '../utils.dart';
@@ -10,7 +11,7 @@ mixin CartUrl {
 }
 
 abstract class CartRepository {
-  Future getListCart(ListCartRequest request);
+  Future<ListCartResponse?> getListCart(ListCartRequest request);
 }
 
 class CartRepositoryImp implements CartRepository {
@@ -21,14 +22,16 @@ class CartRepositoryImp implements CartRepository {
   final String tag = "CartRepository";
 
   @override
-  Future getListCart(ListCartRequest request) async {
+  Future<ListCartResponse?> getListCart(ListCartRequest request) async {
     try {
       final httpRequest = await _clientDio.get(CartUrl.orders,
           queryParameters: request.removeNullValues());
+      return ListCartResponse.fromJson(httpRequest.data ?? {});
     } on DioException catch (_) {
       rethrow;
     } catch (e) {
       log("getListCart error: $e", name: tag);
     }
+    return null;
   }
 }

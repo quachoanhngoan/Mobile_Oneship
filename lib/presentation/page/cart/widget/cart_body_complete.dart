@@ -23,6 +23,9 @@ class CartBodyComplete extends StatelessWidget {
     if (state.isShowSearch) {
       return Container();
     }
+
+    final listItem = state.listCartComplete.entries.toList();
+
     return Container(
       color: AppColors.colorAFA,
       child: Column(
@@ -30,7 +33,7 @@ class CartBodyComplete extends StatelessWidget {
           const VSpacing(spacing: 12),
           Card(
             shape:
-            const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             color: AppColors.white,
             borderOnForeground: false,
             margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -39,7 +42,7 @@ class CartBodyComplete extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   final timeSellect =
-                  await TimeUtils().rangeTimePicker(context);
+                      await TimeUtils().rangeTimePicker(context);
                   if (timeSellect != null) {
                     bloc.sellectTimeRange(timeSellect);
                   }
@@ -51,15 +54,11 @@ class CartBodyComplete extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         state.timeRangeTitleComplete ?? "",
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.color828,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.color828,
+                            ),
                       ),
                       const ImageAssetWidget(
                         image: AppAssets.imagesIconsIcCalendar,
@@ -73,79 +72,83 @@ class CartBodyComplete extends StatelessWidget {
             ),
           ),
           const VSpacing(spacing: 6),
-          Expanded(
-            child: ListView.separated(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                separatorBuilder: (context, index) =>
-                const VSpacing(spacing: 12),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "24/12/2024",
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.color723,
-                            fontSize: 14),
-                      ),
+          if (listItem.isEmpty) ...[
+            const CartEmptyBody()
+          ] else ...[
+            Expanded(
+              child: ListView.separated(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  separatorBuilder: (context, index) =>
                       const VSpacing(spacing: 12),
-                      ...List.generate(3, (indexCard) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: CartBodyItem(
-                            // isComplete: true,
-                            bottomWidget: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Tài xế xác nhận lấy đơn lúc 13:30",
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.color017,
-                                  ),
-                                ),
-                                Container(
-                                  height: 26,
-                                  width: 114,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: AppColors.color988,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Text(
-                                    "Chi tiết doanh thu",
-                                    style: Theme
-                                        .of(context)
+                  itemCount: listItem.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          listItem[index].key ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.color723,
+                                  fontSize: 14),
+                        ),
+                        const VSpacing(spacing: 12),
+                        ...List.generate(listItem[index].value.length,
+                            (indexCard) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: CartBodyItem(
+                              indexCart: indexCard,
+                              orderCart: listItem[index].value[indexCard],
+                              bottomWidget: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Tài xế xác nhận lấy đơn lúc 13:30",
+                                    style: Theme.of(context)
                                         .textTheme
-                                        .bodyMedium
+                                        .bodySmall
                                         ?.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.white,
-                                    ),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.color017,
+                                        ),
                                   ),
-                                )
-                              ],
+                                  Container(
+                                    height: 26,
+                                    width: 114,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.color988,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "Chi tiết doanh thu",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.white,
+                                          ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                      // const VSpacing(spacing: 12),
-                    ],
-                  );
-                }),
-          ),
+                          );
+                        }),
+                        // const VSpacing(spacing: 12),
+                      ],
+                    );
+                  }),
+            ),
+          ]
         ],
       ),
     );

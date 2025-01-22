@@ -10,18 +10,28 @@ class CartBodyBook extends StatelessWidget {
   final CartState state;
   final CartCubit bloc;
 
-  const CartBodyBook({super.key, required this.state, required this.bloc});
+  const CartBodyBook({
+    super.key,
+    required this.state,
+    required this.bloc,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
       return Container();
     }
+    final listItem = state.listCartBook.entries.toList();
+
+    if (listItem.isEmpty) {
+      return const CartEmptyBody();
+    }
+
     return Container(
       color: AppColors.colorAFA,
       child: ListView.builder(
           padding: EdgeInsets.zero,
-          itemCount: 3,
+          itemCount: listItem.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -30,17 +40,20 @@ class CartBodyBook extends StatelessWidget {
                 children: <Widget>[
                   VSpacing(spacing: index == 0 ? 12 : 0),
                   Text(
-                    "Hôm nay",
+                    listItem[index].key ?? "",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: AppColors.color194,
                         fontSize: 14),
                   ),
                   const VSpacing(spacing: 12),
-                  ...List.generate(3, (indexCard) {
+                  ...List.generate(listItem[index].value.length, (indexCard) {
+                    final item = listItem[index].value[indexCard];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: CartBodyItem(
+                        indexCart: indexCard,
+                        orderCart: item,
                         bottomWidget: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[

@@ -10,7 +10,11 @@ class CartBodyConfirm extends StatelessWidget {
   final CartState state;
   final CartCubit bloc;
 
-  const CartBodyConfirm({super.key, required this.state, required this.bloc});
+  const CartBodyConfirm({
+    super.key,
+    required this.state,
+    required this.bloc,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +90,16 @@ class CartBodyConfirm extends StatelessWidget {
               controller: bloc.confirmPageController,
               itemCount: CartConfirmType.values.length,
               itemBuilder: (context, indexPage) {
+                final listItem = state.listCartConfirm
+                    .where(
+                      (e) => e.type == CartConfirmType.values[indexPage],
+                    )
+                    .toList();
+                if (listItem.isEmpty) {
+                  return const CartEmptyBody();
+                }
                 return ListView.separated(
-                    itemCount: 10,
+                    itemCount: listItem[indexPage].listData.length,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 12),
                     separatorBuilder: (context, index) {
@@ -95,6 +107,8 @@ class CartBodyConfirm extends StatelessWidget {
                     },
                     itemBuilder: (context, indexItem) {
                       return CartBodyItem(
+                        indexCart: indexItem,
+                        orderCart: listItem[indexPage].listData[indexItem],
                         bottomWidget: Row(
                           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[

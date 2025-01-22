@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
 
 class CartState extends Equatable {
@@ -8,6 +9,12 @@ class CartState extends Equatable {
   final CartConfirmType cartConfirmTypeSellected;
   final String? timeRangeTitleComplete;
   final String? timeRangeTitleCancel;
+  // final List<ListCartTypeDomain>? listAllCart;
+  final Map<String?, List<OrderCartResponse>> listCartBook;
+  final List<OrderCartResponse> listCartNew;
+  final List<ListCartConfirmDomain> listCartConfirm;
+  final Map<String?, List<OrderCartResponse>> listCartComplete;
+  final Map<String?, List<OrderCartResponse>> listCartCancel;
 
   const CartState({
     this.isShowSearch = false,
@@ -16,6 +23,11 @@ class CartState extends Equatable {
     this.cartConfirmTypeSellected = CartConfirmType.findDriver,
     this.timeRangeTitleComplete,
     this.timeRangeTitleCancel,
+    this.listCartBook = const {},
+    this.listCartNew = const [],
+    this.listCartConfirm = const [],
+    this.listCartCancel = const {},
+    this.listCartComplete = const {},
   });
 
   @override
@@ -26,6 +38,11 @@ class CartState extends Equatable {
         timeRangeTitleComplete,
         cartConfirmTypeSellected,
         timeRangeTitleCancel,
+        listCartBook,
+        listCartNew,
+        listCartConfirm,
+        listCartCancel,
+        listCartComplete,
       ];
 
   CartState copyWith({
@@ -35,6 +52,11 @@ class CartState extends Equatable {
     CartConfirmType? cartConfirmTypeSellected,
     String? timeRangeTitleComplete,
     String? timeRangeTitleCancel,
+    Map<String?, List<OrderCartResponse>>? listCartBook,
+    List<OrderCartResponse>? listCartNew,
+    List<ListCartConfirmDomain>? listCartConfirm,
+    Map<String?, List<OrderCartResponse>>? listCartComplete,
+    Map<String?, List<OrderCartResponse>>? listCartCancel,
   }) {
     return CartState(
       isShowSearch: isShowSearch ?? this.isShowSearch,
@@ -45,6 +67,11 @@ class CartState extends Equatable {
       timeRangeTitleComplete:
           timeRangeTitleComplete ?? this.timeRangeTitleComplete,
       timeRangeTitleCancel: timeRangeTitleCancel ?? this.timeRangeTitleCancel,
+      listCartBook: listCartBook ?? this.listCartBook,
+      listCartNew: listCartNew ?? this.listCartNew,
+      listCartConfirm: listCartConfirm ?? this.listCartConfirm,
+      listCartComplete: listCartComplete ?? this.listCartComplete,
+      listCartCancel: listCartCancel ?? this.listCartCancel,
     );
   }
 }

@@ -71,6 +71,7 @@ dependencies:
   expand_widget: ^3.1.1
   expandable: ^5.0.1
   omni_datetime_picker: ^2.0.5
+  collection: ^1.17.0
   # modal_bottom_sheet: ^3.0.0-pre
   # gradient_like_css: ^1.0.1
 

@@ -13,13 +13,18 @@ class CartBodyCancel extends StatelessWidget {
   final CartCubit bloc;
   final CartState state;
 
-  const CartBodyCancel({super.key, required this.bloc, required this.state});
+  const CartBodyCancel({
+    super.key,
+    required this.bloc,
+    required this.state,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
       return Container();
     }
+    final listItem = state.listCartCancel.entries.toList();
     return Container(
       color: AppColors.colorAFA,
       child: Column(
@@ -66,84 +71,95 @@ class CartBodyCancel extends StatelessWidget {
             ),
           ),
           const VSpacing(spacing: 6),
-          Expanded(
-            child: ListView.separated(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                separatorBuilder: (context, index) =>
-                    const VSpacing(spacing: 12),
-                itemCount: 3,
-                itemBuilder: (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "24/12/2024",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.color723,
-                            fontSize: 14),
-                      ),
+          if (listItem.isEmpty) ...[
+            const CartEmptyBody()
+          ] else ...[
+            Expanded(
+              child: ListView.separated(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  separatorBuilder: (context, index) =>
                       const VSpacing(spacing: 12),
-                      ...List.generate(3, (indexCard) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: CartBodyItem(
-                            bottomWidget: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                RichText(
-                                    text: TextSpan(children: [
-                                  TextSpan(
-                                      text: "Lý do huỷ: ",
+                  itemCount: listItem.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          listItem[index].key ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.color723,
+                                  fontSize: 14),
+                        ),
+                        const VSpacing(spacing: 12),
+                        ...List.generate(listItem[index].value.length,
+                            (indexCard) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: CartBodyItem(
+                              indexCart: indexCard,
+                              orderCart: listItem[index].value[indexCard],
+                              bottomWidget: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  RichText(
+                                      text: TextSpan(children: [
+                                    TextSpan(
+                                        text: "Lý do huỷ: ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.color017,
+                                            )),
+                                    TextSpan(
+                                        text: "Khách hàng đổi ý",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.colorD33,
+                                            ))
+                                  ])),
+                                  Container(
+                                    height: 26,
+                                    width: 80,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: AppColors.color988,
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "Chi tiết huỷ",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodySmall
+                                          .bodyMedium
                                           ?.copyWith(
                                             fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.color017,
-                                          )),
-                                  TextSpan(
-                                      text: "Khách hàng đổi ý",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppColors.colorD33,
-                                          ))
-                                ])),
-                                Container(
-                                  height: 26,
-                                  width: 80,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: AppColors.color988,
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Text(
-                                    "Chi tiết huỷ",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.white,
-                                        ),
-                                  ),
-                                )
-                              ],
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.white,
+                                          ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                      // const VSpacing(spacing: 12),
-                    ],
-                  );
-                }),
-          ),
+                          );
+                        }),
+                        // const VSpacing(spacing: 12),
+                      ],
+                    );
+                  }),
+            ),
+          ]
         ],
       ),
     );

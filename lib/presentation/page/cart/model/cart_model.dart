@@ -1,3 +1,5 @@
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
+
 enum CartType { book, newCart, confirm, complete, cancel }
 
 extension CartTypeExt on CartType {
@@ -13,6 +15,21 @@ extension CartTypeExt on CartType {
         return "Đã hoàn thành";
       case CartType.cancel:
         return "Đã huỷ";
+    }
+  }
+
+  String get status {
+    switch (this) {
+      case CartType.book:
+        return "pending";
+      case CartType.newCart:
+        return "pending";
+      case CartType.confirm:
+        return "confirmed";
+      case CartType.complete:
+        return "delivered";
+      case CartType.cancel:
+        return "cancelled";
     }
   }
 }
@@ -43,4 +60,11 @@ extension CartConfirmTypeExt on CartConfirmType {
         return "Tài xế đang đến (#VALUE)";
     }
   }
+}
+
+class ListCartConfirmDomain {
+  final CartConfirmType type;
+  final List<OrderCartResponse> listData;
+
+  ListCartConfirmDomain({required this.type, this.listData = const []});
 }

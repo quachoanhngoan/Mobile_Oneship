@@ -9,22 +9,35 @@ class CartBodyNew extends StatelessWidget {
   final CartState state;
   final CartCubit bloc;
 
-  const CartBodyNew({super.key, required this.state, required this.bloc});
+  const CartBodyNew({
+    super.key,
+    required this.state,
+    required this.bloc,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
       return Container();
     }
+
+    final listItem = state.listCartNew;
+
+    if (listItem.isEmpty) {
+      return const CartEmptyBody();
+    }
+
     return Container(
       color: AppColors.colorAFA,
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListView.builder(
-          itemCount: 5,
+          itemCount: listItem.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: CartBodyItem(
+                indexCart: index,
+                orderCart: listItem[index],
                 bottomWidget: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[

@@ -1,10 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
+import 'package:oneship_merchant_app/presentation/data/time_utils.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_state.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
@@ -198,8 +198,9 @@ class _CartPageState extends State<CartPage> {
                               return CartBodyComplete(bloc: bloc, state: state);
                             case CartType.cancel:
                               return CartBodyCancel(bloc: bloc, state: state);
+                            // default:
+                            //   return Container();
                           }
-                          // return const _CartEmptyBody();
                         }))
               ],
             ),
@@ -208,8 +209,8 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-class _CartEmptyBody extends StatelessWidget {
-  const _CartEmptyBody();
+class CartEmptyBody extends StatelessWidget {
+  const CartEmptyBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -235,10 +236,15 @@ class _CartEmptyBody extends StatelessWidget {
 
 class CartBodyItem extends StatelessWidget {
   final Widget bottomWidget;
-  final bool isComplete;
+  final OrderCartResponse orderCart;
+  final int indexCart;
 
-  const CartBodyItem(
-      {super.key, required this.bottomWidget, this.isComplete = false});
+  const CartBodyItem({
+    super.key,
+    required this.bottomWidget,
+    required this.orderCart,
+    required this.indexCart,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -256,13 +262,12 @@ class CartBodyItem extends StatelessWidget {
         ],
       ),
       padding: const EdgeInsets.all(12),
-      // margin: EdgeInsets.only(bottom: indexCard != 2 ? 16 : 0),
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
               Text(
-                "1. Trần Minh Hiếu",
+                "$indexCart. ${orderCart.client?.name}",
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -271,7 +276,7 @@ class CartBodyItem extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                "250114-002",
+                "${orderCart.id}",
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: AppColors.colorD33,
@@ -283,73 +288,91 @@ class CartBodyItem extends StatelessWidget {
           const VSpacing(spacing: 8),
           const DashedDivider(color: AppColors.color8E8),
           const VSpacing(spacing: 8),
-          Row(
-            children: <Widget>[
-              Container(
-                width: 58,
-                height: 46,
-                decoration: BoxDecoration(
-                    color: AppColors.transparent,
-                    borderRadius: BorderRadius.circular(8)),
-                child: const NetworkImageWithLoader("",
-                    isBaseUrl: true, fit: BoxFit.fill),
-              ),
-              const HSpacing(spacing: 12),
-              Container(
-                width: 24,
-                height: 24,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: AppColors.transparent,
-                    border: Border.all(color: AppColors.textGray, width: 1),
-                    borderRadius: BorderRadius.circular(6)),
-                child: Text(
-                  "x1",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 10,
-                        color: AppColors.color988,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ),
-              const HSpacing(spacing: 12),
-              Text(
-                "Bún ngan thịt nướng",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.colorF3B,
-                    ),
-              ),
-              const Spacer(),
-              Text(
-                "220.000đ",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.color723,
-                      fontSize: 12,
-                    ),
-              )
-            ],
-          ),
+          orderCart.orderItems != null
+              ? ListView.builder(
+                  itemCount: orderCart.orderItems!.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, indexOther) {
+                    final item = orderCart.orderItems![indexOther];
+                    return Row(
+                      children: <Widget>[
+                        Container(
+                          width: 58,
+                          height: 46,
+                          decoration: BoxDecoration(
+                              color: AppColors.transparent,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: const NetworkImageWithLoader("",
+                              isBaseUrl: true, fit: BoxFit.fill),
+                        ),
+                        const HSpacing(spacing: 12),
+                        Container(
+                          width: 24,
+                          height: 24,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: AppColors.transparent,
+                              border: Border.all(
+                                  color: AppColors.textGray, width: 1),
+                              borderRadius: BorderRadius.circular(6)),
+                          child: Text(
+                            "x$indexOther",
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontSize: 10,
+                                      color: AppColors.color988,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                          ),
+                        ),
+                        const HSpacing(spacing: 12),
+                        Text(
+                          item.productName ?? "",
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.colorF3B,
+                                  ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "${item.price}đ",
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.color723,
+                                    fontSize: 12,
+                                  ),
+                        )
+                      ],
+                    );
+                  })
+              : Container(),
           const VSpacing(spacing: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Icon(
-                Icons.keyboard_arrow_down,
-                color: AppColors.colorD33,
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              color: AppColors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: AppColors.colorD33,
+                  ),
+                  const HSpacing(spacing: 4),
+                  Text(
+                    "Xem thêm",
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.colorD33,
+                          fontSize: 14,
+                        ),
+                  )
+                ],
               ),
-              const HSpacing(spacing: 4),
-              Text(
-                "Xem thêm",
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.colorD33,
-                      fontSize: 14,
-                    ),
-              )
-            ],
+            ),
           ),
           const VSpacing(spacing: 8),
           const DashedDivider(color: AppColors.color8E8),
@@ -357,6 +380,16 @@ class CartBodyItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(TimeCartType.values.length, (indexTime) {
+              var valueTime = "--";
+              switch (TimeCartType.values[indexTime]) {
+                case TimeCartType.book:
+                  valueTime = TimeUtils()
+                      .convertIsoDateToHourMinutes(orderCart.createdAt);
+                case TimeCartType.takeOrder:
+                  valueTime = "--";
+                case TimeCartType.delivery:
+                  valueTime = "--";
+              }
               return Padding(
                 padding: EdgeInsets.only(
                     right: indexTime != TimeCartType.values.length - 1
@@ -383,7 +416,7 @@ class CartBodyItem extends StatelessWidget {
                         ),
                         const HSpacing(spacing: 4),
                         Text(
-                          "20:00",
+                          valueTime,
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontSize: 12,
@@ -406,23 +439,24 @@ class CartBodyItem extends StatelessWidget {
                 color: AppColors.color6F6,
                 borderRadius: BorderRadius.circular(8)),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "4 món",
+                  "${orderCart.orderItems?.length ?? "0"} phần",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 12,
                         color: AppColors.colorD33,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
-                !isComplete
-                    ? const Spacer()
-                    : const Expanded(
-                        child: ImageAssetWidget(
-                            image: AppAssets.imagesIconsIcCartPaid,
-                            width: 39,
-                            height: 34),
-                      ),
+                // !isComplete
+                //     ? const Spacer()
+                //     : const Expanded(
+                //         child: ImageAssetWidget(
+                //             image: AppAssets.imagesIconsIcCartPaid,
+                //             width: 39,
+                //             height: 34),
+                //       ),
                 Row(
                   children: <Widget>[
                     Text("Tổng doanh thu đơn hàng: ",
@@ -431,7 +465,7 @@ class CartBodyItem extends StatelessWidget {
                               color: AppColors.color373,
                               fontWeight: FontWeight.w500,
                             )),
-                    Text("3.000.000đ",
+                    Text("${orderCart.totalAmount}đ",
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontSize: 16,
                               color: AppColors.color988,
