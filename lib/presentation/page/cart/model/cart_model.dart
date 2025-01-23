@@ -68,3 +68,24 @@ class ListCartConfirmDomain {
 
   ListCartConfirmDomain({required this.type, this.listData = const []});
 }
+
+class ShowDetailFoodCartDomain {
+  final CartType? type;
+  final int? idShow;
+  final CartConfirmType? confirmType;
+  ShowDetailFoodCartDomain({
+    this.idShow,
+    this.type,
+    this.confirmType,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShowDetailFoodCartDomain) return false;
+    return other.idShow == idShow && other.type == type;
+  }
+
+  @override
+  int get hashCode => Object.hash(idShow, type);
+}

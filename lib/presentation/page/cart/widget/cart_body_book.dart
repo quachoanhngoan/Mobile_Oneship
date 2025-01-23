@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/core.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
+import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
 
 import '../cart_cubit.dart';
 import '../cart_state.dart';
@@ -19,6 +21,20 @@ class CartBodyBook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
+      final listItemSearch = state.listSearchCartBook.entries.toList();
+      if (listItemSearch.isNotEmpty) {
+        return _BodyBook(
+          listItem: listItemSearch,
+          listShowDetailFood: state.listSearchShowDetailFood,
+          moreFoodClick: (id) {
+            bloc.hireOrShowDetailFoodSearch(
+                value: ShowDetailFoodCartDomain(
+              type: CartType.book,
+              idShow: id,
+            ));
+          },
+        );
+      }
       return Container();
     }
     final listItem = state.listCartBook.entries.toList();
@@ -26,7 +42,32 @@ class CartBodyBook extends StatelessWidget {
     if (listItem.isEmpty) {
       return const CartEmptyBody();
     }
+    return _BodyBook(
+      listItem: listItem,
+      listShowDetailFood: state.listShowDetailFood,
+      moreFoodClick: (id) {
+        bloc.hireOrShowDetailFood(
+            value: ShowDetailFoodCartDomain(
+          type: CartType.book,
+          idShow: id,
+        ));
+      },
+    );
+  }
+}
 
+class _BodyBook extends StatelessWidget {
+  final List<MapEntry<String?, List<OrderCartResponse>>> listItem;
+  final List<ShowDetailFoodCartDomain> listShowDetailFood;
+  final Function(int?) moreFoodClick;
+  const _BodyBook({
+    required this.listItem,
+    this.listShowDetailFood = const [],
+    required this.moreFoodClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: AppColors.colorAFA,
       child: ListView.builder(
@@ -49,9 +90,17 @@ class CartBodyBook extends StatelessWidget {
                   const VSpacing(spacing: 12),
                   ...List.generate(listItem[index].value.length, (indexCard) {
                     final item = listItem[index].value[indexCard];
+                    final isShowMore = listShowDetailFood.contains(
+                        ShowDetailFoodCartDomain(
+                            type: CartType.book, idShow: item.id));
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: CartBodyItem(
+                        isShowMore: isShowMore,
+                        moreFoodClick: () {
+                          moreFoodClick(item.id);
+                        },
                         indexCart: indexCard,
                         orderCart: item,
                         bottomWidget: Row(

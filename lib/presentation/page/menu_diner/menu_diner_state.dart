@@ -9,9 +9,6 @@ class MenuDinerState extends Equatable {
   final ToppingType toppingType;
   final List<DataToppingTypeDomain>? listTopping;
   final List<DataMenuTypeDomain>? listMenu;
-
-  // final ListFoodByMenuDomain? listFoodByMenu;
-  // final bool isHideListFoodByMenu;
   final List<ShowDetailMenuDomain> listIdMenuShowFood;
   final String? errorEditTopping;
   final bool editNameGroupSuccess;
@@ -31,8 +28,6 @@ class MenuDinerState extends Equatable {
       this.menuType = MenuType.active,
       this.listTopping = const [],
       this.listMenu = const [],
-      // this.listFoodByMenu,
-      // this.isHideListFoodByMenu = true,
       this.errorEditTopping,
       this.isLoading = false,
       this.errorRemoveGroup = false,
@@ -52,8 +47,6 @@ class MenuDinerState extends Equatable {
     MenuType? menuType,
     List<DataToppingTypeDomain>? listTopping,
     List<DataMenuTypeDomain>? listMenu,
-    // ListFoodByMenuDomain? listFoodByMenu,
-    // bool? isHideListFoodByMenu,
     String? errorEditTopping,
     bool? errorRemoveGroup,
     bool? isLoading,
@@ -73,8 +66,6 @@ class MenuDinerState extends Equatable {
       menuType: menuType ?? this.menuType,
       listTopping: listTopping ?? this.listTopping,
       listMenu: listMenu ?? this.listMenu,
-      // listFoodByMenu: listFoodByMenu ?? this.listFoodByMenu,
-      // isHideListFoodByMenu: isHideListFoodByMenu ?? this.isHideListFoodByMenu,
       errorEditTopping: errorEditTopping,
       errorRemoveGroup: errorRemoveGroup ?? false,
       isLoading: isLoading ?? false,
@@ -98,8 +89,6 @@ class MenuDinerState extends Equatable {
         menuType,
         listTopping,
         listMenu,
-        // listFoodByMenu,
-        // isHideListFoodByMenu,
         errorEditTopping,
         errorRemoveGroup,
         isLoading,

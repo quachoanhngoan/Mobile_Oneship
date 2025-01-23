@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
 import 'package:oneship_merchant_app/core/constant/app_assets.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
+import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
 
 import '../../../data/time_utils.dart';
@@ -22,9 +24,25 @@ class CartBodyCancel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
+      final listItemSearch = state.listSearchCartCancel.entries.toList();
+      if (listItemSearch.isNotEmpty) {
+        return _BodyCancel(
+          listItem: listItemSearch,
+          listShowDetailFood: state.listSearchShowDetailFood,
+          moreFoodClick: (id) {
+            bloc.hireOrShowDetailFoodSearch(
+                value: ShowDetailFoodCartDomain(
+              type: CartType.cancel,
+              idShow: id,
+            ));
+          },
+        );
+      }
       return Container();
     }
+
     final listItem = state.listCartCancel.entries.toList();
+
     return Container(
       color: AppColors.colorAFA,
       child: Column(
@@ -71,97 +89,126 @@ class CartBodyCancel extends StatelessWidget {
             ),
           ),
           const VSpacing(spacing: 6),
-          if (listItem.isEmpty) ...[
-            const CartEmptyBody()
-          ] else ...[
-            Expanded(
-              child: ListView.separated(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  separatorBuilder: (context, index) =>
-                      const VSpacing(spacing: 12),
-                  itemCount: listItem.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          listItem[index].key ?? "",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.color723,
-                                  fontSize: 14),
-                        ),
-                        const VSpacing(spacing: 12),
-                        ...List.generate(listItem[index].value.length,
-                            (indexCard) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: CartBodyItem(
-                              indexCart: indexCard,
-                              orderCart: listItem[index].value[indexCard],
-                              bottomWidget: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  RichText(
-                                      text: TextSpan(children: [
-                                    TextSpan(
-                                        text: "Lý do huỷ: ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.color017,
-                                            )),
-                                    TextSpan(
-                                        text: "Khách hàng đổi ý",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.colorD33,
-                                            ))
-                                  ])),
-                                  Container(
-                                    height: 26,
-                                    width: 80,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: AppColors.color988,
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Text(
-                                      "Chi tiết huỷ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.white,
-                                          ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                        // const VSpacing(spacing: 12),
-                      ],
-                    );
-                  }),
-            ),
-          ]
+          _BodyCancel(
+            listItem: listItem,
+            listShowDetailFood: state.listShowDetailFood,
+            moreFoodClick: (id) {
+              bloc.hireOrShowDetailFood(
+                  value: ShowDetailFoodCartDomain(
+                type: CartType.cancel,
+                idShow: id,
+              ));
+            },
+          )
         ],
       ),
+    );
+  }
+}
+
+class _BodyCancel extends StatelessWidget {
+  final List<MapEntry<String?, List<OrderCartResponse>>> listItem;
+  final List<ShowDetailFoodCartDomain> listShowDetailFood;
+  final Function(int?) moreFoodClick;
+  const _BodyCancel({
+    required this.listItem,
+    this.listShowDetailFood = const [],
+    required this.moreFoodClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (listItem.isEmpty) {
+      return const Expanded(child: CartEmptyBody());
+    }
+    return Expanded(
+      child: ListView.separated(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          separatorBuilder: (context, index) => const VSpacing(spacing: 12),
+          itemCount: listItem.length,
+          itemBuilder: (context, index) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  listItem[index].key ?? "",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.color723,
+                      fontSize: 14),
+                ),
+                const VSpacing(spacing: 12),
+                ...List.generate(listItem[index].value.length, (indexCard) {
+                  final isShowMore =
+                      listShowDetailFood.contains(ShowDetailFoodCartDomain(
+                    type: CartType.cancel,
+                    idShow: listItem[index].value[indexCard].id,
+                  ));
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: CartBodyItem(
+                      isShowMore: isShowMore,
+                      moreFoodClick: () {
+                        moreFoodClick(listItem[index].value[indexCard].id);
+                      },
+                      indexCart: indexCard,
+                      orderCart: listItem[index].value[indexCard],
+                      bottomWidget: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          RichText(
+                              text: TextSpan(children: [
+                            TextSpan(
+                                text: "Lý do huỷ: ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.color017,
+                                    )),
+                            TextSpan(
+                                text: listItem[index].value[indexCard].notes ??
+                                    "",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.colorD33,
+                                    ))
+                          ])),
+                          Container(
+                            height: 26,
+                            width: 80,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: AppColors.color988,
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Text(
+                              "Chi tiết huỷ",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.white,
+                                  ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+                // const VSpacing(spacing: 12),
+              ],
+            );
+          }),
     );
   }
 }
