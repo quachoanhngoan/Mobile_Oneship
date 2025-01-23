@@ -118,6 +118,8 @@ class AppAssets {
 
   static const String imagesIconsDotsHorizontal = "assets/images/icons/dots-horizontal.png";
 
+  static const String imagesIconsDriverIcon = "assets/images/icons/driver_icon.png";
+
   static const String imagesIconsEye = "assets/images/icons/eye.png";
 
   static const String imagesIconsEyeOff = "assets/images/icons/eye-off.png";
@@ -170,11 +172,15 @@ class AppAssets {
 
   static const String imagesIconsLocation = "assets/images/icons/location.png";
 
+  static const String imagesIconsLocationCancel = "assets/images/icons/location_cancel.png";
+
   static const String imagesIconsLocationSlash = "assets/images/icons/location-slash.png";
 
   static const String imagesIconsLockAlt = "assets/images/icons/lock-alt.png";
 
   static const String imagesIconsMedal = "assets/images/icons/medal.png";
+
+  static const String imagesIconsMerchantCancel = "assets/images/icons/merchant_cancel.png";
 
   static const String imagesIconsNotes01 = "assets/images/icons/notes-01.png";
 

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/config/routes/app_router.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
+import 'package:oneship_merchant_app/presentation/page/login/cubit/auth_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/register_store_page.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/widget/stores_approve.dart';
@@ -58,10 +59,23 @@ class _StorePageState extends State<StorePage> {
                 text: 'Đăng ký quán',
               ),
             ),
-            appBar: const AppBarAuth(
+            appBar: AppBarAuth(
               title: 'Quản lý quán',
               isShowHelpButton: false,
-              isShowBackButton: false,
+              onPressed: () {
+                dialogService.showAlertDialog(
+                    title: "Thông báo",
+                    description: "Bạn có chắc chắn muốn đăng xuất?",
+                    buttonTitle: "Đăng xuất",
+                    onPressed: () {
+                      Get.back();
+                      context.read<AuthCubit>().logout();
+                    },
+                    buttonCancelTitle: "Hủy",
+                    onCancel: () {
+                      Get.back();
+                    });
+              },
             ),
             body: DefaultTabController(
               length: 2,

@@ -6,6 +6,7 @@ enum Role { customer, driver }
 
 class InfoCustomer extends StatelessWidget {
   final String? name;
+  final String? avatar;
   final String? phone;
   final Widget? suffix;
   final Role role;
@@ -13,6 +14,7 @@ class InfoCustomer extends StatelessWidget {
   InfoCustomer({
     super.key,
     this.name,
+    this.avatar,
     this.phone = "--",
     this.suffix,
     this.role = Role.customer,
@@ -40,14 +42,14 @@ class InfoCustomer extends StatelessWidget {
           Flexible(
             child: Row(
               children: [
-                const SizedBox(
+                SizedBox(
                     width: 50,
                     height: 50,
                     child: NetworkImageWithLoader(
-                      "https://s3-alpha-sig.figma.com/img/ba06/b3e7/882ffb9e60838270ea0dd9b82b74eda6?Expires=1737936000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=eBzsLaDx5btEuCVBzDwQ1Y-i5nM0~qArawBsdGqJuuxPJqm-J89mf4YTjSvOZ8Rd-Nr2wUEDNkmzAWOuqNV~Tya-gxde992y1g4vbzmPGK8oDP69s-p8YGuLQ9x5JdwKYCN0qayI~sYFBZpmUknL5~7~4-84m1hCCmp~9p2GrqDMZLUJzFl1dtOP4oy5Wfj1tK3cAsWA4hz7pdnOK9AkbjakU1LBhGJPQsRxyZaq3oznt6Sdg~LVRjgV-PWnWYhZTayWaYjA~TFqIvHAPx0StNSfLNYVdH-OEzn-2vnGipDztBLXodkbQRQSI0Ep61Eyq60~yP87Bnd4sh1ki3KF8A__,",
-                      isBaseUrl: false,
-                      isAuth: false,
-                      fit: BoxFit.contain,
+                      avatar ?? "",
+                      isBaseUrl: true,
+                      isAuth: true,
+                      fit: BoxFit.cover,
                     )),
                 const SizedBox(width: 10),
                 Flexible(
@@ -97,7 +99,7 @@ class InfoCustomer extends StatelessWidget {
                         );
                       }),
                       Text(
-                        phone!,
+                        phone ?? "",
                         maxLines: 2,
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: AppColors.description,

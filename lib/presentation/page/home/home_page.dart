@@ -266,9 +266,7 @@ class RevenueWidget extends StatelessWidget {
                     children: [
                       Flexible(
                         child: GestureDetector(
-                          onTap: () {
-                            Get.to(() => const OrderPage());
-                          },
+                          onTap: () {},
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 10),
@@ -480,63 +478,75 @@ class InfoHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Row(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(300),
-                child: SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: currentStore?.storeAvatarId != null
-                      ? NetworkImageWithLoader(
-                          currentStore!.storeAvatarId!,
-                          isAuth: true,
-                          isBaseUrl: true,
-                        )
-                      : Container(),
-                )),
-            const SizedBox(
-              width: 8,
-            ),
-            Text(
-              currentStore?.name ?? "",
-              style: GoogleFonts.roboto(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        IconButton(
-          onPressed: () {
-            dialogService.showAlertDialog(
-                title: "Thay đổi quán",
-                description: "Bạn có muốn thay đổi quán khác không ?",
-                buttonTitle: "Xác nhận",
-                buttonCancelTitle: "Hủy",
-                onCancel: () => Get.back(),
-                onPressed: () {
-                  Get.offAllNamed(AppRoutes.store);
-                });
-          },
-          icon: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(400),
-            ),
-            child: const ImageAssetWidget(
-              image: AppAssets.imagesIconsIcnReload,
-              height: 20,
-              width: 20,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(300),
+                    child: SizedBox(
+                      height: 32,
+                      width: 32,
+                      child: currentStore?.storeAvatarId != null
+                          ? NetworkImageWithLoader(
+                              currentStore!.storeAvatarId!,
+                              isAuth: true,
+                              isBaseUrl: true,
+                            )
+                          : Container(),
+                    )),
+                const SizedBox(
+                  width: 8,
+                ),
+                Flexible(
+                  child: Text(
+                    currentStore?.name ?? "",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              dialogService.showAlertDialog(
+                  title: "Thay đổi quán",
+                  description: "Bạn có muốn thay đổi quán khác không ?",
+                  buttonTitle: "Xác nhận",
+                  buttonCancelTitle: "Hủy",
+                  onCancel: () => Get.back(),
+                  onPressed: () {
+                    Get.offAllNamed(AppRoutes.store);
+                  });
+            },
+            icon: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(400),
+              ),
+              child: const ImageAssetWidget(
+                image: AppAssets.imagesIconsIcnReload,
+                height: 20,
+                width: 20,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

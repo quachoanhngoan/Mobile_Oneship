@@ -14,6 +14,7 @@ import 'package:oneship_merchant_app/presentation/page/cart/cart_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_custom/menu_custom_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/menu_diner_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_dishes_custom/menu_dishes_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/order/bloc/order_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/register_store/cubit/register_store_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/store/cubit/store_cubit.dart';
 import 'package:oneship_merchant_app/service/pref_manager.dart';
@@ -108,6 +109,7 @@ void blocModule() {
   injector.registerFactory<MenuDishesCubit>(() => MenuDishesCubit(injector()));
   injector.registerFactory<EditAddressBloc>(() => EditAddressBloc(injector()));
   injector.registerSingleton<CartCubit>(CartCubit(injector()));
+  injector.registerSingleton<OrderCubit>(OrderCubit(injector()));
   // injector.registerFactory<WorkingTimeBloc>(() => WorkingTimeBloc(injector()));
 }
 

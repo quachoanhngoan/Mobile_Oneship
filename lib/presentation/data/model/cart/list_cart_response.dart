@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ListCartResponse {
   List<OrderCartResponse>? orders;
   int? total;
@@ -200,6 +202,20 @@ class CartOrderItem {
   String? note;
   List<CartProductOption>? cartProductOptions;
 
+  String? getFullTextDescription() {
+    var description = "";
+    if (cartProductOptions != null) {
+      for (var option in cartProductOptions!) {
+        description += option.optionGroup?.name ?? "";
+        description += ": ";
+        description += option.options?.map((e) => e.name).join(", ") ?? "";
+        description += "\n";
+      }
+    }
+
+    return description;
+  }
+
   CartOrderItem({
     this.id,
     this.orderId,
@@ -212,6 +228,10 @@ class CartOrderItem {
     this.note,
     this.cartProductOptions,
   });
+  String? formattedPrice() {
+    return NumberFormat.currency(locale: 'vi', symbol: 'đ')
+        .format(double.tryParse(price ?? "0"));
+  }
 
   factory CartOrderItem.fromJson(Map<String, dynamic> json) {
     return CartOrderItem(
