@@ -202,6 +202,20 @@ class CartOrderItem {
   String? note;
   List<CartProductOption>? cartProductOptions;
 
+  String? getFullTextDescription() {
+    var description = "";
+    if (cartProductOptions != null) {
+      for (var option in cartProductOptions!) {
+        description += option.optionGroup?.name ?? "";
+        description += ": ";
+        description += option.options?.map((e) => e.name).join(", ") ?? "";
+        description += "\n";
+      }
+    }
+
+    return description;
+  }
+
   CartOrderItem({
     this.id,
     this.orderId,
@@ -255,7 +269,7 @@ class CartOrderItem {
 
 class CartProductOption {
   CartOptionGroup? optionGroup;
-  CartOptions? options;
+  List<CartOptions>? options;
 
   CartProductOption({this.optionGroup, this.options});
 
@@ -264,16 +278,16 @@ class CartProductOption {
       optionGroup: json['optionGroup'] != null
           ? CartOptionGroup.fromJson(json['optionGroup'])
           : null,
-      options: json['options'] != null
-          ? CartOptions.fromJson(json['options'])
-          : null,
+      options: (json['options'] as List<dynamic>?)
+          ?.map((e) => CartOptions.fromJson(e))
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'optionGroup': optionGroup?.toJson(),
-      'options': options?.toJson(),
+      'options': options?.map((e) => e.toJson()).toList(),
     };
   }
 }

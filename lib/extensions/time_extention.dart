@@ -22,4 +22,9 @@ extension TimeExtention on DateTime? {
     if (this == null) return "";
     return DateFormat('HH:mm, dd/MM/yyyy').format(this!);
   }
+
+  String formatHHMM() {
+    if (this == null) return "";
+    return DateFormat('HH:mm').format(this!);
+  }
 }

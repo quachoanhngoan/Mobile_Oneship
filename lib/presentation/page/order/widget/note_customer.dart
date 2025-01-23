@@ -36,21 +36,20 @@ class NoteCustomer extends StatelessWidget {
                     ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffFEF4F1),
                   border: Border.all(
-                    color: Color(0xffBE5230),
+                    color: const Color(0xffBE5230),
                   ),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   note,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xffBE5230),
+                        color: const Color(0xffBE5230),
                       ),
                 ),
               ),

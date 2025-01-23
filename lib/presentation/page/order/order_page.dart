@@ -10,14 +10,17 @@ import 'package:oneship_merchant_app/extensions/time_extention.dart';
 import 'package:oneship_merchant_app/injector.dart';
 import 'package:oneship_merchant_app/presentation/data/model/order/cancel.model.dart';
 import 'package:oneship_merchant_app/presentation/page/order/bloc/order_cubit.dart';
+import 'package:oneship_merchant_app/presentation/page/order/icon_item_order.dart';
 import 'package:oneship_merchant_app/presentation/page/order/widget/info_customer.dart';
 import 'package:oneship_merchant_app/presentation/page/order/widget/note_customer.dart';
+import 'package:oneship_merchant_app/presentation/page/order/widget/order_revenue.dart';
 import 'package:oneship_merchant_app/presentation/page/order/widget/payment_info.dart';
 import 'package:oneship_merchant_app/presentation/page/order/widget/sumary_order.dart';
 import 'package:oneship_merchant_app/presentation/widget/appbar/appbar_common.dart';
 import 'package:oneship_merchant_app/presentation/widget/button/app_button.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
 import 'package:oneship_merchant_app/presentation/widget/text_field/app_text_form_field.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderPage extends StatefulWidget {
   final int id;
@@ -32,7 +35,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     orderCubit = injector<OrderCubit>();
-    orderCubit.getOrderById(widget.id);
+    orderCubit.getOrderById(63);
     print('OrderPage: ${widget.id}');
     super.initState();
   }
@@ -54,6 +57,11 @@ class _OrderPageState extends State<OrderPage> {
               }
               if (state.order == null) {
                 return const Scaffold(
+                  appBar: AppBarAuth(
+                    title: 'Chi tiết đơn hàng',
+                    isShowBackButton: true,
+                    isShowHelpButton: false,
+                  ),
                   body: Center(
                     child: Text('Không tìm thấy đơn hàng'),
                   ),
@@ -82,21 +90,48 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   child: SafeArea(
                     child: Builder(builder: (context) {
-                      // return AppButton(
-                      //   isCheckLastPress: false,
-                      //   isEnable: true,
-                      //   onPressed: () {
-                      //     FocusScope.of(context).unfocus();
-                      //   },
-                      //   margin: const EdgeInsets.only(top: 10),
-                      //   padding: const EdgeInsets.symmetric(
-                      //       horizontal: 20, vertical: 10),
-                      //   backgroundColor: Colors.white,
-                      //   textColor: Colors.red,
-                      //   borderSide: const BorderSide(color: Colors.red),
-                      //   text: "Huỷ đơn",
-                      // );
-                      if (state.order!.getOrderStatus()?.isCancelled == true) {
+                      if (state.order!.getOrderStatus()?.isPending == true) {
+                        return Row(
+                          children: [
+                            Flexible(
+                              child: AppButton(
+                                isCheckLastPress: false,
+                                isEnable: true,
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                  cancelReasonTable(orderCubit);
+                                },
+                                margin: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                backgroundColor: Colors.white,
+                                textColor: Colors.red,
+                                borderSide: const BorderSide(color: Colors.red),
+                                text: "Huỷ đơn",
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Flexible(
+                              child: AppButton(
+                                isCheckLastPress: false,
+                                isEnable: false,
+                                onPressed: () {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                margin: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                backgroundColor: AppColors.primary,
+                                textColor: const Color(0xffB4B5B7),
+                                text: "Nhận đơn",
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      if (state.order!.getOrderStatus()?.isConfirmed == true ||
+                          state.order!.getOrderStatus()?.isDriverAccepted ==
+                              true) {
                         return AppButton(
                           isCheckLastPress: false,
                           isEnable: true,
@@ -107,9 +142,61 @@ class _OrderPageState extends State<OrderPage> {
                           margin: const EdgeInsets.only(top: 10),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
+                          backgroundColor: Colors.white,
+                          textColor: Colors.red,
+                          borderSide: const BorderSide(color: Colors.red),
+                          text: "Huỷ đơn",
+                        );
+                      }
+                      if (state.order!.getOrderStatus()?.isInDelivery == true) {
+                        return AppButton(
+                          isCheckLastPress: false,
+                          isEnable: true,
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            Get.back();
+                          },
+                          margin: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          backgroundColor: AppColors.primary,
+                          textColor: Colors.white,
+                          text: "Thông báo cho tài xế",
+                        );
+                      }
+
+                      if (state.order!.getOrderStatus()?.isCancelled == true) {
+                        return AppButton(
+                          isCheckLastPress: false,
+                          isEnable: true,
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            Get.back();
+                          },
+                          margin: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
                           backgroundColor: AppColors.primary,
                           textColor: Colors.white,
                           text: "Quay lại",
+                        );
+                      }
+                      if (state.order!.getOrderStatus()?.isDelivered == true) {
+                        return AppButton(
+                          isCheckLastPress: false,
+                          isEnable: true,
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            Get.to(() => OrderRevenue(
+                                  orderCubit: orderCubit,
+                                ));
+                          },
+                          margin: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          backgroundColor: AppColors.primary,
+                          textColor: Colors.white,
+                          text: "Chi tiết doanh thu",
                         );
                       }
                       return Row(
@@ -138,6 +225,9 @@ class _OrderPageState extends State<OrderPage> {
                               isEnable: true,
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
+                                if (state.order != null) {
+                                  orderCubit.confirmOrder(widget.id);
+                                }
                               },
                               margin: const EdgeInsets.only(top: 10),
                               padding: const EdgeInsets.symmetric(
@@ -169,7 +259,7 @@ class _OrderPageState extends State<OrderPage> {
                 ),
               );
             }),
-            if (state.cancelState.isLoading)
+            if (state.cancelState.isLoading || state.confirmState.isLoading)
               Container(
                 color: Colors.black.withOpacity(0.5),
                 child: const Center(
@@ -197,7 +287,7 @@ class OrderDetail extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -205,8 +295,9 @@ class OrderDetail extends StatelessWidget {
                     image: AppAssets.imagesIconsIconUserCheck,
                     imageCheck: AppAssets.imagesIconsIconUserCheck,
                     isCheck: true,
+                    time: state.order!.createdAt.formatHHMM(),
                   ),
-                  Flexible(
+                  const Flexible(
                     child: SizedBox(
                       height: 44,
                       child: Center(
@@ -219,11 +310,19 @@ class OrderDetail extends StatelessWidget {
                     ),
                   ),
                   IconItemOrder(
-                    isCheck: true,
+                    isCheck: state.order!.getActiveActivityConfirmed() != null,
+                    isCancelled:
+                        state.order!.getOrderStatus()?.isCancelled == true,
                     image: AppAssets.imagesIconsIconStore,
                     imageCheck: AppAssets.imagesIconStoreCheck,
+                    imageCancel: AppAssets.imagesIconsMerchantCancel,
+                    time: state.order
+                            ?.getActiveActivityConfirmed()
+                            ?.createdAt
+                            ?.formatHHMM() ??
+                        "",
                   ),
-                  Flexible(
+                  const Flexible(
                     child: SizedBox(
                       height: 44,
                       child: Center(
@@ -238,9 +337,17 @@ class OrderDetail extends StatelessWidget {
                   IconItemOrder(
                     image: AppAssets.imagesIconsIconDriver,
                     imageCheck: AppAssets.imagesIconsIconDriverCheck,
-                    isCheck: true,
+                    imageCancel: AppAssets.imagesIconsDriverIcon,
+                    isCancelled:
+                        state.order!.getOrderStatus()?.isCancelled == true,
+                    isCheck: state.order!.getActiveActivityInDelivery() != null,
+                    time: state.order
+                            ?.getActiveActivityDriverAccepted()
+                            ?.createdAt
+                            ?.formatHHMM() ??
+                        "",
                   ),
-                  Flexible(
+                  const Flexible(
                     child: SizedBox(
                       height: 44,
                       child: Center(
@@ -255,7 +362,15 @@ class OrderDetail extends StatelessWidget {
                   IconItemOrder(
                     image: AppAssets.imagesIconsIconLocation,
                     imageCheck: AppAssets.imagesIconsIconLocationCheck,
-                    isCheck: true,
+                    imageCancel: AppAssets.imagesIconsLocationCancel,
+                    isCheck: state.order?.getActiveActivityDelivered() != null,
+                    isCancelled:
+                        state.order!.getOrderStatus()?.isCancelled == true,
+                    time: state.order
+                            ?.getActiveActivityDelivered()
+                            ?.createdAt
+                            ?.formatHHMM() ??
+                        "",
                   ),
                 ],
               ),
@@ -264,18 +379,32 @@ class OrderDetail extends StatelessWidget {
                 avatar: state.order!.getCustomerAvatar(),
                 name: state.order!.getCustomerName(),
                 phone: state.order!.getCustomerPhone(),
-                suffix: const ImageAssetWidget(
-                  image: AppAssets.imagesIconsPhoneCall,
-                  width: 30,
+                suffix: GestureDetector(
+                  onTap: () {
+                    launchUrl(
+                        Uri.parse('tel:${state.order!.getCustomerPhone()}'));
+                  },
+                  child: const ImageAssetWidget(
+                    image: AppAssets.imagesIconsPhoneCall,
+                    width: 30,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
               InfoCustomer(
                 name: state.order!.getDriverName(),
+                phone: state.order!.getDriverPhone(),
+                avatar: state.order!.getDriverAvatar(),
                 role: Role.driver,
-                suffix: const ImageAssetWidget(
-                  image: AppAssets.imagesIconsPhoneCall,
-                  width: 30,
+                suffix: GestureDetector(
+                  onTap: () {
+                    launchUrl(
+                        Uri.parse('tel:${state.order!.getCustomerPhone()}'));
+                  },
+                  child: const ImageAssetWidget(
+                    image: AppAssets.imagesIconsPhoneCall,
+                    width: 30,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -283,10 +412,11 @@ class OrderDetail extends StatelessWidget {
                 orderCubit: orderCubit,
               ),
               const SizedBox(height: 10),
-              NoteCustomer(
-                note: 'Lấy đồ ở cổng chính',
-                body: state.order!.notes ?? "",
-              ),
+              if (state.order!.notes != null && state.order!.notes!.isNotEmpty)
+                NoteCustomer(
+                  note: 'Ghi chú',
+                  body: state.order!.notes ?? "",
+                ),
               const SizedBox(height: 10),
               PaymentInfo(
                 orderCubit: orderCubit,
@@ -338,11 +468,9 @@ class OrderDetail extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 PaymentValue(
-                                  title: 'Thời gian đặt hàng',
-                                  price:
-                                      state.order!.createdAt!.formatHHMMDD() ??
-                                          '',
-                                ),
+                                    title: 'Thời gian đặt hàng',
+                                    price:
+                                        state.order!.createdAt!.formatHHMMDD()),
                                 const SizedBox(height: 10),
                                 const PaymentValue(
                                   title: 'Thời gian Lấy hàng dự kiến',
@@ -448,57 +576,6 @@ class OrderDetail extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class IconItemOrder extends StatelessWidget {
-  final String image;
-  final String imageCheck;
-  final bool isCheck;
-  const IconItemOrder({
-    super.key,
-    this.image = AppAssets.imagesIconsUserOrder,
-    this.imageCheck = AppAssets.imagesIconsCheckIcon,
-    this.isCheck = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: ImageAssetWidget(
-                image: isCheck ? imageCheck : image,
-                width: 35,
-              ),
-            ),
-            Positioned(
-              right: 0,
-              bottom: 5,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: ImageAssetWidget(
-                    image: AppAssets.imagesIconsCheckIcon,
-                    width: isCheck ? 16 : 0),
-              ),
-            ),
-          ],
-        ),
-        Text(
-          '12:00',
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontSize: 14,
-                color: isCheck == false ? AppColors.color194 : null,
-              ),
-        ),
-      ],
     );
   }
 }

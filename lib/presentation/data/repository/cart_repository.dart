@@ -47,15 +47,8 @@ class CartRepositoryImp implements CartRepository {
 
   @override
   Future<OrderM?> getOrderByID(String id) async {
-    try {
-      final httpRequest = await _clientDio.get("${CartUrl.orders}/$id");
-      return OrderM.fromJson(httpRequest.data ?? {});
-    } on DioException catch (_) {
-      rethrow;
-    } catch (e) {
-      log("getOrderByID error: $e", name: tag);
-    }
-    return null;
+    final httpRequest = await _clientDio.get("${CartUrl.orders}/$id");
+    return OrderM.fromJson(httpRequest.data ?? {});
   }
 
   @override

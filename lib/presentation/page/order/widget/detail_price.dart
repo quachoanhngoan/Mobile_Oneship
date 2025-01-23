@@ -33,9 +33,9 @@ class DetailPrice extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            const PriceValue(
+            PriceValue(
               title: 'Phí giao hàng',
-              price: "...",
+              price: state.order?.getShippingFeeFormat() ?? '0đ',
             ),
             const SizedBox(
               height: 10,
@@ -49,7 +49,7 @@ class DetailPrice extends StatelessWidget {
             ),
             const PriceValue(
               title: 'Phí dịch vụ',
-              price: '....',
+              price: '...',
             ),
             const SizedBox(
               height: 5,
@@ -64,7 +64,7 @@ class DetailPrice extends StatelessWidget {
             PriceValue(
               title: 'Khách thanh toán',
               price: state.order?.totalAmountFormat() ?? '0đ',
-              priceStyle: TextStyle(
+              priceStyle: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

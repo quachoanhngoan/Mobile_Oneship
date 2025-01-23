@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
-import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/extensions/time_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
-import 'package:oneship_merchant_app/presentation/page/register_store/widget/step_RepresentativeInformation.dart';
 
 enum EOrderStatus {
   pending,
@@ -133,17 +131,19 @@ class OrderM {
   final int? storeId;
   final int? driverId;
   final String? totalAmount;
+  final String? deliveryFee;
   final String? status;
   final String? paymentStatus;
   final String? deliveryAddress;
   final double? deliveryLatitude;
   final double? deliveryLongitude;
-  final double? tip;
+  final String? tip;
   final String? notes;
   final List<CartOrderItem>? orderItems;
   final List<Activity>? activities;
   final Store? store;
   final Client? client;
+  final Driver? driver;
 
   OrderM({
     this.id,
@@ -165,6 +165,8 @@ class OrderM {
     this.activities,
     this.store,
     this.client,
+    this.deliveryFee,
+    this.driver,
   });
 
   factory OrderM.fromRawJson(String str) => OrderM.fromJson(json.decode(str));
@@ -193,13 +195,16 @@ class OrderM {
         notes: json["notes"],
         orderItems: json["orderItems"] == null
             ? []
-            : List<CartOrderItem>.from(json["orderItems"]!.map((x) => x)),
+            : List<CartOrderItem>.from(
+                json["orderItems"]!.map((x) => CartOrderItem.fromJson(x))),
         activities: json["activities"] == null
             ? []
             : List<Activity>.from(
                 json["activities"]!.map((x) => Activity.fromJson(x))),
         store: json["store"] == null ? null : Store.fromJson(json["store"]),
         client: json["client"] == null ? null : Client.fromJson(json["client"]),
+        deliveryFee: json["deliveryFee"],
+        driver: json["driver"] == null ? null : Driver.fromJson(json["driver"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -226,6 +231,7 @@ class OrderM {
             : List<dynamic>.from(activities!.map((x) => x.toJson())),
         "store": store?.toJson(),
         "client": client?.toJson(),
+        "deliveryFee": deliveryFee,
       };
 
   String? getCustomerName() {
@@ -241,7 +247,15 @@ class OrderM {
   }
 
   String? getDriverName() {
-    return driverId == null ? null : 'Tài xế';
+    return driver?.fullName;
+  }
+
+  String? getDriverPhone() {
+    return driver?.phone;
+  }
+
+  String? getDriverAvatar() {
+    return driver?.avatar;
   }
 
   EOrderStatus? getOrderStatus() {
@@ -319,6 +333,46 @@ class OrderM {
       decimalDigits: 0,
     ).format(double.parse(totalAmount ?? "0"));
   }
+
+  String? getShippingFeeFormat() {
+    return NumberFormat.currency(
+      locale: 'vi',
+      symbol: 'đ',
+      decimalDigits: 0,
+    ).format(double.parse(deliveryFee ?? "0"));
+  }
+}
+
+class Driver {
+  final int? id;
+  final String? fullName;
+  final String? phone;
+  final String? avatar;
+
+  Driver({
+    this.id,
+    this.fullName,
+    this.phone,
+    this.avatar,
+  });
+
+  factory Driver.fromRawJson(String str) => Driver.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Driver.fromJson(Map<String, dynamic> json) => Driver(
+        id: json["id"],
+        fullName: json["fullName"],
+        phone: json["phoneNumber"],
+        avatar: json["avatar"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "fullName": fullName,
+        "phone": phone,
+        "avatar": avatar,
+      };
 }
 
 class Activity {

@@ -49,7 +49,7 @@ class InfoCustomer extends StatelessWidget {
                       avatar ?? "",
                       isBaseUrl: true,
                       isAuth: true,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     )),
                 const SizedBox(width: 10),
                 Flexible(
@@ -99,7 +99,7 @@ class InfoCustomer extends StatelessWidget {
                         );
                       }),
                       Text(
-                        phone!,
+                        phone ?? "",
                         maxLines: 2,
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               color: AppColors.description,

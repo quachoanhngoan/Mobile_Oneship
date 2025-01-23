@@ -35,7 +35,9 @@ class OrderItem extends StatelessWidget {
         ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: description != null && description!.isNotEmpty
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
         children: [
           NetworkImageWithLoader(
             orderAvatar ?? "",
@@ -76,7 +78,6 @@ class OrderItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
@@ -100,7 +101,7 @@ class OrderItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (description != null)
+                if (description != null && description!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 5.0),
                     child: Text(

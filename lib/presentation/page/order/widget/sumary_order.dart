@@ -28,20 +28,47 @@ class SumaryOrder extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Chi tiết đơn',
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+              Row(
+                children: [
+                  Text(
+                    'Chi tiết đơn (${state.order?.orderItems?.length ?? 0})',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                  ),
+                  const Spacer(),
+                  if (state.order?.getOrderStatus()?.isCancelled == true)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffFEF4F1),
+                        border: Border.all(
+                          color: const Color(0xffBE5230),
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Đã hủy',
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xffBE5230),
+                            ),
+                      ),
                     ),
+                ],
               ),
               ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.order?.orderItems?.length,
                 itemBuilder: (context, index) {
                   final orderItem = state.order?.orderItems?[index];
                   return OrderItem(
                     orderItem: orderItem,
+                    description: orderItem?.getFullTextDescription() ?? "",
                     title: orderItem?.productName ?? "",
                     price: orderItem?.formattedPrice() ?? '',
                     quantity: orderItem?.quantity ?? 0,
