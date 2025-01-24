@@ -347,7 +347,7 @@ class CartBodyItem extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  "${orderCart.id}",
+                  "${orderCart.orderCode}",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: AppColors.colorD33,

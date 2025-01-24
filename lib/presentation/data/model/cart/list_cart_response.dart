@@ -42,6 +42,7 @@ class OrderCartResponse {
   int? storeId;
   int? driverId;
   String? totalAmount;
+  String? orderCode;
   String? status;
   String? paymentStatus;
   String? deliveryAddress;
@@ -61,6 +62,7 @@ class OrderCartResponse {
     this.storeId,
     this.driverId,
     this.totalAmount,
+    this.orderCode,
     this.status,
     this.paymentStatus,
     this.deliveryAddress,
@@ -82,6 +84,7 @@ class OrderCartResponse {
       storeId: json['storeId'] as int?,
       driverId: json['driverId'] as int?,
       totalAmount: json['totalAmount'] as String?,
+      orderCode: json['orderCode'] as String?,
       status: json['status'] as String?,
       paymentStatus: json['paymentStatus'] as String?,
       deliveryAddress: json['deliveryAddress'] as String?,
@@ -110,6 +113,7 @@ class OrderCartResponse {
       'driverId': driverId,
       'totalAmount': totalAmount,
       'status': status,
+      'orderCode': orderCode,
       'paymentStatus': paymentStatus,
       'deliveryAddress': deliveryAddress,
       'deliveryLatitude': deliveryLatitude,
