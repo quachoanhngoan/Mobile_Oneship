@@ -14,6 +14,7 @@ import 'package:oneship_merchant_app/presentation/page/cart/widget/cart_body_can
 import 'package:oneship_merchant_app/presentation/page/cart/widget/cart_body_complete.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/widget/cart_body_confirm.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/widget/cart_body_new.dart';
+import 'package:oneship_merchant_app/presentation/page/login/widget/loading_widget.dart';
 import 'package:oneship_merchant_app/presentation/page/menu_diner/widgets/dashed_divider.dart';
 import 'package:oneship_merchant_app/presentation/page/order/order_page.dart';
 import 'package:oneship_merchant_app/presentation/widget/images/asset_image.dart';
@@ -60,150 +61,162 @@ class _CartPageState extends State<CartPage> {
         bloc: bloc,
         builder: (context, state) {
           return SafeArea(
-            child: Column(
+            child: Stack(
               children: <Widget>[
-                VSpacing(spacing: state.isShowSearch ? 12 : 0),
-                Row(
+                Column(
                   children: <Widget>[
-                    IconButton(
-                        highlightColor: AppColors.transparent,
-                        onPressed: () {
-                          if (state.isShowSearch) {
-                            bloc.hideOrShowSearch();
-                          }
-                        },
-                        icon: Icon(Icons.arrow_back,
-                            color: state.isShowSearch
-                                ? AppColors.black
-                                : AppColors.transparent)),
-                    if (state.isShowSearch) ...[
-                      Expanded(
-                          child: TextFieldSearch(
-                              controller: bloc.searchController,
-                              showClearButton: state.isShowClearSearch,
-                              onChange: (value) {
-                                bloc.checkShowClearSearch();
-                              },
-                              clearTextClicked: () {
-                                bloc.searchController.clear();
-                                bloc.checkShowClearSearch();
-                              },
-                              hintText: "Nhập mã đơn hàng, tên khách hàng")),
-                      const HSpacing(spacing: 12)
-                    ] else ...[
-                      Expanded(
-                        child: Text("Đơn hàng",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w600)),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          bloc.hideOrShowSearch();
-                        },
-                        child: const ImageAssetWidget(
-                          image: AppAssets.imagesIconsIcSearch,
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
-                      const HSpacing(spacing: 12),
-                    ]
-                  ],
-                ),
-                VSpacing(spacing: state.isShowSearch ? 12 : 0),
-                Container(
-                  height: 38,
-                  color: AppColors.transparent,
-                  child: ListView.builder(
-                      itemCount: CartType.values.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final typeCart = CartType.values[index];
-
-                        final titleStyle =
-                            Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: state.cartTypeSellected == typeCart
-                                      ? AppColors.color988
-                                      : AppColors.textGray,
-                                  fontWeight:
-                                      state.cartTypeSellected == typeCart
-                                          ? FontWeight.w600
-                                          : FontWeight.w500,
-                                );
-
-                        final textWidth =
-                            calculateTextWidth(typeCart.title, titleStyle!) +
-                                24;
-
-                        return GestureDetector(
-                          onTap: () {
-                            bloc.changeCartType(index, typeCart);
-                          },
-                          child: Container(
-                            color: AppColors.transparent,
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  height: 34,
-                                  color: AppColors.transparent,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    typeCart.title,
-                                    textAlign: TextAlign.center,
-                                    style: titleStyle,
-                                  ),
-                                ),
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      height: 1,
-                                      width: textWidth,
-                                      color: AppColors.textGray,
-                                    ),
-                                    Container(
-                                      height: 2,
-                                      width: textWidth,
-                                      color: state.cartTypeSellected == typeCart
-                                          ? AppColors.color988
-                                          : AppColors.transparent,
-                                    )
-                                    // : const SizedBox.shrink()
-                                  ],
-                                ),
-                              ],
+                    VSpacing(spacing: state.isShowSearch ? 12 : 0),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                            highlightColor: AppColors.transparent,
+                            onPressed: () {
+                              if (state.isShowSearch) {
+                                bloc.hideOrShowSearch();
+                              }
+                            },
+                            icon: Icon(Icons.arrow_back,
+                                color: state.isShowSearch
+                                    ? AppColors.black
+                                    : AppColors.transparent)),
+                        if (state.isShowSearch) ...[
+                          Expanded(
+                              child: TextFieldSearch(
+                                  controller: bloc.searchController,
+                                  showClearButton: state.isShowClearSearch,
+                                  onChange: (value) {
+                                    bloc.searchTyping(value);
+                                    bloc.checkShowClearSearch();
+                                  },
+                                  clearTextClicked: () {
+                                    bloc.searchController.clear();
+                                    bloc.checkShowClearSearch();
+                                  },
+                                  hintText:
+                                      "Nhập mã đơn hàng, tên khách hàng")),
+                          const HSpacing(spacing: 12)
+                        ] else ...[
+                          Expanded(
+                            child: Text("Đơn hàng",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600)),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              bloc.hideOrShowSearch();
+                            },
+                            child: const ImageAssetWidget(
+                              image: AppAssets.imagesIconsIcSearch,
+                              width: 24,
+                              height: 24,
                             ),
                           ),
-                        );
-                      }),
+                          const HSpacing(spacing: 12),
+                        ]
+                      ],
+                    ),
+                    VSpacing(spacing: state.isShowSearch ? 12 : 0),
+                    Container(
+                      height: 38,
+                      color: AppColors.transparent,
+                      child: ListView.builder(
+                          itemCount: CartType.values.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final typeCart = CartType.values[index];
+
+                            final titleStyle =
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: state.cartTypeSellected == typeCart
+                                          ? AppColors.color988
+                                          : AppColors.textGray,
+                                      fontWeight:
+                                          state.cartTypeSellected == typeCart
+                                              ? FontWeight.w600
+                                              : FontWeight.w500,
+                                    );
+
+                            final textWidth = calculateTextWidth(
+                                    typeCart.title, titleStyle!) +
+                                24;
+
+                            return GestureDetector(
+                              onTap: () {
+                                bloc.changeCartType(index, typeCart);
+                              },
+                              child: Container(
+                                color: AppColors.transparent,
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 34,
+                                      color: AppColors.transparent,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        typeCart.title,
+                                        textAlign: TextAlign.center,
+                                        style: titleStyle,
+                                      ),
+                                    ),
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: 1,
+                                          width: textWidth,
+                                          color: AppColors.textGray,
+                                        ),
+                                        Container(
+                                          height: 2,
+                                          width: textWidth,
+                                          color: state.cartTypeSellected ==
+                                                  typeCart
+                                              ? AppColors.color988
+                                              : AppColors.transparent,
+                                        )
+                                        // : const SizedBox.shrink()
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                    Expanded(
+                        child: PageView.builder(
+                            controller: bloc.pageController,
+                            itemCount: CartType.values.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final itemBody = CartType.values[index];
+                              switch (itemBody) {
+                                case CartType.book:
+                                  return CartBodyBook(state: state, bloc: bloc);
+                                case CartType.newCart:
+                                  return CartBodyNew(state: state, bloc: bloc);
+                                case CartType.confirm:
+                                  return CartBodyConfirm(
+                                      state: state, bloc: bloc);
+                                case CartType.complete:
+                                  return CartBodyComplete(
+                                      bloc: bloc, state: state);
+                                case CartType.cancel:
+                                  return CartBodyCancel(
+                                      bloc: bloc, state: state);
+                              }
+                            }))
+                  ],
                 ),
-                Expanded(
-                    child: PageView.builder(
-                        controller: bloc.pageController,
-                        itemCount: CartType.values.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final itemBody = CartType.values[index];
-                          switch (itemBody) {
-                            case CartType.book:
-                              return CartBodyBook(state: state, bloc: bloc);
-                            case CartType.newCart:
-                              return CartBodyNew(state: state, bloc: bloc);
-                            case CartType.confirm:
-                              return CartBodyConfirm(state: state, bloc: bloc);
-                            case CartType.complete:
-                              return CartBodyComplete(bloc: bloc, state: state);
-                            case CartType.cancel:
-                              return CartBodyCancel(bloc: bloc, state: state);
-                            // default:
-                            //   return Container();
-                          }
-                        }))
+                Visibility(
+                  visible: state.isLoading,
+                  child: const LoadingWidget(),
+                )
               ],
             ),
           );
@@ -240,12 +253,18 @@ class CartBodyItem extends StatelessWidget {
   final Widget bottomWidget;
   final OrderCartResponse orderCart;
   final int indexCart;
+  final Function moreFoodClick;
+  final bool isShowMore;
+  final void Function() onTap;
 
   const CartBodyItem({
     super.key,
     required this.bottomWidget,
     required this.orderCart,
     required this.indexCart,
+    required this.moreFoodClick,
+    this.isShowMore = false,
+    required this.onTap,
   });
 
   @override
@@ -254,7 +273,13 @@ class CartBodyItem extends StatelessWidget {
       onTap: () {
         Get.to(() => OrderPage(
               id: orderCart.id!,
-            ));
+            ))?.then(
+          (value) {
+            // ignore: avoid_print
+
+            onTap.call();
+          },
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -297,11 +322,16 @@ class CartBodyItem extends StatelessWidget {
             const DashedDivider(color: AppColors.color8E8),
             const VSpacing(spacing: 8),
             orderCart.orderItems != null
-                ? ListView.builder(
+                ? ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        const VSpacing(spacing: 8),
                     itemCount: orderCart.orderItems!.length,
                     shrinkWrap: true,
                     itemBuilder: (context, indexOther) {
                       final item = orderCart.orderItems![indexOther];
+                      if (!isShowMore && indexOther >= 1) {
+                        return const SizedBox.shrink();
+                      }
                       return GestureDetector(
                         onTap: () {
                           Get.to(() => OrderPage(
@@ -316,8 +346,10 @@ class CartBodyItem extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: AppColors.transparent,
                                   borderRadius: BorderRadius.circular(8)),
-                              child: const NetworkImageWithLoader("",
-                                  isBaseUrl: true, fit: BoxFit.fill),
+                              child: NetworkImageWithLoader(
+                                  item.productImage ?? "",
+                                  isBaseUrl: true,
+                                  fit: BoxFit.fill),
                             ),
                             const HSpacing(spacing: 12),
                             Container(
@@ -370,31 +402,42 @@ class CartBodyItem extends StatelessWidget {
                       );
                     })
                 : Container(),
-            const VSpacing(spacing: 8),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                color: AppColors.transparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Icon(
-                      Icons.keyboard_arrow_down,
-                      color: AppColors.colorD33,
-                    ),
-                    const HSpacing(spacing: 4),
-                    Text(
-                      "Xem thêm",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w500,
+            orderCart.orderItems != null &&
+                    orderCart.orderItems!.length > 1 &&
+                    isShowMore
+                ? const VSpacing(spacing: 8)
+                : const SizedBox.shrink(),
+            orderCart.orderItems != null && orderCart.orderItems!.length > 1
+                ? GestureDetector(
+                    onTap: () {
+                      moreFoodClick();
+                    },
+                    child: Container(
+                      color: AppColors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            isShowMore
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
                             color: AppColors.colorD33,
-                            fontSize: 14,
                           ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+                          const HSpacing(spacing: 4),
+                          Text(
+                            "Xem thêm",
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.colorD33,
+                                      fontSize: 14,
+                                    ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
             const VSpacing(spacing: 8),
             const DashedDivider(color: AppColors.color8E8),
             const VSpacing(spacing: 8),

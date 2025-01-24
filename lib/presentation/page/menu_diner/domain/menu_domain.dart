@@ -173,14 +173,6 @@ class DataMenuTypeDomain {
       {this.data, this.type = MenuType.active, this.totalProducts});
 }
 
-// class ListFoodByMenuDomain {
-//   final List<MenuFoodResponseItem>? listFoodByMenu;
-//   final MenuType? type;
-//   final int? idSellected;
-//
-//   ListFoodByMenuDomain({this.idSellected, this.listFoodByMenu, this.type});
-// }
-
 class ShowDetailMenuDomain {
   final MenuType type;
   final int idShow;

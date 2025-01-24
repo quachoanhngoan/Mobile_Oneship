@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:oneship_merchant_app/config/theme/color.dart';
+import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
+import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
 
 import '../cart_cubit.dart';
 import '../cart_state.dart';
@@ -18,6 +20,23 @@ class CartBodyNew extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
+      final listItemSearch = state.listSearchCartNew;
+      if (listItemSearch.isNotEmpty) {
+        return _BodyNew(
+          refreshFunction: () {
+            bloc.getAllCart();
+          },
+          listItem: listItemSearch,
+          listShowDetailFood: state.listSearchShowDetailFood,
+          moreFoodClick: (id) {
+            bloc.hireOrShowDetailFoodSearch(
+                value: ShowDetailFoodCartDomain(
+              type: CartType.newCart,
+              idShow: id,
+            ));
+          },
+        );
+      }
       return Container();
     }
 
@@ -26,16 +45,55 @@ class CartBodyNew extends StatelessWidget {
     if (listItem.isEmpty) {
       return const CartEmptyBody();
     }
+    return _BodyNew(
+      refreshFunction: () {
+        bloc.getAllCart();
+      },
+      listItem: listItem,
+      listShowDetailFood: state.listShowDetailFood,
+      moreFoodClick: (id) {
+        bloc.hireOrShowDetailFood(
+            value: ShowDetailFoodCartDomain(
+          type: CartType.newCart,
+          idShow: id,
+        ));
+      },
+    );
+  }
+}
 
+class _BodyNew extends StatelessWidget {
+  final List<OrderCartResponse> listItem;
+  final List<ShowDetailFoodCartDomain> listShowDetailFood;
+  final Function(int?) moreFoodClick;
+  final Function() refreshFunction;
+  const _BodyNew({
+    super.key,
+    required this.listItem,
+    this.listShowDetailFood = const [],
+    required this.moreFoodClick,
+    required this.refreshFunction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: AppColors.colorAFA,
       margin: const EdgeInsets.symmetric(vertical: 6),
       child: ListView.builder(
           itemCount: listItem.length,
           itemBuilder: (context, index) {
+            final isShowMore = listShowDetailFood.contains(
+                ShowDetailFoodCartDomain(
+                    type: CartType.newCart, idShow: listItem[index].id));
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: CartBodyItem(
+                onTap: refreshFunction,
+                isShowMore: isShowMore,
+                moreFoodClick: () {
+                  moreFoodClick(listItem[index].id);
+                },
                 indexCart: index,
                 orderCart: listItem[index],
                 bottomWidget: Row(

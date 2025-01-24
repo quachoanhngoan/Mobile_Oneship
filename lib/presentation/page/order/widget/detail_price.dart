@@ -61,10 +61,10 @@ class DetailPrice extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            PriceValue(
+            const PriceValue(
               title: 'Khách thanh toán',
-              price: state.order?.totalAmountFormat() ?? '0đ',
-              priceStyle: const TextStyle(
+              price: "...",
+              priceStyle: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

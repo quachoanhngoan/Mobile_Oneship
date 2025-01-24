@@ -38,26 +38,26 @@ class SumaryOrder extends StatelessWidget {
                         ),
                   ),
                   const Spacer(),
-                  if (state.order?.getOrderStatus()?.isCancelled == true)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffFEF4F1),
-                        border: Border.all(
-                          color: const Color(0xffBE5230),
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'Đã hủy',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xffBE5230),
-                            ),
-                      ),
-                    ),
+                  // if (state.order?.getOrderStatus()?.isCancelled == true)
+                  //   Container(
+                  //     padding: const EdgeInsets.symmetric(
+                  //         horizontal: 8, vertical: 4),
+                  //     decoration: BoxDecoration(
+                  //       color: const Color(0xffFEF4F1),
+                  //       border: Border.all(
+                  //         color: const Color(0xffBE5230),
+                  //       ),
+                  //       borderRadius: BorderRadius.circular(8),
+                  //     ),
+                  //     child: Text(
+                  //       'Đã hủy',
+                  //       style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  //             fontSize: 10,
+                  //             fontWeight: FontWeight.w400,
+                  //             color: const Color(0xffBE5230),
+                  //           ),
+                  //     ),
+                  //   ),
                 ],
               ),
               ListView.builder(

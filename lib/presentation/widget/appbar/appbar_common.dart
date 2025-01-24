@@ -21,6 +21,7 @@ class AppBarAuth extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      forceMaterialTransparency: true,
       backgroundColor: AppColors.white,
       leading: isShowBackButton
           ? IconButton(

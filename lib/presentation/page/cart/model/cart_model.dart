@@ -60,6 +60,15 @@ extension CartConfirmTypeExt on CartConfirmType {
         return "Tài xế đang đến (#VALUE)";
     }
   }
+
+  String get status {
+    switch (this) {
+      case CartConfirmType.findDriver:
+        return "offer_sent_to_driver";
+      case CartConfirmType.driving:
+        return "driver_accepted";
+    }
+  }
 }
 
 class ListCartConfirmDomain {
@@ -67,4 +76,25 @@ class ListCartConfirmDomain {
   final List<OrderCartResponse> listData;
 
   ListCartConfirmDomain({required this.type, this.listData = const []});
+}
+
+class ShowDetailFoodCartDomain {
+  final CartType? type;
+  final int? idShow;
+  final CartConfirmType? confirmType;
+  ShowDetailFoodCartDomain({
+    this.idShow,
+    this.type,
+    this.confirmType,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ShowDetailFoodCartDomain) return false;
+    return other.idShow == idShow && other.type == type;
+  }
+
+  @override
+  int get hashCode => Object.hash(idShow, type);
 }

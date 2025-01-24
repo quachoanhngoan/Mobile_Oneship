@@ -19,8 +19,29 @@ class CartBodyConfirm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.isShowSearch) {
+      final listItemSearch = state.listSearchCartConfirm;
+      if (listItemSearch.isNotEmpty) {
+        return _BodyConfirm(
+            refreshFunction: () {
+              bloc.getAllCart();
+            },
+            listCartConfirm: listItemSearch,
+            listShowDetailFood: state.listSearchShowDetailFood,
+            controller: bloc.confirmPageController,
+            moreFoodClick: (id, indexPage) {
+              bloc.hireOrShowDetailFoodSearch(
+                  value: ShowDetailFoodCartDomain(
+                type: CartType.confirm,
+                confirmType: indexPage == 0
+                    ? CartConfirmType.findDriver
+                    : CartConfirmType.driving,
+                idShow: id,
+              ));
+            });
+      }
       return Container();
     }
+
     return Container(
       color: AppColors.colorAFA,
       child: Column(
@@ -84,81 +105,117 @@ class CartBodyConfirm extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: PageView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: bloc.confirmPageController,
-              itemCount: CartConfirmType.values.length,
-              itemBuilder: (context, indexPage) {
-                final listItem = state.listCartConfirm
-                    .where(
-                      (e) => e.type == CartConfirmType.values[indexPage],
-                    )
-                    .toList();
-                if (listItem.isEmpty) {
-                  return const CartEmptyBody();
-                }
-                return ListView.separated(
-                    itemCount: listItem[indexPage].listData.length,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                    separatorBuilder: (context, index) {
-                      return const VSpacing(spacing: 12);
-                    },
-                    itemBuilder: (context, indexItem) {
-                      return CartBodyItem(
-                        indexCart: indexItem,
-                        orderCart: listItem[indexPage].listData[indexItem],
-                        bottomWidget: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                "Hệ thống đang tìm tài xế đến lấy đơn",
-                                overflow: TextOverflow.visible,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.color017,
-                                    ),
-                              ),
-                            ),
-                            Container(
-                              height: 26,
-                              width: 86,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: AppColors.color988,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Text(
-                                "Quán tự giao",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.white,
-                                    ),
-                              ),
-                            ),
-                            const VSpacing(spacing: 4),
-                            const Icon(
-                              Icons.info_outline_rounded,
-                              size: 16,
-                              color: AppColors.black,
-                            )
-                          ],
-                        ),
-                      );
-                    });
+          _BodyConfirm(
+              refreshFunction: () {
+                bloc.getAllCart();
               },
-            ),
-          ),
+              listCartConfirm: state.listCartConfirm,
+              listShowDetailFood: state.listShowDetailFood,
+              controller: bloc.confirmPageController,
+              moreFoodClick: (id, indexPage) {
+                bloc.hireOrShowDetailFood(
+                    value: ShowDetailFoodCartDomain(
+                  type: CartType.confirm,
+                  confirmType: indexPage == 0
+                      ? CartConfirmType.findDriver
+                      : CartConfirmType.driving,
+                  idShow: id,
+                ));
+              })
         ],
+      ),
+    );
+  }
+}
+
+class _BodyConfirm extends StatelessWidget {
+  final List<ListCartConfirmDomain> listCartConfirm;
+  final Function(int?, int) moreFoodClick;
+  final PageController? controller;
+  final List<ShowDetailFoodCartDomain> listShowDetailFood;
+  final Function() refreshFunction;
+  const _BodyConfirm({
+    required this.listCartConfirm,
+    this.listShowDetailFood = const [],
+    required this.moreFoodClick,
+    this.controller,
+    required this.refreshFunction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: PageView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: controller,
+        itemCount: CartConfirmType.values.length,
+        itemBuilder: (context, indexPage) {
+          final listItem = listCartConfirm.firstWhere(
+            (e) => e.type == CartConfirmType.values[indexPage],
+          );
+          if (listItem.listData.isEmpty) {
+            return const CartEmptyBody();
+          }
+          return ListView.separated(
+              itemCount: listItem.listData.length,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              separatorBuilder: (context, index) {
+                return const VSpacing(spacing: 12);
+              },
+              itemBuilder: (context, indexItem) {
+                final cartItem = listItem.listData[indexItem];
+                return CartBodyItem(
+                  onTap: refreshFunction,
+                  moreFoodClick: () {
+                    moreFoodClick(
+                      cartItem.id,
+                      indexPage,
+                    );
+                  },
+                  indexCart: indexItem,
+                  orderCart: cartItem,
+                  bottomWidget: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          "Hệ thống đang tìm tài xế đến lấy đơn",
+                          overflow: TextOverflow.visible,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.color017,
+                                  ),
+                        ),
+                      ),
+                      Container(
+                        height: 26,
+                        width: 86,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: AppColors.color988,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(
+                          "Quán tự giao",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.white,
+                                  ),
+                        ),
+                      ),
+                      const HSpacing(spacing: 4),
+                      const Icon(
+                        Icons.info_outline_rounded,
+                        size: 16,
+                        color: AppColors.black,
+                      )
+                    ],
+                  ),
+                );
+              });
+        },
       ),
     );
   }

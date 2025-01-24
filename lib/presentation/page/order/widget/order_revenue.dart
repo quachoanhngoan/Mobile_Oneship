@@ -149,7 +149,7 @@ class DetailPrice extends StatelessWidget {
         ),
         PriceValue(
           title: 'Số tiền thanh toán',
-          price: '100.000đ',
+          price: '...',
           priceStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -160,21 +160,21 @@ class DetailPrice extends StatelessWidget {
         ),
         PriceValue(
           title: 'Thanh toán bởi',
-          price: '20.000đ',
+          price: '...',
         ),
         SizedBox(
           height: 10,
         ),
         PriceValue(
           title: 'Thanh toán vào lúc',
-          price: '0đ',
+          price: '...',
         ),
         SizedBox(
           height: 10,
         ),
         PriceValue(
           title: 'Số tiền thanh toán',
-          price: '120.000đ',
+          price: '...',
         ),
         SizedBox(
           height: 5,
@@ -188,7 +188,7 @@ class DetailPrice extends StatelessWidget {
         ),
         PriceValue(
           title: 'Khách thanh toán',
-          price: '120.000đ',
+          price: '...',
           priceStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,

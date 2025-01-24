@@ -1,6 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,6 @@ class _OrderPageState extends State<OrderPage> {
   void initState() {
     orderCubit = injector<OrderCubit>();
     orderCubit.getOrderById(widget.id);
-    print('OrderPage: ${widget.id}');
     super.initState();
   }
 
@@ -90,48 +90,47 @@ class _OrderPageState extends State<OrderPage> {
                   ),
                   child: SafeArea(
                     child: Builder(builder: (context) {
-                      if (state.order!.getOrderStatus()?.isPending == true) {
-                        return Row(
-                          children: [
-                            Flexible(
-                              child: AppButton(
-                                isCheckLastPress: false,
-                                isEnable: true,
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                  cancelReasonTable(orderCubit);
-                                },
-                                margin: const EdgeInsets.only(top: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                backgroundColor: Colors.white,
-                                textColor: Colors.red,
-                                borderSide: const BorderSide(color: Colors.red),
-                                text: "Huỷ đơn",
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Flexible(
-                              child: AppButton(
-                                isCheckLastPress: false,
-                                isEnable: false,
-                                onPressed: () {
-                                  FocusScope.of(context).unfocus();
-                                },
-                                margin: const EdgeInsets.only(top: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                backgroundColor: AppColors.primary,
-                                textColor: const Color(0xffB4B5B7),
-                                text: "Nhận đơn",
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      if (state.order!.getOrderStatus()?.isConfirmed == true ||
-                          state.order!.getOrderStatus()?.isDriverAccepted ==
-                              true) {
+                      // if (state.order!.getOrderStatus()?.isPending == true) {
+                      //   return Row(
+                      //     children: [
+                      //       Flexible(
+                      //         child: AppButton(
+                      //           isCheckLastPress: false,
+                      //           isEnable: true,
+                      //           onPressed: () {
+                      //             FocusScope.of(context).unfocus();
+                      //             cancelReasonTable(orderCubit);
+                      //           },
+                      //           margin: const EdgeInsets.only(top: 10),
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 20, vertical: 10),
+                      //           backgroundColor: Colors.white,
+                      //           textColor: Colors.red,
+                      //           borderSide: const BorderSide(color: Colors.red),
+                      //           text: "Huỷ đơn",
+                      //         ),
+                      //       ),
+                      //       const SizedBox(width: 10),
+                      //       Flexible(
+                      //         child: AppButton(
+                      //           isCheckLastPress: false,
+                      //           isEnable: false,
+                      //           onPressed: () {
+                      //             FocusScope.of(context).unfocus();
+                      //           },
+                      //           margin: const EdgeInsets.only(top: 10),
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 20, vertical: 10),
+                      //           backgroundColor: AppColors.primary,
+                      //           textColor: const Color(0xffB4B5B7),
+                      //           text: "Nhận đơn",
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   );
+                      // }
+                      if (state.order!.getOrderStatus()?.isOfferSentToDriver ==
+                          true) {
                         return AppButton(
                           isCheckLastPress: false,
                           isEnable: true,
@@ -148,7 +147,7 @@ class _OrderPageState extends State<OrderPage> {
                           text: "Huỷ đơn",
                         );
                       }
-                      if (state.order!.getOrderStatus()?.isInDelivery == true) {
+                      if (state.order!.getOrderStatus()?.isConfirmed == true) {
                         return AppButton(
                           isCheckLastPress: false,
                           isEnable: true,
@@ -340,7 +339,8 @@ class OrderDetail extends StatelessWidget {
                     imageCancel: AppAssets.imagesIconsDriverIcon,
                     isCancelled:
                         state.order!.getOrderStatus()?.isCancelled == true,
-                    isCheck: state.order!.getActiveActivityInDelivery() != null,
+                    isCheck:
+                        state.order!.getActiveActivityDriverAccepted() != null,
                     time: state.order
                             ?.getActiveActivityDriverAccepted()
                             ?.createdAt
@@ -377,12 +377,11 @@ class OrderDetail extends StatelessWidget {
               const SizedBox(height: 20),
               InfoCustomer(
                 avatar: state.order!.getCustomerAvatar(),
-                name: state.order!.getCustomerName(),
-                phone: state.order!.getCustomerPhone(),
+                name: state.order!.deliveryName,
+                phone: state.order!.deliveryPhone,
                 suffix: GestureDetector(
                   onTap: () {
-                    launchUrl(
-                        Uri.parse('tel:${state.order!.getCustomerPhone()}'));
+                    launchUrl(Uri.parse('tel:${state.order!.deliveryPhone}'));
                   },
                   child: const ImageAssetWidget(
                     image: AppAssets.imagesIconsPhoneCall,
@@ -393,13 +392,12 @@ class OrderDetail extends StatelessWidget {
               const SizedBox(height: 10),
               InfoCustomer(
                 name: state.order!.getDriverName(),
-                phone: state.order!.getDriverPhone(),
+                phone: state.order!.getDriverPhone() ?? "Tài xế",
                 avatar: state.order!.getDriverAvatar(),
                 role: Role.driver,
                 suffix: GestureDetector(
                   onTap: () {
-                    launchUrl(
-                        Uri.parse('tel:${state.order!.getCustomerPhone()}'));
+                    launchUrl(Uri.parse('tel:${state.order!.driver?.phone}'));
                   },
                   child: const ImageAssetWidget(
                     image: AppAssets.imagesIconsPhoneCall,
@@ -456,8 +454,40 @@ class OrderDetail extends StatelessWidget {
                                   height: 10,
                                 ),
                                 PaymentValue(
+                                  price: "",
                                   title: 'Mã đơn hàng',
-                                  price: '...',
+                                  priceWidget: GestureDetector(
+                                    onTap: () {
+                                      Clipboard.setData(ClipboardData(
+                                          text:
+                                              state.order!.orderCode ?? '...'));
+                                      Fluttertoast.showToast(
+                                        msg: 'Đã sao chép mã đơn hàng',
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          state.order!.orderCode ?? '...',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color:
+                                                      const Color(0xffE15D33)),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        const ImageAssetWidget(
+                                          image: AppAssets.imagesIconsOrderCode,
+                                          width: 15,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   priceStyle: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -584,11 +614,13 @@ class PaymentValue extends StatelessWidget {
   final String title;
   final String price;
   final TextStyle? priceStyle;
+  final Widget? priceWidget;
   const PaymentValue({
     super.key,
     required this.title,
     required this.price,
     this.priceStyle,
+    this.priceWidget,
   });
 
   @override
@@ -604,14 +636,15 @@ class PaymentValue extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
         ),
-        Text(
-          price,
-          style: priceStyle ??
-              Theme.of(context).textTheme.bodySmall!.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-        ),
+        priceWidget ??
+            Text(
+              price,
+              style: priceStyle ??
+                  Theme.of(context).textTheme.bodySmall!.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+            ),
       ],
     );
   }
