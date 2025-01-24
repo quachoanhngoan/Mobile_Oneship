@@ -400,7 +400,7 @@ class CartBodyItem extends StatelessWidget {
                                       color: AppColors.textGray, width: 1),
                                   borderRadius: BorderRadius.circular(6)),
                               child: Text(
-                                "x$indexOther",
+                                "x${item.quantity}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodySmall
