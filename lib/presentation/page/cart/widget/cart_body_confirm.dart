@@ -59,34 +59,31 @@ class CartBodyConfirm extends StatelessWidget {
         ),
       );
     }
-    return RefreshIndicator(
-      color: AppColors.color988,
+    return _BodyConfirm(
+      listCartConfirm: state.listCartConfirm,
+      cartConfirmSellected: state.cartConfirmTypeSellected,
+      controller: bloc.confirmPageController,
+      listShowDetailFood: state.listShowDetailFood,
+      tooltipController: tooltipController,
+      refreshFunction: () {
+        bloc.getAllCart();
+      },
       onRefresh: () async {
         bloc.getAllCart();
       },
-      child: _BodyConfirm(
-        listCartConfirm: state.listCartConfirm,
-        cartConfirmSellected: state.cartConfirmTypeSellected,
-        controller: bloc.confirmPageController,
-        listShowDetailFood: state.listShowDetailFood,
-        tooltipController: tooltipController,
-        refreshFunction: () {
-          bloc.getAllCart();
-        },
-        moreFoodClick: (id, indexPage) {
-          bloc.hireOrShowDetailFood(
-              value: ShowDetailFoodCartDomain(
-            type: CartType.confirm,
-            confirmType: indexPage == 0
-                ? CartConfirmType.findDriver
-                : CartConfirmType.driving,
-            idShow: id,
-          ));
-        },
-        changeConfirmPage: (indexTitle, typeConfirm) {
-          bloc.changeConfirmPage(indexTitle, typeConfirm);
-        },
-      ),
+      moreFoodClick: (id, indexPage) {
+        bloc.hireOrShowDetailFood(
+            value: ShowDetailFoodCartDomain(
+          type: CartType.confirm,
+          confirmType: indexPage == 0
+              ? CartConfirmType.findDriver
+              : CartConfirmType.driving,
+          idShow: id,
+        ));
+      },
+      changeConfirmPage: (indexTitle, typeConfirm) {
+        bloc.changeConfirmPage(indexTitle, typeConfirm);
+      },
     );
   }
 }
@@ -100,18 +97,19 @@ class _BodyConfirm extends StatelessWidget {
   final Function() refreshFunction;
   final Function(int?, int) moreFoodClick;
   final SuperTooltipController? tooltipController;
+  final Function? onRefresh;
 
-  const _BodyConfirm({
-    super.key,
-    required this.changeConfirmPage,
-    required this.cartConfirmSellected,
-    this.listCartConfirm = const [],
-    this.listShowDetailFood = const [],
-    this.controller,
-    required this.refreshFunction,
-    required this.moreFoodClick,
-    this.tooltipController,
-  });
+  const _BodyConfirm(
+      {super.key,
+      required this.changeConfirmPage,
+      required this.cartConfirmSellected,
+      this.listCartConfirm = const [],
+      this.listShowDetailFood = const [],
+      this.controller,
+      required this.refreshFunction,
+      required this.moreFoodClick,
+      this.tooltipController,
+      this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -196,96 +194,104 @@ class _BodyConfirm extends StatelessWidget {
                 if (listItem.listData.isEmpty) {
                   return const CartEmptyBody();
                 }
-                return ListView.separated(
-                    itemCount: listItem.listData.length,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                    separatorBuilder: (context, index) {
-                      return const VSpacing(spacing: 12);
-                    },
-                    itemBuilder: (context, indexItem) {
-                      final cartItem = listItem.listData[indexItem];
-                      final isShowMore =
-                          listShowDetailFood.contains(ShowDetailFoodCartDomain(
-                        type: CartType.confirm,
-                        confirmType: indexPage == 0
-                            ? CartConfirmType.findDriver
-                            : CartConfirmType.driving,
-                        idShow: cartItem.id,
-                      ));
-                      return CartBodyItem(
-                        onTap: refreshFunction,
-                        isShowMore: isShowMore,
-                        moreFoodClick: () {
-                          moreFoodClick(
-                            cartItem.id,
-                            indexPage,
-                          );
-                        },
-                        indexCart: indexItem,
-                        orderCart: cartItem,
-                        bottomWidget: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                "Hệ thống đang tìm tài xế đến lấy đơn",
-                                overflow: TextOverflow.visible,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.color017,
-                                    ),
-                              ),
-                            ),
-                            Container(
-                              height: 26,
-                              width: 86,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: AppColors.color988,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Text(
-                                "Quán tự giao",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.white,
-                                    ),
-                              ),
-                            ),
-                            const HSpacing(spacing: 4),
-                            GestureDetector(
-                              onTap: () async {
-                                await tooltipController?.showTooltip();
-                              },
-                              child: SuperTooltip(
-                                shadowColor: AppColors.transparent,
-                                backgroundColor:
-                                    AppColors.black.withOpacity(0.8),
-                                controller: tooltipController,
-                                popupDirection: TooltipDirection.up,
-                                content: const Text(
-                                  "Nút này chỉ hiện thị khi quán có bật chế độ \"Quán tự giao\" trong cài đặt xử lý đơn hàng",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14),
-                                ),
-                                child: const Icon(
-                                  Icons.info_outline_rounded,
-                                  size: 16,
-                                  color: AppColors.black,
+                return RefreshIndicator(
+                  color: AppColors.color988,
+                  onRefresh: () async {
+                    if (onRefresh != null) {
+                      onRefresh!();
+                    }
+                  },
+                  child: ListView.separated(
+                      itemCount: listItem.listData.length,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 12),
+                      separatorBuilder: (context, index) {
+                        return const VSpacing(spacing: 12);
+                      },
+                      itemBuilder: (context, indexItem) {
+                        final cartItem = listItem.listData[indexItem];
+                        final isShowMore = listShowDetailFood
+                            .contains(ShowDetailFoodCartDomain(
+                          type: CartType.confirm,
+                          confirmType: indexPage == 0
+                              ? CartConfirmType.findDriver
+                              : CartConfirmType.driving,
+                          idShow: cartItem.id,
+                        ));
+                        return CartBodyItem(
+                          onTap: refreshFunction,
+                          isShowMore: isShowMore,
+                          moreFoodClick: () {
+                            moreFoodClick(
+                              cartItem.id,
+                              indexPage,
+                            );
+                          },
+                          indexCart: indexItem,
+                          orderCart: cartItem,
+                          bottomWidget: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  "Hệ thống đang tìm tài xế đến lấy đơn",
+                                  overflow: TextOverflow.visible,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.color017,
+                                      ),
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                      );
-                    });
+                              Container(
+                                height: 26,
+                                width: 86,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: AppColors.color988,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Text(
+                                  "Quán tự giao",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.white,
+                                      ),
+                                ),
+                              ),
+                              const HSpacing(spacing: 4),
+                              GestureDetector(
+                                onTap: () async {
+                                  await tooltipController?.showTooltip();
+                                },
+                                child: SuperTooltip(
+                                  shadowColor: AppColors.transparent,
+                                  backgroundColor:
+                                      AppColors.black.withOpacity(0.8),
+                                  controller: tooltipController,
+                                  popupDirection: TooltipDirection.up,
+                                  content: const Text(
+                                    "Nút này chỉ hiện thị khi quán có bật chế độ \"Quán tự giao\" trong cài đặt xử lý đơn hàng",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14),
+                                  ),
+                                  child: const Icon(
+                                    Icons.info_outline_rounded,
+                                    size: 16,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                );
               },
             ),
           )

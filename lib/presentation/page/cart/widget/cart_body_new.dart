@@ -58,28 +58,25 @@ class CartBodyNew extends StatelessWidget {
     if (listItem.isEmpty) {
       return const CartEmptyBody();
     }
-    return RefreshIndicator(
-      color: AppColors.color988,
+    return _BodyNew(
+      refreshFunction: () {
+        bloc.getAllCart();
+      },
       onRefresh: () async {
         bloc.getAllCart();
       },
-      child: _BodyNew(
-        refreshFunction: () {
-          bloc.getAllCart();
-        },
-        confirmOrder: (id) {
-          bloc.confirmOrder(id);
-        },
-        listItem: listItem,
-        listShowDetailFood: state.listShowDetailFood,
-        moreFoodClick: (id) {
-          bloc.hireOrShowDetailFood(
-              value: ShowDetailFoodCartDomain(
-            type: CartType.newCart,
-            idShow: id,
-          ));
-        },
-      ),
+      confirmOrder: (id) {
+        bloc.confirmOrder(id);
+      },
+      listItem: listItem,
+      listShowDetailFood: state.listShowDetailFood,
+      moreFoodClick: (id) {
+        bloc.hireOrShowDetailFood(
+            value: ShowDetailFoodCartDomain(
+          type: CartType.newCart,
+          idShow: id,
+        ));
+      },
     );
   }
 }
@@ -90,76 +87,87 @@ class _BodyNew extends StatelessWidget {
   final Function(int?) moreFoodClick;
   final Function() refreshFunction;
   final Function(int) confirmOrder;
-  const _BodyNew({
-    super.key,
-    required this.listItem,
-    this.listShowDetailFood = const [],
-    required this.moreFoodClick,
-    required this.refreshFunction,
-    required this.confirmOrder,
-  });
+  final Function? onRefresh;
+  const _BodyNew(
+      {super.key,
+      required this.listItem,
+      this.listShowDetailFood = const [],
+      required this.moreFoodClick,
+      required this.refreshFunction,
+      required this.confirmOrder,
+      this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.colorAFA,
       margin: const EdgeInsets.symmetric(vertical: 6),
-      child: ListView.builder(
-          itemCount: listItem.length,
-          itemBuilder: (context, index) {
-            final isShowMore = listShowDetailFood.contains(
-                ShowDetailFoodCartDomain(
-                    type: CartType.newCart, idShow: listItem[index].id));
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              child: CartBodyItem(
-                onTap: refreshFunction,
-                isShowMore: isShowMore,
-                moreFoodClick: () {
-                  moreFoodClick(listItem[index].id);
-                },
-                indexCart: index,
-                orderCart: listItem[index],
-                bottomWidget: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "Nhận đơn để bắt đầu tìm tài xế",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.color017,
-                          ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (listItem[index].id != null) {
-                          confirmOrder(listItem[index].id!);
-                        }
-                      },
-                      child: Container(
-                        height: 26,
-                        width: 86,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: AppColors.color988,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Text(
-                          "Nhận đơn",
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.white,
-                                  ),
-                        ),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          if (onRefresh != null) {
+            onRefresh!();
+          }
+        },
+        child: ListView.builder(
+            itemCount: listItem.length,
+            itemBuilder: (context, index) {
+              final isShowMore = listShowDetailFood.contains(
+                  ShowDetailFoodCartDomain(
+                      type: CartType.newCart, idShow: listItem[index].id));
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: CartBodyItem(
+                  onTap: refreshFunction,
+                  isShowMore: isShowMore,
+                  moreFoodClick: () {
+                    moreFoodClick(listItem[index].id);
+                  },
+                  indexCart: index,
+                  orderCart: listItem[index],
+                  bottomWidget: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "Nhận đơn để bắt đầu tìm tài xế",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.color017,
+                            ),
                       ),
-                    )
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          if (listItem[index].id != null) {
+                            confirmOrder(listItem[index].id!);
+                          }
+                        },
+                        child: Container(
+                          height: 26,
+                          width: 86,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: AppColors.color988,
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                            "Nhận đơn",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.white,
+                                ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 }
