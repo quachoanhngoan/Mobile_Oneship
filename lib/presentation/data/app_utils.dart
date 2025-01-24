@@ -6,7 +6,7 @@ class AppUtils {
       if (price != null) {
         double number = double.parse(price);
         final formatter = NumberFormat.currency(
-            locale: 'vi_VN', symbol: '', decimalDigits: 2);
+            locale: 'vi_VN', symbol: '', decimalDigits: 0);
         return formatter.format(number);
       }
     } catch (_) {}

@@ -5,15 +5,18 @@ import 'package:oneship_merchant_app/presentation/page/cart/cart_cubit.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_page.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_state.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 class CartBodyConfirm extends StatelessWidget {
   final CartState state;
   final CartCubit bloc;
+  final SuperTooltipController? tooltipController;
 
   const CartBodyConfirm({
     super.key,
     required this.state,
     required this.bloc,
+    this.tooltipController,
   });
 
   @override
@@ -28,6 +31,7 @@ class CartBodyConfirm extends StatelessWidget {
             listCartConfirm: listItemSearch,
             listShowDetailFood: state.listSearchShowDetailFood,
             controller: bloc.confirmPageController,
+            tooltipController: tooltipController,
             moreFoodClick: (id, indexPage) {
               bloc.hireOrShowDetailFoodSearch(
                   value: ShowDetailFoodCartDomain(
@@ -109,6 +113,7 @@ class CartBodyConfirm extends StatelessWidget {
               refreshFunction: () {
                 bloc.getAllCart();
               },
+              tooltipController: tooltipController,
               listCartConfirm: state.listCartConfirm,
               listShowDetailFood: state.listShowDetailFood,
               controller: bloc.confirmPageController,
@@ -134,12 +139,14 @@ class _BodyConfirm extends StatelessWidget {
   final PageController? controller;
   final List<ShowDetailFoodCartDomain> listShowDetailFood;
   final Function() refreshFunction;
+  final SuperTooltipController? tooltipController;
   const _BodyConfirm({
     required this.listCartConfirm,
     this.listShowDetailFood = const [],
     required this.moreFoodClick,
     this.controller,
     required this.refreshFunction,
+    this.tooltipController,
   });
 
   @override
@@ -164,8 +171,17 @@ class _BodyConfirm extends StatelessWidget {
               },
               itemBuilder: (context, indexItem) {
                 final cartItem = listItem.listData[indexItem];
+                final isShowMore =
+                    listShowDetailFood.contains(ShowDetailFoodCartDomain(
+                  type: CartType.confirm,
+                  confirmType: indexPage == 0
+                      ? CartConfirmType.findDriver
+                      : CartConfirmType.driving,
+                  idShow: cartItem.id,
+                ));
                 return CartBodyItem(
                   onTap: refreshFunction,
+                  isShowMore: isShowMore,
                   moreFoodClick: () {
                     moreFoodClick(
                       cartItem.id,
@@ -206,10 +222,29 @@ class _BodyConfirm extends StatelessWidget {
                         ),
                       ),
                       const HSpacing(spacing: 4),
-                      const Icon(
-                        Icons.info_outline_rounded,
-                        size: 16,
-                        color: AppColors.black,
+                      GestureDetector(
+                        onTap: () async {
+                          await tooltipController?.showTooltip();
+                        },
+                        child: SuperTooltip(
+                          shadowColor: AppColors.transparent,
+                          backgroundColor: AppColors.black.withOpacity(0.8),
+                          controller: tooltipController,
+                          popupDirection: TooltipDirection.up,
+                          content: const Text(
+                            "Nút này chỉ hiện thị khi quán có bật chế độ \"Quán tự giao\" trong cài đặt xử lý đơn hàng",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                          //   message:
+                          //     "Nút này chỉ hiện thị khi quán có bật chế độ \"Quán tự giao\" trong cài đặt xử lý đơn hàng",
+                          // textStyle:
+                          //     const TextStyle(color: Colors.black, fontSize: 14),
+                          child: const Icon(
+                            Icons.info_outline_rounded,
+                            size: 16,
+                            color: AppColors.black,
+                          ),
+                        ),
                       )
                     ],
                   ),

@@ -92,9 +92,11 @@ class ShowDetailFoodCartDomain {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ShowDetailFoodCartDomain) return false;
-    return other.idShow == idShow && other.type == type;
+    return other.idShow == idShow &&
+        other.type == type &&
+        other.confirmType == confirmType;
   }
 
   @override
-  int get hashCode => Object.hash(idShow, type);
+  int get hashCode => Object.hash(idShow, type, confirmType);
 }
