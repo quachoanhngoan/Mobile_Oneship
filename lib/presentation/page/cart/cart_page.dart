@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:oneship_merchant_app/core/constant/dimensions.dart';
 import 'package:oneship_merchant_app/injector.dart';
+import 'package:oneship_merchant_app/presentation/data/app_utils.dart';
 import 'package:oneship_merchant_app/presentation/data/extension/context_ext.dart';
 import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
 import 'package:oneship_merchant_app/presentation/data/time_utils.dart';
@@ -139,9 +140,13 @@ class _CartPageState extends State<CartPage> {
                                               : FontWeight.w500,
                                     );
 
-                            final textWidth = calculateTextWidth(
+                            var textWidth = calculateTextWidth(
                                     typeCart.title, titleStyle!) +
                                 24;
+                            if (typeCart != CartType.book &&
+                                typeCart != CartType.newCart) {
+                              textWidth -= 20;
+                            }
 
                             return GestureDetector(
                               onTap: () {
@@ -155,12 +160,46 @@ class _CartPageState extends State<CartPage> {
                                       height: 34,
                                       color: AppColors.transparent,
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
+                                          horizontal: 8),
                                       alignment: Alignment.center,
-                                      child: Text(
-                                        typeCart.title,
-                                        textAlign: TextAlign.center,
-                                        style: titleStyle,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            typeCart.title,
+                                            textAlign: TextAlign.center,
+                                            style: titleStyle,
+                                          ),
+                                          typeCart == CartType.book ||
+                                                  typeCart == CartType.newCart
+                                              ? Container(
+                                                  width: 16,
+                                                  height: 16,
+                                                  // padding:
+                                                  //     const EdgeInsets.all(2),
+                                                  margin: const EdgeInsets.only(
+                                                      left: 6),
+                                                  alignment: Alignment.center,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: AppColors.error,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Text(
+                                                    "${state.listCartNew.length}",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          fontSize: 8,
+                                                          color:
+                                                              AppColors.white,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink()
+                                        ],
                                       ),
                                     ),
                                     Stack(
@@ -179,7 +218,6 @@ class _CartPageState extends State<CartPage> {
                                               ? AppColors.color988
                                               : AppColors.transparent,
                                         )
-                                        // : const SizedBox.shrink()
                                       ],
                                     ),
                                   ],
@@ -292,7 +330,7 @@ class CartBodyItem extends StatelessWidget {
             Row(
               children: <Widget>[
                 Text(
-                  "$indexCart. ${orderCart.client?.name}",
+                  "${indexCart + 1}. ${orderCart.client?.name ?? orderCart.client?.phone ?? "Không tên"}",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -379,7 +417,8 @@ class CartBodyItem extends StatelessWidget {
                             ),
                             const Spacer(),
                             Text(
-                              "${item.price}đ",
+                              "${AppUtils().formatPriceCart(item.price)}đ",
+                              // "${item.price}đ",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -515,14 +554,16 @@ class CartBodyItem extends StatelessWidget {
                   //       ),
                   Row(
                     children: <Widget>[
-                      Text("Tổng doanh thu đơn hàng: ",
+                      Text("Tổng doanh thu: ",
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontSize: 12,
                                     color: AppColors.color373,
                                     fontWeight: FontWeight.w500,
                                   )),
-                      Text("${orderCart.totalAmount}đ",
+                      Text(
+                          "${AppUtils().formatPriceCart(orderCart.totalAmount)}đ",
+                          // "${orderCart.totalAmount}đ",
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     fontSize: 16,
