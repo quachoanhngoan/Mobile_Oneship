@@ -35,7 +35,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     orderCubit = injector<OrderCubit>();
-    orderCubit.getOrderById(63);
+    orderCubit.getOrderById(widget.id);
     print('OrderPage: ${widget.id}');
     super.initState();
   }
