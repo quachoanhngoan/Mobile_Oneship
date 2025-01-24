@@ -60,6 +60,15 @@ extension CartConfirmTypeExt on CartConfirmType {
         return "Tài xế đang đến (#VALUE)";
     }
   }
+
+  String get status {
+    switch (this) {
+      case CartConfirmType.findDriver:
+        return "offer_sent_to_driver";
+      case CartConfirmType.driving:
+        return "driver_accepted";
+    }
+  }
 }
 
 class ListCartConfirmDomain {

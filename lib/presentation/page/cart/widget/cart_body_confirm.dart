@@ -141,30 +141,29 @@ class _BodyConfirm extends StatelessWidget {
         controller: controller,
         itemCount: CartConfirmType.values.length,
         itemBuilder: (context, indexPage) {
-          final listItem = listCartConfirm
-              .where(
-                (e) => e.type == CartConfirmType.values[indexPage],
-              )
-              .toList();
-          if (listItem.isEmpty) {
+          final listItem = listCartConfirm.firstWhere(
+            (e) => e.type == CartConfirmType.values[indexPage],
+          );
+          if (listItem.listData.isEmpty) {
             return const CartEmptyBody();
           }
           return ListView.separated(
-              itemCount: listItem.length,
+              itemCount: listItem.listData.length,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               separatorBuilder: (context, index) {
                 return const VSpacing(spacing: 12);
               },
               itemBuilder: (context, indexItem) {
+                final cartItem = listItem.listData[indexItem];
                 return CartBodyItem(
                   moreFoodClick: () {
                     moreFoodClick(
-                      listItem[indexPage].listData[indexItem].id,
+                      cartItem.id,
                       indexPage,
                     );
                   },
                   indexCart: indexItem,
-                  orderCart: listItem[indexPage].listData[indexItem],
+                  orderCart: cartItem,
                   bottomWidget: Row(
                     children: <Widget>[
                       Expanded(
@@ -196,7 +195,7 @@ class _BodyConfirm extends StatelessWidget {
                                   ),
                         ),
                       ),
-                      const VSpacing(spacing: 4),
+                      const HSpacing(spacing: 4),
                       const Icon(
                         Icons.info_outline_rounded,
                         size: 16,
@@ -206,20 +205,6 @@ class _BodyConfirm extends StatelessWidget {
                   ),
                 );
               });
-          // _BodyConfirm(
-          //   listItem: listItem[indexPage].listData,
-          //   listShowDetailFood: state.listShowDetailFood,
-          //   moreFoodClick: (id) {
-          // bloc.hireOrShowDetailFood(
-          //     value: ShowDetailFoodCartDomain(
-          //   type: CartType.confirm,
-          //   confirmType: indexPage == 0
-          //       ? CartConfirmType.findDriver
-          //       : CartConfirmType.driving,
-          //   idShow: id,
-          // ));
-          //   },
-          // );
         },
       ),
     );

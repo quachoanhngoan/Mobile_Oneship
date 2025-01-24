@@ -50,10 +50,10 @@ class CartCubit extends Cubit<CartState> {
       Map<String?, List<OrderCartResponse>>? listCartCancel;
 
       for (var type in CartType.values) {
-        final request = ListCartRequest(status: type.status);
-        final response = await repository.getListCart(request);
         switch (type) {
           case CartType.book:
+            final request = ListCartRequest(status: type.status);
+            final response = await repository.getListCart(request);
             if (response?.orders != null) {
               Map<String?, List<OrderCartResponse>> groupedDomains = groupBy(
                   response!.orders!,
@@ -72,12 +72,24 @@ class CartCubit extends Cubit<CartState> {
             }
             break;
           case CartType.newCart:
+            final request = ListCartRequest(status: type.status);
+            final response = await repository.getListCart(request);
             listCartNew.addAll(response?.orders ?? []);
             break;
           case CartType.confirm:
-            listCartConfirm.addAll([]);
+            for (var typeConfirm in CartConfirmType.values) {
+              final request = ListCartRequest(status: typeConfirm.status);
+              final response = await repository.getListCart(request);
+              log("vao: ${typeConfirm.name}");
+              listCartConfirm.add(ListCartConfirmDomain(
+                type: typeConfirm,
+                listData: response?.orders ?? [],
+              ));
+            }
             break;
           case CartType.complete:
+            final request = ListCartRequest(status: type.status);
+            final response = await repository.getListCart(request);
             if (response?.orders != null) {
               Map<String?, List<OrderCartResponse>>? groupedDomains = groupBy(
                   response!.orders!,
@@ -86,6 +98,8 @@ class CartCubit extends Cubit<CartState> {
             }
             break;
           case CartType.cancel:
+            final request = ListCartRequest(status: type.status);
+            final response = await repository.getListCart(request);
             if (response?.orders != null) {
               Map<String?, List<OrderCartResponse>>? groupedDomains = groupBy(
                   response!.orders!,
