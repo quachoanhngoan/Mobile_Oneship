@@ -153,13 +153,21 @@ class CartCubit extends Cubit<CartState> {
 
   sellectTimeRange(List<DateTime> listTime, {bool isComplete = true}) async {
     try {
+      emit(state.copyWith(isLoading: true));
       final firstDate = listTime.first;
       final lastDate = listTime.last;
+
+      final convertFirstDate = DateFormat('yyyy/MM/dd').format(firstDate);
+      final convertLastDate = DateFormat('yyyy/MM/dd').format(lastDate);
 
       if (firstDate == lastDate) {
         final String title = DateFormat('dd/MM/yyyy').format(firstDate);
         if (isComplete) {
-          final request = ListCartRequest(status: CartType.complete.status);
+          final request = ListCartRequest(
+            status: CartType.complete.status,
+            startDate: convertFirstDate,
+            endDate: convertLastDate,
+          );
           final response = await repository.getListCart(request);
           if (response?.orders != null) {
             Map<String?, List<OrderCartResponse>>? listCartComplete = groupBy(
@@ -169,22 +177,36 @@ class CartCubit extends Cubit<CartState> {
                 timeRangeTitleComplete: title,
                 listCartComplete: listCartComplete));
           } else {
-            final request = ListCartRequest(status: CartType.cancel.status);
-            final response = await repository.getListCart(request);
-            if (response?.orders != null) {
-              Map<String?, List<OrderCartResponse>>? listCartCancel = groupBy(
-                  response!.orders!,
-                  (order) => TimeUtils().convertIsoDateToDate(order.createdAt));
-              emit(state.copyWith(
-                  timeRangeTitleCancel: title, listCartCancel: listCartCancel));
-            }
+            emit(state.copyWith(
+                timeRangeTitleComplete: title, listCartComplete: const {}));
+          }
+        } else {
+          final request = ListCartRequest(
+            status: CartType.cancel.status,
+            startDate: convertFirstDate,
+            endDate: convertLastDate,
+          );
+          final response = await repository.getListCart(request);
+          if (response?.orders != null) {
+            Map<String?, List<OrderCartResponse>>? listCartCancel = groupBy(
+                response!.orders!,
+                (order) => TimeUtils().convertIsoDateToDate(order.createdAt));
+            emit(state.copyWith(
+                timeRangeTitleCancel: title, listCartCancel: listCartCancel));
+          } else {
+            emit(state.copyWith(
+                timeRangeTitleCancel: title, listCartCancel: const {}));
           }
         }
       } else {
         final String title =
             "${DateFormat('dd/MM/yyyy').format(firstDate)} - ${DateFormat('dd/MM/yyyy').format(lastDate)}";
         if (isComplete) {
-          final request = ListCartRequest(status: CartType.complete.status);
+          final request = ListCartRequest(
+            status: CartType.complete.status,
+            startDate: convertFirstDate,
+            endDate: convertLastDate,
+          );
           final response = await repository.getListCart(request);
           if (response?.orders != null) {
             Map<String?, List<OrderCartResponse>>? listCartComplete = groupBy(
@@ -193,9 +215,16 @@ class CartCubit extends Cubit<CartState> {
             emit(state.copyWith(
                 timeRangeTitleComplete: title,
                 listCartComplete: listCartComplete));
+          } else {
+            emit(state.copyWith(
+                timeRangeTitleComplete: title, listCartComplete: const {}));
           }
         } else {
-          final request = ListCartRequest(status: CartType.cancel.status);
+          final request = ListCartRequest(
+            status: CartType.cancel.status,
+            startDate: convertFirstDate,
+            endDate: convertLastDate,
+          );
           final response = await repository.getListCart(request);
           if (response?.orders != null) {
             Map<String?, List<OrderCartResponse>>? listCartCancel = groupBy(
@@ -203,13 +232,18 @@ class CartCubit extends Cubit<CartState> {
                 (order) => TimeUtils().convertIsoDateToDate(order.createdAt));
             emit(state.copyWith(
                 timeRangeTitleCancel: title, listCartCancel: listCartCancel));
+          } else {
+            emit(state.copyWith(
+                timeRangeTitleCancel: title, listCartCancel: const {}));
           }
         }
       }
     } on DioException catch (e) {
       log("sellect time range error: $e");
+      emit(state.copyWith(isLoading: false));
     } catch (e) {
       log("sellect time range error: $e");
+      emit(state.copyWith(isLoading: false));
     }
   }
 
@@ -243,15 +277,16 @@ class CartCubit extends Cubit<CartState> {
       final List<OrderCartResponse> listSearchNewCart = [];
       final Map<String?, List<OrderCartResponse>> listSearchComplete = {};
       final Map<String?, List<OrderCartResponse>> listSearchCancel = {};
+      final List<ListCartConfirmDomain> listSearchConfirm = [];
       for (var type in CartType.values) {
         switch (type) {
           case CartType.book:
             state.listCartBook.forEach((key, orderCartResponses) {
               List<OrderCartResponse> filteredResponses = orderCartResponses
-                  .where((response) =>
-                      removeDiacritics(response.client?.name ?? "")
-                          .toLowerCase()
-                          .contains(removeDiacritics(value.toLowerCase())))
+                  .where((response) => removeDiacritics(
+                          response.client?.name ?? response.client?.phone ?? "")
+                      .toLowerCase()
+                      .contains(removeDiacritics(value.toLowerCase())))
                   .toList();
               if (filteredResponses.isNotEmpty) {
                 listSearchBook[key] = filteredResponses;
@@ -263,7 +298,7 @@ class CartCubit extends Cubit<CartState> {
           case CartType.newCart:
             final listNewCart = List.of(state.listCartNew);
             listSearchNewCart.addAll(listNewCart.where((e) =>
-                removeDiacritics(e.client?.name ?? "")
+                removeDiacritics(e.client?.name ?? e.client?.phone ?? "")
                     .toLowerCase()
                     .contains(removeDiacritics(value.toLowerCase())) ==
                 true));
@@ -273,34 +308,49 @@ class CartCubit extends Cubit<CartState> {
             }
             break;
           case CartType.confirm:
+            final listConfirm = List.of(state.listCartConfirm);
+            for (var confirm in listConfirm) {
+              final listResult = confirm.listData
+                  .where((e) => removeDiacritics(
+                          (e.client?.name ?? e.client?.phone ?? "")
+                              .toLowerCase())
+                      .contains(removeDiacritics(value.toLowerCase())))
+                  .toList();
+              listSearchConfirm.add(ListCartConfirmDomain(
+                  type: confirm.type, listData: listResult));
+            }
             break;
           case CartType.complete:
             state.listCartComplete.forEach((key, orderCartResponses) {
               List<OrderCartResponse> filteredResponses = orderCartResponses
-                  .where((response) =>
-                      removeDiacritics(response.client?.name ?? "")
-                          .toLowerCase()
-                          .contains(removeDiacritics(value.toLowerCase())))
+                  .where((response) => removeDiacritics(
+                          response.client?.name ?? response.client?.phone ?? "")
+                      .toLowerCase()
+                      .contains(removeDiacritics(value.toLowerCase())))
                   .toList();
-              if (filteredResponses.isNotEmpty && _enableChangePage) {
+              if (filteredResponses.isNotEmpty) {
                 listSearchComplete[key] = filteredResponses;
-                _typeScrollPage = type;
-                _enableChangePage = false;
+                if (_enableChangePage) {
+                  _typeScrollPage = type;
+                  _enableChangePage = false;
+                }
               }
             });
             break;
           case CartType.cancel:
-            state.listSearchCartCancel.forEach((key, orderCartResponses) {
+            state.listCartCancel.forEach((key, orderCartResponses) {
               List<OrderCartResponse> filteredResponses = orderCartResponses
-                  .where((response) =>
-                      removeDiacritics(response.client?.name ?? "")
-                          .toLowerCase()
-                          .contains(removeDiacritics(value.toLowerCase())))
+                  .where((response) => removeDiacritics(
+                          response.client?.name ?? response.client?.phone ?? "")
+                      .toLowerCase()
+                      .contains(removeDiacritics(value.toLowerCase())))
                   .toList();
-              if (filteredResponses.isNotEmpty && _enableChangePage) {
+              if (filteredResponses.isNotEmpty) {
                 listSearchCancel[key] = filteredResponses;
-                _typeScrollPage = type;
-                _enableChangePage = false;
+                if (_enableChangePage) {
+                  _typeScrollPage = type;
+                  _enableChangePage = false;
+                }
               }
             });
             break;
@@ -308,10 +358,12 @@ class CartCubit extends Cubit<CartState> {
       }
       changeCartType(_typeScrollPage.index, _typeScrollPage);
       emit(state.copyWith(
-          listSearchCartBook: listSearchBook,
-          listSearchCartCancel: listSearchCancel,
-          listSearchCartComplete: listSearchComplete,
-          listSearchCartNew: listSearchNewCart));
+        listSearchCartBook: listSearchBook,
+        listSearchCartCancel: listSearchCancel,
+        listSearchCartComplete: listSearchComplete,
+        listSearchCartNew: listSearchNewCart,
+        listSearchCartConfirm: listSearchConfirm,
+      ));
     } catch (e) {
       log("searchTyping error: $e");
     }
