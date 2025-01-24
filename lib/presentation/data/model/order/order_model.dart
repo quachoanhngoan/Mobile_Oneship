@@ -144,68 +144,75 @@ class OrderM {
   final Store? store;
   final Client? client;
   final Driver? driver;
-
-  OrderM({
-    this.id,
-    this.createdAt,
-    this.deletedAt,
-    this.updatedAt,
-    this.clientId,
-    this.storeId,
-    this.driverId,
-    this.totalAmount,
-    this.status,
-    this.paymentStatus,
-    this.deliveryAddress,
-    this.deliveryLatitude,
-    this.deliveryLongitude,
-    this.tip,
-    this.notes,
-    this.orderItems,
-    this.activities,
-    this.store,
-    this.client,
-    this.deliveryFee,
-    this.driver,
-  });
+  final String? deliveryPhone;
+  final String? deliveryName;
+  final String? deliveryAddressNote;
+  final String? orderCode;
+  OrderM(
+      {this.id,
+      this.createdAt,
+      this.deletedAt,
+      this.updatedAt,
+      this.clientId,
+      this.storeId,
+      this.driverId,
+      this.totalAmount,
+      this.status,
+      this.paymentStatus,
+      this.deliveryAddress,
+      this.deliveryLatitude,
+      this.deliveryLongitude,
+      this.tip,
+      this.notes,
+      this.orderItems,
+      this.activities,
+      this.store,
+      this.client,
+      this.deliveryFee,
+      this.driver,
+      this.deliveryPhone,
+      this.deliveryName,
+      this.deliveryAddressNote,
+      this.orderCode});
 
   factory OrderM.fromRawJson(String str) => OrderM.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory OrderM.fromJson(Map<String, dynamic> json) => OrderM(
-        id: json["id"],
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        deletedAt: json["deletedAt"],
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
-        clientId: json["clientId"],
-        storeId: json["storeId"],
-        driverId: json["driverId"],
-        totalAmount: json["totalAmount"],
-        status: json["status"],
-        paymentStatus: json["paymentStatus"],
-        deliveryAddress: json["deliveryAddress"],
-        deliveryLatitude: json["deliveryLatitude"]?.toDouble(),
-        deliveryLongitude: json["deliveryLongitude"]?.toDouble(),
-        tip: json["tip"],
-        notes: json["notes"],
-        orderItems: json["orderItems"] == null
-            ? []
-            : List<CartOrderItem>.from(
-                json["orderItems"]!.map((x) => CartOrderItem.fromJson(x))),
-        activities: json["activities"] == null
-            ? []
-            : List<Activity>.from(
-                json["activities"]!.map((x) => Activity.fromJson(x))),
-        store: json["store"] == null ? null : Store.fromJson(json["store"]),
-        client: json["client"] == null ? null : Client.fromJson(json["client"]),
-        deliveryFee: json["deliveryFee"],
-        driver: json["driver"] == null ? null : Driver.fromJson(json["driver"]),
-      );
+      id: json["id"],
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      deletedAt: json["deletedAt"],
+      updatedAt:
+          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+      clientId: json["clientId"],
+      storeId: json["storeId"],
+      driverId: json["driverId"],
+      totalAmount: json["totalAmount"],
+      status: json["status"],
+      paymentStatus: json["paymentStatus"],
+      deliveryAddress: json["deliveryAddress"],
+      deliveryLatitude: json["deliveryLatitude"]?.toDouble(),
+      deliveryLongitude: json["deliveryLongitude"]?.toDouble(),
+      tip: json["tip"],
+      notes: json["notes"],
+      orderItems: json["orderItems"] == null
+          ? []
+          : List<CartOrderItem>.from(
+              json["orderItems"]!.map((x) => CartOrderItem.fromJson(x))),
+      activities: json["activities"] == null
+          ? []
+          : List<Activity>.from(
+              json["activities"]!.map((x) => Activity.fromJson(x))),
+      store: json["store"] == null ? null : Store.fromJson(json["store"]),
+      client: json["client"] == null ? null : Client.fromJson(json["client"]),
+      deliveryFee: json["deliveryFee"],
+      driver: json["driver"] == null ? null : Driver.fromJson(json["driver"]),
+      deliveryPhone: json["deliveryPhone"],
+      deliveryName: json["deliveryName"],
+      deliveryAddressNote: json["deliveryAddressNote"],
+      orderCode: json["orderCode"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -232,6 +239,9 @@ class OrderM {
         "store": store?.toJson(),
         "client": client?.toJson(),
         "deliveryFee": deliveryFee,
+        "deliveryPhone": deliveryPhone,
+        "deliveryName": deliveryName,
+        "deliveryAddressNote": deliveryAddressNote,
       };
 
   String? getCustomerName() {

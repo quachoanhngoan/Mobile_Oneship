@@ -22,6 +22,9 @@ class CartBodyConfirm extends StatelessWidget {
       final listItemSearch = state.listSearchCartConfirm;
       if (listItemSearch.isNotEmpty) {
         return _BodyConfirm(
+            refreshFunction: () {
+              bloc.getAllCart();
+            },
             listCartConfirm: listItemSearch,
             listShowDetailFood: state.listSearchShowDetailFood,
             controller: bloc.confirmPageController,
@@ -103,6 +106,9 @@ class CartBodyConfirm extends StatelessWidget {
             ),
           ),
           _BodyConfirm(
+              refreshFunction: () {
+                bloc.getAllCart();
+              },
               listCartConfirm: state.listCartConfirm,
               listShowDetailFood: state.listShowDetailFood,
               controller: bloc.confirmPageController,
@@ -127,11 +133,14 @@ class _BodyConfirm extends StatelessWidget {
   final Function(int?, int) moreFoodClick;
   final PageController? controller;
   final List<ShowDetailFoodCartDomain> listShowDetailFood;
-  const _BodyConfirm(
-      {required this.listCartConfirm,
-      this.listShowDetailFood = const [],
-      required this.moreFoodClick,
-      this.controller});
+  final Function() refreshFunction;
+  const _BodyConfirm({
+    required this.listCartConfirm,
+    this.listShowDetailFood = const [],
+    required this.moreFoodClick,
+    this.controller,
+    required this.refreshFunction,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +165,7 @@ class _BodyConfirm extends StatelessWidget {
               itemBuilder: (context, indexItem) {
                 final cartItem = listItem.listData[indexItem];
                 return CartBodyItem(
+                  onTap: refreshFunction,
                   moreFoodClick: () {
                     moreFoodClick(
                       cartItem.id,

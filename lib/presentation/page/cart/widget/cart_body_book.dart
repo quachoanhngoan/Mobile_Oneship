@@ -24,6 +24,9 @@ class CartBodyBook extends StatelessWidget {
       final listItemSearch = state.listSearchCartBook.entries.toList();
       if (listItemSearch.isNotEmpty) {
         return _BodyBook(
+          refreshFunction: () {
+            bloc.getAllCart();
+          },
           listItem: listItemSearch,
           listShowDetailFood: state.listSearchShowDetailFood,
           moreFoodClick: (id) {
@@ -43,6 +46,9 @@ class CartBodyBook extends StatelessWidget {
       return const CartEmptyBody();
     }
     return _BodyBook(
+      refreshFunction: () {
+        bloc.getAllCart();
+      },
       listItem: listItem,
       listShowDetailFood: state.listShowDetailFood,
       moreFoodClick: (id) {
@@ -60,10 +66,12 @@ class _BodyBook extends StatelessWidget {
   final List<MapEntry<String?, List<OrderCartResponse>>> listItem;
   final List<ShowDetailFoodCartDomain> listShowDetailFood;
   final Function(int?) moreFoodClick;
+  final Function() refreshFunction;
   const _BodyBook({
     required this.listItem,
     this.listShowDetailFood = const [],
     required this.moreFoodClick,
+    required this.refreshFunction,
   });
 
   @override
@@ -97,6 +105,7 @@ class _BodyBook extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: CartBodyItem(
+                        onTap: refreshFunction,
                         isShowMore: isShowMore,
                         moreFoodClick: () {
                           moreFoodClick(item.id);

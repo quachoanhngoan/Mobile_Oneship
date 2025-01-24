@@ -27,6 +27,9 @@ class CartBodyCancel extends StatelessWidget {
       final listItemSearch = state.listSearchCartCancel.entries.toList();
       if (listItemSearch.isNotEmpty) {
         return _BodyCancel(
+          refreshFunction: () {
+            bloc.getAllCart();
+          },
           listItem: listItemSearch,
           listShowDetailFood: state.listSearchShowDetailFood,
           moreFoodClick: (id) {
@@ -90,6 +93,9 @@ class CartBodyCancel extends StatelessWidget {
           ),
           const VSpacing(spacing: 6),
           _BodyCancel(
+            refreshFunction: () {
+              bloc.getAllCart();
+            },
             listItem: listItem,
             listShowDetailFood: state.listShowDetailFood,
             moreFoodClick: (id) {
@@ -110,10 +116,12 @@ class _BodyCancel extends StatelessWidget {
   final List<MapEntry<String?, List<OrderCartResponse>>> listItem;
   final List<ShowDetailFoodCartDomain> listShowDetailFood;
   final Function(int?) moreFoodClick;
+  final Function() refreshFunction;
   const _BodyCancel({
     required this.listItem,
     this.listShowDetailFood = const [],
     required this.moreFoodClick,
+    required this.refreshFunction,
   });
 
   @override
@@ -148,6 +156,7 @@ class _BodyCancel extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: CartBodyItem(
+                      onTap: refreshFunction,
                       isShowMore: isShowMore,
                       moreFoodClick: () {
                         moreFoodClick(listItem[index].value[indexCard].id);

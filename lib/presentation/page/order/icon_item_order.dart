@@ -18,7 +18,7 @@ class IconItemOrder extends StatelessWidget {
     this.imageCancel,
     this.isCheck = false,
     this.isCancelled = false,
-    this.time = "",
+    this.time = "--:--",
   });
 
   @override
@@ -58,14 +58,13 @@ class IconItemOrder extends StatelessWidget {
               ),
           ],
         ),
-        if (isCheck)
-          Text(
-            time,
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  fontSize: 14,
-                  color: isCheck == false ? AppColors.color194 : null,
-                ),
-          ),
+        Text(
+          time.isNotEmpty ? time : "--:--",
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                fontSize: 14,
+                color: isCheck == false ? AppColors.color194 : null,
+              ),
+        ),
       ],
     );
   }

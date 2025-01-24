@@ -293,6 +293,7 @@ class CartBodyItem extends StatelessWidget {
   final int indexCart;
   final Function moreFoodClick;
   final bool isShowMore;
+  final void Function() onTap;
 
   const CartBodyItem({
     super.key,
@@ -301,6 +302,7 @@ class CartBodyItem extends StatelessWidget {
     required this.indexCart,
     required this.moreFoodClick,
     this.isShowMore = false,
+    required this.onTap,
   });
 
   @override
@@ -309,7 +311,13 @@ class CartBodyItem extends StatelessWidget {
       onTap: () {
         Get.to(() => OrderPage(
               id: orderCart.id!,
-            ));
+            ))?.then(
+          (value) {
+            // ignore: avoid_print
+
+            onTap.call();
+          },
+        );
       },
       child: Container(
         decoration: BoxDecoration(
