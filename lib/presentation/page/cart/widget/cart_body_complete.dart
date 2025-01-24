@@ -39,71 +39,89 @@ class CartBodyComplete extends StatelessWidget {
               ));
             });
       }
-      return Container();
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Text(
+          "Hiển thị 0 kết quả tìm kiếm",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.textGray,
+              ),
+        ),
+      );
     }
 
     final listItem = state.listCartComplete.entries.toList();
 
     return Container(
       color: AppColors.colorAFA,
-      child: Column(
-        children: <Widget>[
-          const VSpacing(spacing: 12),
-          Card(
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            color: AppColors.white,
-            borderOnForeground: false,
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: GestureDetector(
-                onTap: () async {
-                  final timeSellect =
-                      await TimeUtils().rangeTimePicker(context);
-                  if (timeSellect != null) {
-                    bloc.sellectTimeRange(timeSellect);
-                  }
-                },
-                child: Container(
-                  color: AppColors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        state.timeRangeTitleComplete ?? "",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.color828,
-                            ),
-                      ),
-                      const ImageAssetWidget(
-                        image: AppAssets.imagesIconsIcCalendar,
-                        width: 16,
-                        height: 16,
-                      )
-                    ],
+      child: RefreshIndicator(
+        color: AppColors.color988,
+        onRefresh: () async {
+          bloc.getAllCart();
+        },
+        child: Column(
+          children: <Widget>[
+            const VSpacing(spacing: 12),
+            Card(
+              shape:
+                  const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              color: AppColors.white,
+              borderOnForeground: false,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                child: GestureDetector(
+                  onTap: () async {
+                    final timeSellect =
+                        await TimeUtils().rangeTimePicker(context);
+                    if (timeSellect != null) {
+                      bloc.sellectTimeRange(timeSellect);
+                    }
+                  },
+                  child: Container(
+                    color: AppColors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          state.timeRangeTitleComplete ?? "",
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.color828,
+                                  ),
+                        ),
+                        const ImageAssetWidget(
+                          image: AppAssets.imagesIconsIcCalendar,
+                          width: 16,
+                          height: 16,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const VSpacing(spacing: 6),
-          _CompleteBody(
-              refreshFunction: () {
-                bloc.getAllCart();
-              },
-              listItem: listItem,
-              listShowDetailFood: state.listShowDetailFood,
-              moreFoodClick: (id) {
-                bloc.hireOrShowDetailFood(
-                    value: ShowDetailFoodCartDomain(
-                  type: CartType.complete,
-                  idShow: id,
-                ));
-              })
-        ],
+            const VSpacing(spacing: 6),
+            _CompleteBody(
+                refreshFunction: () {
+                  bloc.getAllCart();
+                },
+                listItem: listItem,
+                listShowDetailFood: state.listShowDetailFood,
+                moreFoodClick: (id) {
+                  bloc.hireOrShowDetailFood(
+                      value: ShowDetailFoodCartDomain(
+                    type: CartType.complete,
+                    idShow: id,
+                  ));
+                })
+          ],
+        ),
       ),
     );
   }

@@ -28,6 +28,9 @@ class CartBodyNew extends StatelessWidget {
           },
           listItem: listItemSearch,
           listShowDetailFood: state.listSearchShowDetailFood,
+          confirmOrder: (id) {
+            bloc.confirmOrder(id);
+          },
           moreFoodClick: (id) {
             bloc.hireOrShowDetailFoodSearch(
                 value: ShowDetailFoodCartDomain(
@@ -37,7 +40,17 @@ class CartBodyNew extends StatelessWidget {
           },
         );
       }
-      return Container();
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Text(
+          "Hiển thị 0 kết quả tìm kiếm",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.textGray,
+              ),
+        ),
+      );
     }
 
     final listItem = state.listCartNew;
@@ -45,19 +58,28 @@ class CartBodyNew extends StatelessWidget {
     if (listItem.isEmpty) {
       return const CartEmptyBody();
     }
-    return _BodyNew(
-      refreshFunction: () {
+    return RefreshIndicator(
+      color: AppColors.color988,
+      onRefresh: () async {
         bloc.getAllCart();
       },
-      listItem: listItem,
-      listShowDetailFood: state.listShowDetailFood,
-      moreFoodClick: (id) {
-        bloc.hireOrShowDetailFood(
-            value: ShowDetailFoodCartDomain(
-          type: CartType.newCart,
-          idShow: id,
-        ));
-      },
+      child: _BodyNew(
+        refreshFunction: () {
+          bloc.getAllCart();
+        },
+        confirmOrder: (id) {
+          bloc.confirmOrder(id);
+        },
+        listItem: listItem,
+        listShowDetailFood: state.listShowDetailFood,
+        moreFoodClick: (id) {
+          bloc.hireOrShowDetailFood(
+              value: ShowDetailFoodCartDomain(
+            type: CartType.newCart,
+            idShow: id,
+          ));
+        },
+      ),
     );
   }
 }
@@ -67,12 +89,14 @@ class _BodyNew extends StatelessWidget {
   final List<ShowDetailFoodCartDomain> listShowDetailFood;
   final Function(int?) moreFoodClick;
   final Function() refreshFunction;
+  final Function(int) confirmOrder;
   const _BodyNew({
     super.key,
     required this.listItem,
     this.listShowDetailFood = const [],
     required this.moreFoodClick,
     required this.refreshFunction,
+    required this.confirmOrder,
   });
 
   @override
@@ -107,20 +131,28 @@ class _BodyNew extends StatelessWidget {
                             color: AppColors.color017,
                           ),
                     ),
-                    Container(
-                      height: 26,
-                      width: 86,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: AppColors.color988,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Text(
-                        "Nhận đơn",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.white,
-                            ),
+                    GestureDetector(
+                      onTap: () {
+                        if (listItem[index].id != null) {
+                          confirmOrder(listItem[index].id!);
+                        }
+                      },
+                      child: Container(
+                        height: 26,
+                        width: 86,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: AppColors.color988,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Text(
+                          "Nhận đơn",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.white,
+                                  ),
+                        ),
                       ),
                     )
                   ],

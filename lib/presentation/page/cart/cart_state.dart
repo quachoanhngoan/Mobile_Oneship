@@ -22,6 +22,7 @@ class CartState extends Equatable {
   final Map<String?, List<OrderCartResponse>> listSearchCartComplete;
   final Map<String?, List<OrderCartResponse>> listSearchCartCancel;
   final List<ShowDetailFoodCartDomain> listSearchShowDetailFood;
+  final String? errorCart;
 
   const CartState({
     this.isShowSearch = false,
@@ -43,6 +44,7 @@ class CartState extends Equatable {
     this.listSearchCartNew = const [],
     this.listSearchShowDetailFood = const [],
     this.listSearchCartBook = const {},
+    this.errorCart,
   });
 
   @override
@@ -66,6 +68,7 @@ class CartState extends Equatable {
         listSearchCartCancel,
         listSearchShowDetailFood,
         listSearchCartBook,
+        errorCart,
       ];
 
   CartState copyWith({
@@ -88,6 +91,7 @@ class CartState extends Equatable {
     List<ShowDetailFoodCartDomain>? listSearchShowDetailFood,
     Map<String?, List<OrderCartResponse>>? listSearchCartBook,
     bool? isLoading,
+    String? errorCart,
   }) {
     return CartState(
       isShowSearch: isShowSearch ?? this.isShowSearch,
@@ -114,6 +118,7 @@ class CartState extends Equatable {
       listSearchShowDetailFood:
           listSearchShowDetailFood ?? this.listSearchShowDetailFood,
       listSearchCartBook: listSearchCartBook ?? this.listSearchCartBook,
+      errorCart: errorCart,
     );
   }
 }

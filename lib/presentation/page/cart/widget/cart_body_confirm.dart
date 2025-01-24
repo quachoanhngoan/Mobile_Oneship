@@ -47,30 +47,46 @@ class CartBodyConfirm extends StatelessWidget {
               ));
             });
       }
-      return Container();
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Text(
+          "Hiển thị 0 kết quả tìm kiếm",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.textGray,
+              ),
+        ),
+      );
     }
-    return _BodyConfirm(
-      listCartConfirm: state.listCartConfirm,
-      cartConfirmSellected: state.cartConfirmTypeSellected,
-      controller: bloc.confirmPageController,
-      listShowDetailFood: state.listShowDetailFood,
-      tooltipController: tooltipController,
-      refreshFunction: () {
+    return RefreshIndicator(
+      color: AppColors.color988,
+      onRefresh: () async {
         bloc.getAllCart();
       },
-      moreFoodClick: (id, indexPage) {
-        bloc.hireOrShowDetailFood(
-            value: ShowDetailFoodCartDomain(
-          type: CartType.confirm,
-          confirmType: indexPage == 0
-              ? CartConfirmType.findDriver
-              : CartConfirmType.driving,
-          idShow: id,
-        ));
-      },
-      changeConfirmPage: (indexTitle, typeConfirm) {
-        bloc.changeConfirmPage(indexTitle, typeConfirm);
-      },
+      child: _BodyConfirm(
+        listCartConfirm: state.listCartConfirm,
+        cartConfirmSellected: state.cartConfirmTypeSellected,
+        controller: bloc.confirmPageController,
+        listShowDetailFood: state.listShowDetailFood,
+        tooltipController: tooltipController,
+        refreshFunction: () {
+          bloc.getAllCart();
+        },
+        moreFoodClick: (id, indexPage) {
+          bloc.hireOrShowDetailFood(
+              value: ShowDetailFoodCartDomain(
+            type: CartType.confirm,
+            confirmType: indexPage == 0
+                ? CartConfirmType.findDriver
+                : CartConfirmType.driving,
+            idShow: id,
+          ));
+        },
+        changeConfirmPage: (indexTitle, typeConfirm) {
+          bloc.changeConfirmPage(indexTitle, typeConfirm);
+        },
+      ),
     );
   }
 }

@@ -5,7 +5,9 @@ import 'package:diacritic/diacritic.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:oneship_merchant_app/core/execute/execute.dart';
 import 'package:oneship_merchant_app/extensions/string_extention.dart';
 import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_request.dart';
 import 'package:oneship_merchant_app/presentation/data/model/cart/list_cart_response.dart';
@@ -13,6 +15,7 @@ import 'package:oneship_merchant_app/presentation/data/repository/cart_repositor
 import 'package:oneship_merchant_app/presentation/data/time_utils.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/cart_state.dart';
 import 'package:oneship_merchant_app/presentation/page/cart/model/cart_model.dart';
+import 'package:oneship_merchant_app/service/dialog.dart';
 
 class CartCubit extends Cubit<CartState> {
   final CartRepository repository;
@@ -367,5 +370,45 @@ class CartCubit extends Cubit<CartState> {
     } catch (e) {
       log("searchTyping error: $e");
     }
+  }
+
+  confirmOrder(int id) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final response = await execute(
+        () => repository.confirmOrder(id.toString()),
+        isShowFailDialog: true,
+      );
+      response.when(success: (data) async {
+        // getOrderByIdNoneLoading(id);
+
+        // setConfirmState(EState.success);
+        await getAllCart();
+        dialogService.showAlertDialog(
+            title: 'Thông báo',
+            description: 'Đơn hàng đã được xác nhận thành công',
+            buttonTitle: 'Đóng',
+            onPressed: () {
+              Get.back();
+            });
+      }, failure: (error) {
+        dialogService.showAlertDialog(
+            title: 'Thông báo',
+            description: 'Đơn hàng đã xác nhận thất bại',
+            buttonTitle: 'Đóng',
+            onPressed: () {
+              Get.back();
+            });
+      });
+    } catch (e) {
+      dialogService.showAlertDialog(
+          title: 'Thông báo',
+          description: 'Đơn hàng đã xác nhận thất bại',
+          buttonTitle: 'Đóng',
+          onPressed: () {
+            Get.back();
+          });
+    }
+    emit(state.copyWith(isLoading: false));
   }
 }

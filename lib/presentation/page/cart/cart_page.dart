@@ -412,18 +412,21 @@ class CartBodyItem extends StatelessWidget {
                               ),
                             ),
                             const HSpacing(spacing: 12),
-                            Text(
-                              item.productName ?? "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.colorF3B,
-                                  ),
+                            Expanded(
+                              child: Text(
+                                item.productName ?? "",
+                                overflow: TextOverflow.visible,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.colorF3B,
+                                    ),
+                              ),
                             ),
-                            const Spacer(),
+                            // const Spacer(),
                             Text(
                               "${AppUtils().formatPriceCart(item.price)}đ",
                               // "${item.price}đ",
